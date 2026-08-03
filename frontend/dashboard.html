@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Employee Workforce System Admin Dashboard"
+    >
+
+    <title>Dashboard | Employee Workforce System</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <!-- =================================================
+             Sidebar
+        ================================================== -->
+
+        <aside id="sidebar" class="sidebar">
+
+            <div class="sidebar-brand">
+
+                <div class="sidebar-brand-icon">
+                    E
+                </div>
+
+                <div class="sidebar-brand-text">
+                    <strong>Employee Workforce</strong>
+                    <small>Admin Workspace</small>
+                </div>
+
+            </div>
+
+
+            <div class="sidebar-user">
+
+                <div
+                    id="sidebarAvatar"
+                    class="sidebar-user-avatar"
+                >
+                    SA
+                </div>
+
+                <div class="sidebar-user-details">
+
+                    <strong id="sidebarAdminName">
+                        System Administrator
+                    </strong>
+
+                    <span>Administrator</span>
+
+                </div>
+
+            </div>
+
+
+            <nav class="sidebar-navigation">
+
+                <a
+                    href="/dashboard.html"
+                    class="sidebar-link active"
+                >
+                    <span class="sidebar-link-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a
+                    href="/attendance.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-link-icon">◷</span>
+                    <span>Attendance</span>
+                </a>
+
+                <a
+                    href="/leave.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-link-icon">▣</span>
+                    <span>Leave Requests</span>
+                </a>
+
+                <a
+                    href="/onboarding.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-link-icon">✓</span>
+                    <span>Onboarding</span>
+                </a>
+
+                <a
+                    href="/okrs.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-link-icon">◎</span>
+                    <span>My OKRs</span>
+                </a>
+
+                <a
+                    href="/profile.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-link-icon">○</span>
+                    <span>Profile</span>
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-footer">
+
+                <button
+                    type="button"
+                    id="logoutButton"
+                    class="logout-button"
+                >
+                    Sign out
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =================================================
+             Main Content
+        ================================================== -->
+
+        <main class="main-content">
+
+            <!-- Topbar -->
+
+            <header class="topbar">
+
+                <div class="topbar-left">
+
+                    <button
+                        type="button"
+                        id="menuToggleButton"
+                        class="mobile-menu-button"
+                        aria-label="Open navigation"
+                    >
+                        ☰
+                    </button>
+
+                    <div class="topbar-title">
+
+                        <span class="topbar-eyebrow">
+                            WORKSPACE
+                        </span>
+
+                        <h1>Dashboard</h1>
+
+                        <p id="currentDateText">
+                            Loading current date...
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-profile-summary">
+
+                    <div class="admin-profile-text">
+
+                        <strong id="topbarAdminName">
+                            System Administrator
+                        </strong>
+
+                        <small id="topbarAdminEmail">
+                            admin@gmail.com
+                        </small>
+
+                    </div>
+
+                    <div
+                        id="topbarAvatar"
+                        class="admin-avatar"
+                    >
+                        SA
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- =================================================
+                 Welcome Hero
+            ================================================== -->
+
+            <section class="dashboard-hero">
+
+                <div class="dashboard-hero-content">
+
+                    <span class="hero-label">
+                        REMOTE WORKSPACE
+                    </span>
+
+                    <h2>
+                        Welcome back,
+                        <span id="welcomeAdminName">
+                            Administrator
+                        </span>.
+                    </h2>
+
+                    <p>
+                        Track your workday, manage personal leave,
+                        complete onboarding tasks and keep your
+                        quarterly objectives moving.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <a
+                            href="/attendance.html"
+                            class="btn btn-primary"
+                        >
+                            View Attendance
+                        </a>
+
+                        <a
+                            href="/leave.html"
+                            class="btn hero-secondary-button"
+                        >
+                            Request Leave
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="work-status-card">
+
+                    <span class="work-status-label">
+                        TODAY’S ATTENDANCE
+                    </span>
+
+                    <div class="work-status-indicator">
+
+                        <span
+                            id="attendanceStatusDot"
+                            class="status-dot"
+                        ></span>
+
+                        <strong id="attendanceStatusText">
+                            Not clocked in
+                        </strong>
+
+                    </div>
+
+                    <p id="attendanceTimeText">
+                        Start your workday by clocking in.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="dashboardClockButton"
+                        class="btn btn-success dashboard-clock-button"
+                    >
+                        Clock In
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 Summary Cards
+            ================================================== -->
+
+            <section class="stats-grid page-section">
+
+                <article class="card stat-card">
+
+                    <div class="stat-card-top">
+
+                        <span class="stat-icon stat-icon-blue">
+                            ◷
+                        </span>
+
+                        <span class="stat-label">
+                            WORKED TODAY
+                        </span>
+
+                    </div>
+
+                    <strong
+                        id="workedTodayValue"
+                        class="stat-value"
+                    >
+                        0 min
+                    </strong>
+
+                    <p class="stat-note">
+                        Recorded attendance duration
+                    </p>
+
+                </article>
+
+
+                <article class="card stat-card">
+
+                    <div class="stat-card-top">
+
+                        <span class="stat-icon stat-icon-green">
+                            ▣
+                        </span>
+
+                        <span class="stat-label">
+                            LEAVE BALANCE
+                        </span>
+
+                    </div>
+
+                    <strong
+                        id="leaveBalanceValue"
+                        class="stat-value"
+                    >
+                        20 days
+                    </strong>
+
+                    <p
+                        id="pendingLeaveText"
+                        class="stat-note"
+                    >
+                        0 pending requests
+                    </p>
+
+                </article>
+
+
+                <article class="card stat-card">
+
+                    <div class="stat-card-top">
+
+                        <span class="stat-icon stat-icon-orange">
+                            ✓
+                        </span>
+
+                        <span class="stat-label">
+                            ONBOARDING
+                        </span>
+
+                    </div>
+
+                    <strong
+                        id="onboardingValue"
+                        class="stat-value"
+                    >
+                        0%
+                    </strong>
+
+                    <div class="stat-progress">
+
+                        <div class="progress-track">
+
+                            <div
+                                id="onboardingProgressBar"
+                                class="progress-bar"
+                                style="width: 0%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                    <p
+                        id="onboardingTaskText"
+                        class="stat-note"
+                    >
+                        0 of 0 tasks completed
+                    </p>
+
+                </article>
+
+
+                <article class="card stat-card">
+
+                    <div class="stat-card-top">
+
+                        <span class="stat-icon stat-icon-purple">
+                            ◎
+                        </span>
+
+                        <span class="stat-label">
+                            OKR PROGRESS
+                        </span>
+
+                    </div>
+
+                    <strong
+                        id="okrProgressValue"
+                        class="stat-value"
+                    >
+                        0%
+                    </strong>
+
+                    <p
+                        id="okrStatusText"
+                        class="stat-note"
+                    >
+                        No active objectives
+                    </p>
+
+                </article>
+
+            </section>
+
+
+            <!-- =================================================
+                 Main Dashboard Grid
+            ================================================== -->
+
+            <section class="dashboard-content-grid page-section">
+
+                <!-- Quick Actions -->
+
+                <article class="card quick-actions-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>Quick actions</h3>
+
+                            <p>
+                                Access your most-used tools.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-action-list">
+
+                        <a
+                            href="/attendance.html"
+                            class="quick-action-item"
+                        >
+
+                            <span class="quick-action-icon">
+                                ◷
+                            </span>
+
+                            <div>
+                                <strong>Attendance</strong>
+
+                                <p>
+                                    Clock in, clock out and view
+                                    your work history.
+                                </p>
+                            </div>
+
+                            <span class="quick-action-arrow">
+                                →
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="/leave.html"
+                            class="quick-action-item"
+                        >
+
+                            <span class="quick-action-icon">
+                                ▣
+                            </span>
+
+                            <div>
+                                <strong>Request leave</strong>
+
+                                <p>
+                                    Submit and manage your personal
+                                    leave requests.
+                                </p>
+                            </div>
+
+                            <span class="quick-action-arrow">
+                                →
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="/onboarding.html"
+                            class="quick-action-item"
+                        >
+
+                            <span class="quick-action-icon">
+                                ✓
+                            </span>
+
+                            <div>
+                                <strong>Onboarding tasks</strong>
+
+                                <p>
+                                    Complete your assigned setup
+                                    activities.
+                                </p>
+                            </div>
+
+                            <span class="quick-action-arrow">
+                                →
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="/okrs.html"
+                            class="quick-action-item"
+                        >
+
+                            <span class="quick-action-icon">
+                                ◎
+                            </span>
+
+                            <div>
+                                <strong>Manage OKRs</strong>
+
+                                <p>
+                                    Create objectives and update
+                                    measurable progress.
+                                </p>
+                            </div>
+
+                            <span class="quick-action-arrow">
+                                →
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+                <!-- Onboarding Progress -->
+
+                <article class="card onboarding-summary-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>My onboarding</h3>
+
+                            <p>
+                                Personal setup progress
+                            </p>
+                        </div>
+
+                        <strong
+                            id="onboardingCardPercentage"
+                            class="card-percentage"
+                        >
+                            0%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="card-body">
+
+                        <div class="large-progress-wrapper">
+
+                            <div class="large-progress-heading">
+
+                                <span>Overall completion</span>
+
+                                <strong
+                                    id="onboardingCardTaskCount"
+                                >
+                                    0 / 0
+                                </strong>
+
+                            </div>
+
+                            <div class="progress-track large-progress-track">
+
+                                <div
+                                    id="onboardingCardProgressBar"
+                                    class="progress-bar"
+                                    style="width: 0%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="onboarding-message">
+
+                            <span class="onboarding-message-icon">
+                                ✓
+                            </span>
+
+                            <div>
+                                <strong>
+                                    Complete your checklist
+                                </strong>
+
+                                <p>
+                                    Finish all required tasks to
+                                    complete your remote-work setup.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="/onboarding.html"
+                            class="btn btn-outline full-width-button"
+                        >
+                            View Onboarding Tasks
+                        </a>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <!-- =================================================
+                 Recent Activity
+            ================================================== -->
+
+            <section class="card recent-activity-card page-section">
+
+                <div class="card-header">
+
+                    <div>
+                        <h3>Recent attendance</h3>
+
+                        <p>
+                            Your latest work-session records.
+                        </p>
+                    </div>
+
+                    <a
+                        href="/attendance.html"
+                        class="view-all-link"
+                    >
+                        View all
+                    </a>
+
+                </div>
+
+
+                <div class="table-wrapper recent-table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Date</th>
+                                <th>Clock In</th>
+                                <th>Clock Out</th>
+                                <th>Total Time</th>
+                                <th>Status</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="recentAttendanceTableBody">
+
+                            <tr>
+
+                                <td colspan="5">
+
+                                    <div class="empty-state">
+
+                                        <strong>
+                                            No attendance records
+                                        </strong>
+
+                                        <span>
+                                            Your recent attendance
+                                            will appear here.
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- Mobile Sidebar Overlay -->
+
+    <div
+        id="sidebarOverlay"
+        class="sidebar-overlay hidden"
+    ></div>
+
+
+    <!-- Toast Notification -->
+
+    <div
+        id="toast"
+        class="toast"
+        role="alert"
+        aria-live="polite"
+    ></div>
+
+
+    <script type="module" src="/js/dashboard.js"></script>
+
+</body>
+</html>

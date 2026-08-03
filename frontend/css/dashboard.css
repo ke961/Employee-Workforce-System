@@ -1,0 +1,597 @@
+/* =========================================================
+   Sidebar User Profile
+========================================================= */
+
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-top: 20px;
+    padding: 14px 10px;
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-user-avatar {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(45, 212, 191, 0.18);
+    color: #5eead4;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.sidebar-user-details {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-user-details strong {
+    overflow: hidden;
+    color: #ffffff;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sidebar-user-details span {
+    margin-top: 2px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   Topbar
+========================================================= */
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.topbar-eyebrow {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+}
+
+.mobile-menu-button {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   Dashboard Hero
+========================================================= */
+
+.dashboard-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.6fr);
+    gap: 26px;
+    margin-bottom: 24px;
+    padding: 34px;
+    overflow: hidden;
+    border-radius: var(--radius-large);
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(45, 212, 191, 0.22),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #0f172a 0%,
+            #172554 55%,
+            #0f766e 140%
+        );
+    color: #ffffff;
+    box-shadow: var(--shadow-medium);
+}
+
+.dashboard-hero::before {
+    content: "";
+    position: absolute;
+    right: -90px;
+    bottom: -120px;
+    width: 320px;
+    height: 320px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+}
+
+.dashboard-hero-content,
+.work-status-card {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-label {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: #5eead4;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+}
+
+.dashboard-hero-content h2 {
+    max-width: 680px;
+    margin-bottom: 13px;
+    font-size: clamp(30px, 4vw, 46px);
+    line-height: 1.12;
+    letter-spacing: -1.2px;
+}
+
+.dashboard-hero-content p {
+    max-width: 660px;
+    color: #cbd5e1;
+    font-size: 15px;
+    line-height: 1.75;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.hero-secondary-button {
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+.hero-secondary-button:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+
+/* =========================================================
+   Work Status Card
+========================================================= */
+
+.work-status-card {
+    align-self: center;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+}
+
+.work-status-label {
+    display: block;
+    margin-bottom: 14px;
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+
+.work-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.work-status-indicator strong {
+    font-size: 18px;
+}
+
+.status-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #f59e0b;
+    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.15);
+}
+
+.status-dot.active {
+    background: #22c55e;
+    box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.15);
+}
+
+.work-status-card p {
+    margin: 10px 0 18px;
+    color: #cbd5e1;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.dashboard-clock-button {
+    width: 100%;
+}
+
+
+/* =========================================================
+   Dashboard Statistics
+========================================================= */
+
+.stat-card {
+    min-height: 175px;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+}
+
+.stat-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.stat-card-top .stat-label {
+    margin: 0;
+    text-align: right;
+}
+
+.stat-icon {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.stat-icon-blue {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.stat-icon-green {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.stat-icon-orange {
+    background: #ffedd5;
+    color: #c2410c;
+}
+
+.stat-icon-purple {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.stat-progress {
+    margin-top: 15px;
+}
+
+
+/* =========================================================
+   Dashboard Main Content
+========================================================= */
+
+.dashboard-content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+    gap: 20px;
+}
+
+.quick-actions-card,
+.onboarding-summary-card {
+    min-height: 100%;
+}
+
+
+/* =========================================================
+   Quick Actions
+========================================================= */
+
+.quick-action-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    padding: 20px;
+}
+
+.quick-action-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 42px 1fr 20px;
+    gap: 13px;
+    align-items: center;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: var(--surface-soft);
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.quick-action-item:hover {
+    border-color: var(--primary);
+    background: #f0fdfa;
+    transform: translateY(-2px);
+}
+
+.quick-action-icon {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 800;
+}
+
+.quick-action-item strong {
+    color: var(--text);
+    font-size: 14px;
+}
+
+.quick-action-item p {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.quick-action-arrow {
+    color: var(--primary);
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   Onboarding Summary
+========================================================= */
+
+.card-percentage {
+    color: var(--primary);
+    font-size: 23px;
+}
+
+.large-progress-wrapper {
+    margin-bottom: 24px;
+}
+
+.large-progress-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 11px;
+}
+
+.large-progress-heading span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.large-progress-heading strong {
+    color: var(--text);
+    font-size: 13px;
+}
+
+.large-progress-track {
+    height: 12px;
+}
+
+.onboarding-message {
+    display: flex;
+    gap: 13px;
+    margin-bottom: 22px;
+    padding: 15px;
+    border-radius: 11px;
+    background: #f0fdfa;
+}
+
+.onboarding-message-icon {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 800;
+}
+
+.onboarding-message strong {
+    color: var(--text);
+    font-size: 13px;
+}
+
+.onboarding-message p {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.full-width-button {
+    width: 100%;
+}
+
+
+/* =========================================================
+   Recent Attendance
+========================================================= */
+
+.recent-activity-card {
+    overflow: hidden;
+}
+
+.view-all-link {
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.view-all-link:hover {
+    color: var(--primary-dark);
+}
+
+.recent-table-wrapper {
+    border: none;
+    border-radius: 0;
+}
+
+
+/* =========================================================
+   Sidebar Overlay
+========================================================= */
+
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+}
+
+
+/* =========================================================
+   Loading Skeleton
+========================================================= */
+
+.loading-block {
+    position: relative;
+    overflow: hidden;
+    border-radius: 7px;
+    background: #e2e8f0;
+}
+
+.loading-block::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.65),
+            transparent
+        );
+    animation: loadingShimmer 1.3s infinite;
+}
+
+@keyframes loadingShimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+
+/* =========================================================
+   Responsive Dashboard
+========================================================= */
+
+@media (max-width: 1120px) {
+    .dashboard-hero {
+        grid-template-columns: 1fr 320px;
+    }
+
+    .dashboard-content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+    .dashboard-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .work-status-card {
+        max-width: 440px;
+    }
+
+    .quick-action-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 680px) {
+    .mobile-menu-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        width: 260px;
+        height: 100vh;
+        transition: left 0.25s ease;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .topbar {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .admin-profile-text {
+        display: none;
+    }
+
+    .dashboard-hero {
+        padding: 25px 20px;
+    }
+
+    .dashboard-hero-content h2 {
+        font-size: 31px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+    }
+
+    .quick-action-list {
+        padding: 16px;
+    }
+
+    .quick-action-item {
+        grid-template-columns: 40px 1fr;
+    }
+
+    .quick-action-arrow {
+        display: none;
+    }
+}

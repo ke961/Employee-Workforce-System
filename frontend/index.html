@@ -1,0 +1,799 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EMS — Remote Team & Employee Management Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <main id="loginView" class="login-shell">
+    <section class="login-visual">
+      <div class="brand-lockup">
+        <span class="brand-mark">E</span>
+        <span>EMS</span>
+      </div>
+      <div>
+        <p class="eyebrow">REMOTE WORK, SIMPLIFIED</p>
+        <h1>One workspace for people, time, leave and goals.</h1>
+        <p class="login-copy">
+          A role-based employee management prototype for remote and hybrid teams.
+        </p>
+      </div>
+      <div class="visual-stats">
+        <div><strong>3</strong><span>Role-based workspaces</span></div>
+        <div><strong>5</strong><span>Core workforce modules</span></div>
+        <div><strong>100%</strong><span>Browser-based prototype</span></div>
+      </div>
+    </section>
+
+    <section class="login-panel">
+      <form id="loginForm" class="login-card">
+        <div class="mobile-brand">
+          <span class="brand-mark">E</span><span>EMS</span>
+        </div>
+        <p class="eyebrow">WELCOME BACK</p>
+        <h2>Sign in to your workspace</h2>
+        <p class="muted">Use one of the seeded demo accounts below.</p>
+
+        <label>
+          Email
+          <input id="loginEmail" type="email" value="employee@ems.local" autocomplete="email" required />
+        </label>
+        <label>
+          Password
+          <input id="loginPassword" type="password" value="Employee123!" autocomplete="current-password" required />
+        </label>
+        <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+
+        <div class="demo-accounts">
+          <button type="button" data-email="employee@ems.local" data-password="Employee123!">
+            <span>Employee</span><small>employee@ems.local</small>
+          </button>
+          <button type="button" data-email="manager@ems.local" data-password="Manager123!">
+            <span>Manager</span><small>manager@ems.local</small>
+          </button>
+          <button type="button" data-email="admin@ems.local" data-password="Admin123!">
+            <span>Admin</span><small>admin@ems.local</small>
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <div id="appView" class="app-shell hidden">
+    <aside id="sidebar" class="sidebar">
+      <div class="brand-lockup sidebar-brand">
+        <span class="brand-mark">E</span>
+        <span>EMS</span>
+      </div>
+
+      <nav id="navMenu" class="nav-menu">
+        <button class="nav-item active" data-page="dashboard">
+          <span class="icon">⌂</span><span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-page="attendance">
+          <span class="icon">◷</span><span>Attendance</span>
+        </button>
+        <button class="nav-item" data-page="leave">
+          <span class="icon">□</span><span>Leave</span>
+        </button>
+        <button class="nav-item" data-page="onboarding">
+          <span class="icon">✓</span><span>Onboarding</span>
+        </button>
+        <button class="nav-item" data-page="okrs">
+          <span class="icon">◎</span><span>OKRs</span>
+        </button>
+        <button class="nav-item manager-admin-only" data-page="team">
+          <span class="icon">◉</span><span>Team</span>
+        </button>
+        <button class="nav-item admin-only" data-page="audit">
+          <span class="icon">≡</span><span>Audit log</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <div id="sidebarAvatar" class="avatar">U</div>
+          <div>
+            <strong id="sidebarName">User</strong>
+            <small id="sidebarRole">Role</small>
+          </div>
+        </div>
+        <button id="logoutBtn" class="logout-btn" type="button">Sign out</button>
+      </div>
+    </aside>
+
+    <section class="content-area">
+      <header class="topbar">
+        <button id="menuToggle" class="menu-toggle" type="button">☰</button>
+        <div>
+          <p id="pageEyebrow" class="eyebrow">WORKSPACE</p>
+          <h2 id="pageTitle">Dashboard</h2>
+        </div>
+        <div class="topbar-actions">
+          <span id="todayDate" class="date-pill"></span>
+          <div id="topAvatar" class="avatar">U</div>
+        </div>
+      </header>
+
+      <div id="pageContainer" class="page-container"></div>
+    </section>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Employee Workforce System</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Login Page -->
+    <section id="loginPage" class="page">
+
+        <div class="login-card">
+
+            <div class="brand">
+                <h1>Employee Workforce System</h1>
+                <p>Single Admin Management Portal</p>
+            </div>
+
+            <form id="loginForm">
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        value="admin@gmail.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        value="Admin123"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="primary-button">
+                    Login
+                </button>
+
+                <p id="loginMessage" class="message"></p>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- Dashboard Page -->
+    <section id="dashboardPage" class="dashboard-page hidden">
+
+        <aside class="sidebar">
+
+            <div class="sidebar-brand">
+                <h2>EMS</h2>
+                <p>Admin Portal</p>
+            </div>
+
+            <nav class="sidebar-menu">
+
+                <button
+                    class="menu-item active"
+                    data-section="dashboardSection"
+                >
+                    Dashboard
+                </button>
+
+                <button
+                    class="menu-item"
+                    data-section="attendanceSection"
+                >
+                    Attendance
+                </button>
+
+                <button
+                    class="menu-item"
+                    data-section="leaveSection"
+                >
+                    Leave
+                </button>
+
+                <button
+                    class="menu-item"
+                    data-section="onboardingSection"
+                >
+                    Onboarding
+                </button>
+
+                <button
+                    class="menu-item"
+                    data-section="okrSection"
+                >
+                    OKRs
+                </button>
+
+                <button
+                    class="menu-item"
+                    data-section="profileSection"
+                >
+                    Profile
+                </button>
+
+            </nav>
+
+            <button id="logoutButton" class="logout-button">
+                Logout
+            </button>
+
+        </aside>
+
+
+        <main class="main-content">
+
+            <header class="top-header">
+
+                <div>
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p>Remote Team and Employee Management Hub</p>
+                </div>
+
+                <div class="admin-summary">
+                    <strong id="headerAdminName">
+                        System Administrator
+                    </strong>
+
+                    <span id="headerAdminEmail">
+                        admin@gmail.com
+                    </span>
+                </div>
+
+            </header>
+
+
+            <!-- Dashboard Section -->
+            <section
+                id="dashboardSection"
+                class="content-section"
+            >
+
+                <div class="welcome-card">
+                    <h2>
+                        Welcome,
+                        <span id="welcomeAdminName">
+                            Administrator
+                        </span>
+                    </h2>
+
+                    <p>
+                        View your attendance, leave, onboarding
+                        and OKR progress.
+                    </p>
+                </div>
+
+
+                <div class="dashboard-grid">
+
+                    <article class="summary-card">
+                        <h3>Attendance</h3>
+                        <p id="dashboardAttendanceStatus">
+                            Not clocked in
+                        </p>
+                        <span id="dashboardWorkTime">
+                            0 minutes worked
+                        </span>
+                    </article>
+
+                    <article class="summary-card">
+                        <h3>Leave Balance</h3>
+                        <p id="dashboardLeaveBalance">20 days</p>
+                        <span id="dashboardPendingLeave">
+                            0 pending requests
+                        </span>
+                    </article>
+
+                    <article class="summary-card">
+                        <h3>Onboarding</h3>
+                        <p id="dashboardOnboardingProgress">0%</p>
+                        <span id="dashboardOnboardingTasks">
+                            0 of 0 tasks completed
+                        </span>
+                    </article>
+
+                    <article class="summary-card">
+                        <h3>OKR Progress</h3>
+                        <p id="dashboardOkrProgress">0%</p>
+                        <span id="dashboardOkrCount">
+                            0 active OKRs
+                        </span>
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- Attendance Section -->
+            <section
+                id="attendanceSection"
+                class="content-section hidden"
+            >
+
+                <div class="section-card">
+
+                    <div class="section-heading">
+                        <div>
+                            <h2>Attendance</h2>
+                            <p>Record your daily working time.</p>
+                        </div>
+
+                        <div class="attendance-actions">
+
+                            <button
+                                id="clockInButton"
+                                class="primary-button"
+                            >
+                                Clock In
+                            </button>
+
+                            <button
+                                id="clockOutButton"
+                                class="secondary-button"
+                                disabled
+                            >
+                                Clock Out
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <div class="status-box">
+                        <strong>Current status:</strong>
+                        <span id="attendanceStatus">
+                            Not clocked in
+                        </span>
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Clock In</th>
+                                    <th>Clock Out</th>
+                                    <th>Total Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="attendanceTableBody">
+                                <tr>
+                                    <td colspan="5">
+                                        No attendance records found.
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Leave Section -->
+            <section
+                id="leaveSection"
+                class="content-section hidden"
+            >
+
+                <div class="section-card">
+
+                    <div class="section-heading">
+                        <div>
+                            <h2>Leave Requests</h2>
+                            <p>
+                                Create and manage your leave requests.
+                            </p>
+                        </div>
+                    </div>
+
+                    <form id="leaveForm" class="data-form">
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+                                <label for="leaveType">
+                                    Leave Type
+                                </label>
+
+                                <select id="leaveType" required>
+                                    <option value="annual">
+                                        Annual Leave
+                                    </option>
+
+                                    <option value="sick">
+                                        Sick Leave
+                                    </option>
+
+                                    <option value="casual">
+                                        Casual Leave
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="leaveStartDate">
+                                    Start Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="leaveStartDate"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="leaveEndDate">
+                                    End Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="leaveEndDate"
+                                    required
+                                >
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="leaveReason">Reason</label>
+
+                            <textarea
+                                id="leaveReason"
+                                rows="3"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="primary-button">
+                            Submit Leave Request
+                        </button>
+
+                    </form>
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Days</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="leaveTableBody">
+                                <tr>
+                                    <td colspan="6">
+                                        No leave requests found.
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Onboarding Section -->
+            <section
+                id="onboardingSection"
+                class="content-section hidden"
+            >
+
+                <div class="section-card">
+
+                    <div class="section-heading">
+                        <div>
+                            <h2>Onboarding Tasks</h2>
+                            <p>
+                                Track your onboarding activities.
+                            </p>
+                        </div>
+
+                        <button
+                            id="createDefaultTasksButton"
+                            class="secondary-button"
+                        >
+                            Create Default Tasks
+                        </button>
+                    </div>
+
+                    <form id="onboardingForm" class="data-form">
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+                                <label for="taskTitle">
+                                    Task Title
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="taskTitle"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="taskDueDate">
+                                    Due Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="taskDueDate"
+                                >
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="taskDescription">
+                                Description
+                            </label>
+
+                            <textarea
+                                id="taskDescription"
+                                rows="3"
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="primary-button">
+                            Add Task
+                        </button>
+
+                    </form>
+
+                    <div id="onboardingTaskList" class="task-list">
+                        <p>No onboarding tasks found.</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- OKR Section -->
+            <section
+                id="okrSection"
+                class="content-section hidden"
+            >
+
+                <div class="section-card">
+
+                    <div class="section-heading">
+                        <div>
+                            <h2>Objectives and Key Results</h2>
+                            <p>Manage your personal goals.</p>
+                        </div>
+                    </div>
+
+                    <form id="okrForm" class="data-form">
+
+                        <div class="form-group">
+                            <label for="okrObjective">
+                                Objective
+                            </label>
+
+                            <input
+                                type="text"
+                                id="okrObjective"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="okrKeyResult">
+                                Key Result
+                            </label>
+
+                            <textarea
+                                id="okrKeyResult"
+                                rows="3"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+                                <label for="okrQuarter">
+                                    Quarter
+                                </label>
+
+                                <select id="okrQuarter">
+                                    <option value="Q1">Q1</option>
+                                    <option value="Q2">Q2</option>
+                                    <option value="Q3">Q3</option>
+                                    <option value="Q4">Q4</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="okrProgress">
+                                    Progress
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="okrProgress"
+                                    value="0"
+                                    min="0"
+                                    max="100"
+                                >
+                            </div>
+
+                        </div>
+
+                        <button type="submit" class="primary-button">
+                            Add OKR
+                        </button>
+
+                    </form>
+
+                    <div id="okrList" class="okr-list">
+                        <p>No OKRs found.</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Profile Section -->
+            <section
+                id="profileSection"
+                class="content-section hidden"
+            >
+
+                <div class="section-card">
+
+                    <div class="section-heading">
+                        <div>
+                            <h2>Admin Profile</h2>
+                            <p>Update your account information.</p>
+                        </div>
+                    </div>
+
+                    <form id="profileForm" class="data-form">
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+                                <label for="profileName">
+                                    Full Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="profileName"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profileEmail">
+                                    Email
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="profileEmail"
+                                    required
+                                >
+                            </div>
+
+                        </div>
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+                                <label for="profileJobTitle">
+                                    Job Title
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="profileJobTitle"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profileDepartment">
+                                    Department
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="profileDepartment"
+                                >
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="profilePhone">
+                                Phone
+                            </label>
+
+                            <input
+                                type="text"
+                                id="profilePhone"
+                            >
+                        </div>
+
+                        <button type="submit" class="primary-button">
+                            Update Profile
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </section>
+
+
+    
+
+</body>
+</html>

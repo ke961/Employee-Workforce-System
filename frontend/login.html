@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Admin login for Employee Workforce System"
+    >
+
+    <title>Login | Employee Workforce System</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <!-- Left Information Section -->
+        <section class="login-information">
+
+            <div class="brand-area">
+
+                <a href="/login.html" class="brand-logo">
+                    <span class="brand-icon">E</span>
+
+                    <span class="brand-text">
+                        <strong>Employee Workforce</strong>
+                        <small>Management System</small>
+                    </span>
+                </a>
+
+            </div>
+
+            <div class="information-content">
+
+                <span class="page-label">
+                    REMOTE WORKSPACE
+                </span>
+
+                <h1>
+                    Manage your workday from one secure dashboard.
+                </h1>
+
+                <p>
+                    Track attendance, submit leave requests,
+                    complete onboarding tasks and manage personal
+                    objectives in one place.
+                </p>
+
+                <div class="feature-list">
+
+                    <div class="feature-item">
+                        <span class="feature-number">01</span>
+
+                        <div>
+                            <strong>Attendance Tracking</strong>
+                            <p>Clock in, clock out and review work history.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <span class="feature-number">02</span>
+
+                        <div>
+                            <strong>Leave Management</strong>
+                            <p>Create and monitor personal leave requests.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <span class="feature-number">03</span>
+
+                        <div>
+                            <strong>Goals and Onboarding</strong>
+                            <p>Track onboarding progress and personal OKRs.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <footer class="login-footer">
+                <span>Employee Workforce System</span>
+                <span>Single Admin Prototype</span>
+            </footer>
+
+        </section>
+
+
+        <!-- Login Form Section -->
+        <section class="login-form-section">
+
+            <div class="login-card">
+
+                <div class="mobile-brand">
+
+                    <span class="brand-icon">E</span>
+
+                    <div>
+                        <strong>Employee Workforce</strong>
+                        <small>Management System</small>
+                    </div>
+
+                </div>
+
+                <div class="login-heading">
+
+                    <span class="welcome-label">
+                        ADMIN ACCESS
+                    </span>
+
+                    <h2>Welcome back</h2>
+
+                    <p>
+                        Sign in using your administrator account.
+                    </p>
+
+                </div>
+
+                <form id="loginForm" novalidate>
+
+                    <div class="form-group">
+
+                        <label for="loginEmail">
+                            Email address
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon" aria-hidden="true">
+                                @
+                            </span>
+
+                            <input
+                                type="email"
+                                id="loginEmail"
+                                name="email"
+                                value="admin@gmail.com"
+                                placeholder="Enter your email"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+                        <small
+                            id="emailError"
+                            class="field-error"
+                        ></small>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="loginPassword">
+                            Password
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon" aria-hidden="true">
+                                ●
+                            </span>
+
+                            <input
+                                type="password"
+                                id="loginPassword"
+                                name="password"
+                                value="Admin123"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                minlength="6"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                id="togglePasswordButton"
+                                class="password-toggle"
+                                aria-label="Show password"
+                            >
+                                Show
+                            </button>
+
+                        </div>
+
+                        <small
+                            id="passwordError"
+                            class="field-error"
+                        ></small>
+
+                    </div>
+
+
+                    <div class="login-options">
+
+                        <label class="remember-option">
+
+                            <input
+                                type="checkbox"
+                                id="rememberEmail"
+                                checked
+                            >
+
+                            <span>Remember email</span>
+
+                        </label>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        id="loginButton"
+                        class="login-button"
+                    >
+                        <span id="loginButtonText">
+                            Sign in
+                        </span>
+
+                        <span
+                            id="loginSpinner"
+                            class="button-spinner hidden"
+                            aria-hidden="true"
+                        ></span>
+                    </button>
+
+
+                    <div
+                        id="loginMessage"
+                        class="login-message hidden"
+                        role="alert"
+                        aria-live="polite"
+                    ></div>
+
+                </form>
+
+
+                <div class="demo-account">
+
+                    <span>Demo administrator</span>
+
+                    <div class="demo-details">
+                        <code>admin@gmail.com</code>
+                        <code>Admin123</code>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <p class="security-note">
+                Secure access protected by JWT authentication.
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <script type="module" src="/js/login.js"></script>
+
+</body>
+</html>
