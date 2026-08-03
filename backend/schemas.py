@@ -717,6 +717,9 @@ class AdminResponse(ORMBaseModel):
     id: int
     full_name: str
     email: EmailStr
+    job_title: Optional[str] = "Administrator"
+    department: Optional[str] = "Administration"
+    leave_balance: int = 20
     phone: Optional[str] = None
     profile_image: Optional[str] = None
     is_active: bool

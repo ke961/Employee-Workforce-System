@@ -780,45 +780,79 @@ def create_default_admin() -> None:
     database = SessionLocal()
 
     try:
-        existing_admin = database.query(Admin).first()
+        default_accounts = [
+            {
+                "full_name": "System Administrator",
+                "email": "admin@ems.local",
+                "password": "Admin123!",
+                "job_title": "Administrator",
+                "department": "Administration",
+            },
+            {
+                "full_name": "System Administrator",
+                "email": "admin@gmail.com",
+                "password": "Admin123",
+                "job_title": "Administrator",
+                "department": "Administration",
+            },
+            {
+                "full_name": "Sarah Connor (Employee)",
+                "email": "employee@gmail.com",
+                "password": "Employee123",
+                "job_title": "Frontend Developer",
+                "department": "Engineering",
+            },
+            {
+                "full_name": "Engineering Manager",
+                "email": "manager@ems.local",
+                "password": "Manager123!",
+                "job_title": "Engineering Manager",
+                "department": "Engineering",
+            },
+            {
+                "full_name": "Michael Scott (Manager)",
+                "email": "manager@gmail.com",
+                "password": "Manager123",
+                "job_title": "Regional Manager",
+                "department": "Operations",
+            },
+            {
+                "full_name": "Alex Rivera (Employee)",
+                "email": "employee@ems.local",
+                "password": "Employee123!",
+                "job_title": "Software Engineer",
+                "department": "Development",
+            },
+            {
+                "full_name": "HR Operations Specialist",
+                "email": "hr@gmail.com",
+                "password": "HR123!",
+                "job_title": "HR Manager",
+                "department": "People Operations",
+            },
+        ]
 
-        if existing_admin:
-            return
+        for acc in default_accounts:
+            existing = database.query(Admin).filter(Admin.email == acc["email"]).first()
+            if not existing:
+                user = Admin(
+                    full_name=acc["full_name"],
+                    email=acc["email"],
+                    password_hash=hash_password(acc["password"]),
+                    job_title=acc["job_title"],
+                    department=acc["department"],
+                    phone=None,
+                    leave_balance=20,
+                    is_active=True,
+                )
+                database.add(user)
 
-        admin_name = os.getenv(
-            "EMS_ADMIN_NAME",
-            "System Administrator",
-        )
-
-        admin_email = os.getenv(
-            "EMS_ADMIN_EMAIL",
-            "admin@gmail.com",
-        ).strip().lower()
-
-        admin_password = os.getenv(
-            "EMS_ADMIN_PASSWORD",
-            "Admin123",
-        )
-
-        admin = Admin(
-            full_name=admin_name,
-            email=admin_email,
-            password_hash=hash_password(admin_password),
-            job_title="Administrator",
-            department="Administration",
-            phone=None,
-            leave_balance=20,
-            is_active=True,
-        )
-
-        database.add(admin)
         database.commit()
-        database.refresh(admin)
 
         print("=" * 55)
-        print("Default Admin account created successfully")
-        print(f"Email: {admin_email}")
-        print(f"Password: {admin_password}")
+        print("Default accounts created successfully:")
+        for acc in default_accounts:
+            print(f"- {acc['job_title']}: {acc['email']} / {acc['password']}")
         print("=" * 55)
 
     except Exception:
@@ -873,6 +907,8 @@ app.add_middleware(
         "http://localhost:5500",
         "http://127.0.0.1:8000",
         "http://localhost:8000",
+        "http://127.0.0.1:5173",
+        "http://localhost:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
