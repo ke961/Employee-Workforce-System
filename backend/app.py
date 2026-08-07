@@ -765,7 +765,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from auth import hash_password
 from database import Base, SessionLocal, engine
 from models import Admin
-from routers import attendance, dashboard, leave, login, onboarding, okrs
+from routers import (
+    announcements,
+    attendance,
+    dashboard,
+    expenses,
+    leave,
+    login,
+    okrs,
+    onboarding,
+    tasks,
+)
 
 
 # =========================================================
@@ -954,6 +964,24 @@ app.include_router(
     okrs.router,
     prefix="/api/okrs",
     tags=["OKRs"],
+)
+
+app.include_router(
+    tasks.router,
+    prefix="/api/tasks",
+    tags=["Tasks"],
+)
+
+app.include_router(
+    announcements.router,
+    prefix="/api/announcements",
+    tags=["Announcements"],
+)
+
+app.include_router(
+    expenses.router,
+    prefix="/api/expenses",
+    tags=["Payroll & Expenses"],
 )
 
 

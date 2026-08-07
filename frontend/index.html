@@ -81,6 +81,15 @@
                 <button class="nav-item menu-item" data-section="okrSection">
                     <span class="icon">◎</span><span>OKRs</span>
                 </button>
+                <button class="nav-item menu-item" data-section="tasksSection">
+                    <span class="icon">📋</span><span>Tasks & Projects</span>
+                </button>
+                <button class="nav-item menu-item" data-section="announcementsSection">
+                    <span class="icon">📢</span><span>Announcements</span>
+                </button>
+                <button class="nav-item menu-item" data-section="payrollSection">
+                    <span class="icon">💳</span><span>Payroll & Expenses</span>
+                </button>
                 <button class="nav-item menu-item" data-section="profileSection">
                     <span class="icon">👤</span><span>Profile</span>
                 </button>
@@ -143,6 +152,18 @@
                             <span class="stat-label">OKR PROGRESS</span>
                             <span id="dashboardOkrProgress" class="stat-value">0%</span>
                             <span id="dashboardOkrCount" class="stat-note">0 active OKRs</span>
+                        </article>
+
+                        <article class="card stat-card">
+                            <span class="stat-label">ACTIVE TASKS</span>
+                            <span id="dashboardTaskCount" class="stat-value">0</span>
+                            <span id="dashboardTaskNote" class="stat-note">0 tasks pending</span>
+                        </article>
+
+                        <article class="card stat-card">
+                            <span class="stat-label">EXPENSE CLAIMS</span>
+                            <span id="dashboardExpenseCount" class="stat-value">$0</span>
+                            <span id="dashboardExpenseNote" class="stat-note">0 pending claims</span>
                         </article>
                     </div>
                 </section>
@@ -358,6 +379,185 @@
                             </div>
                             <button class="btn btn-primary" type="submit" style="margin-top: 20px;">Update Profile</button>
                         </form>
+                    </div>
+                </section>
+
+                <!-- Tasks & Projects Section -->
+                <section id="tasksSection" class="content-section hidden">
+                    <div class="page-header">
+                        <div>
+                            <h1>Tasks & Project Board</h1>
+                            <p>Track team tasks, assign priorities, and manage project progress.</p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 24px; margin-bottom: 24px;">
+                        <h3 style="margin-bottom: 16px;">Create New Task</h3>
+                        <form id="taskForm" class="form-grid">
+                            <div class="full">
+                                <label for="taskTitle">Task Title</label>
+                                <input id="taskTitle" type="text" placeholder="e.g. Update user authentication module" required />
+                            </div>
+                            <div class="full">
+                                <label for="taskDescription">Description</label>
+                                <input id="taskDescription" type="text" placeholder="Task overview and instructions..." />
+                            </div>
+                            <div>
+                                <label for="taskPriority">Priority Level</label>
+                                <select id="taskPriority">
+                                    <option value="low">Low Priority</option>
+                                    <option value="medium" selected>Medium Priority</option>
+                                    <option value="high">High Priority</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="taskDueDate">Due Date</label>
+                                <input id="taskDueDate" type="date" />
+                            </div>
+                            <div class="full">
+                                <button class="btn btn-primary" type="submit">Add Task</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-bottom: 20px;" id="taskFilterTabs">
+                        <button class="filter-chip active" data-filter="all">All Tasks</button>
+                        <button class="filter-chip" data-filter="todo">To Do</button>
+                        <button class="filter-chip" data-filter="in_progress">In Progress</button>
+                        <button class="filter-chip" data-filter="review">In Review</button>
+                        <button class="filter-chip" data-filter="completed">Completed</button>
+                    </div>
+
+                    <div id="taskList" class="task-grid">
+                        <div class="empty">No tasks found.</div>
+                    </div>
+                </section>
+
+                <!-- Announcements Section -->
+                <section id="announcementsSection" class="content-section hidden">
+                    <div class="page-header">
+                        <div>
+                            <h1>Company Bulletin & Announcements</h1>
+                            <p>Stay up to date with company news, policy updates, and events.</p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 24px; margin-bottom: 24px;">
+                        <h3 style="margin-bottom: 16px;">Post Announcement</h3>
+                        <form id="announcementForm" style="display: flex; flex-direction: column; gap: 14px;">
+                            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px;">
+                                <input id="announcementTitle" type="text" placeholder="Announcement Headline" required />
+                                <select id="announcementCategory">
+                                    <option value="General">General</option>
+                                    <option value="Policy">Policy Update</option>
+                                    <option value="IT">IT & Tech</option>
+                                    <option value="Event">Team Event</option>
+                                </select>
+                                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                                    <input id="announcementPinned" type="checkbox" style="width: auto;" /> Pin Notice
+                                </label>
+                            </div>
+                            <textarea id="announcementContent" rows="3" placeholder="Enter announcement body text..." required style="padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: inherit; resize: vertical;"></textarea>
+                            <button class="btn btn-primary" type="submit" style="align-self: flex-start;">Publish Announcement</button>
+                        </form>
+                    </div>
+
+                    <div id="announcementFeed" class="announcement-feed">
+                        <div class="empty">No announcements published yet.</div>
+                    </div>
+                </section>
+
+                <!-- Payroll & Expenses Section -->
+                <section id="payrollSection" class="content-section hidden">
+                    <div class="page-header">
+                        <div>
+                            <h1>Payroll & Expense Claims</h1>
+                            <p>View compensation details and submit reimbursement requests.</p>
+                        </div>
+                    </div>
+
+                    <div class="payroll-grid" style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px; margin-bottom: 24px;">
+                        <div class="card" style="padding: 24px;">
+                            <h3 style="margin-bottom: 16px;">Monthly Payslip Preview</h3>
+                            <div style="display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                                    <span style="color: var(--muted-color);">Base Salary</span>
+                                    <strong>$7,500.00</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                                    <span style="color: var(--muted-color);">Remote Housing Allowance</span>
+                                    <strong style="color: var(--success-color);">+$500.00</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                                    <span style="color: var(--muted-color);">Tax Deductions (Estimated)</span>
+                                    <strong style="color: var(--danger-color);">-$1,250.00</strong>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800;">
+                                <span>Estimated Net Salary</span>
+                                <span style="color: var(--brand-accent); font-size: 20px;">$6,750.00</span>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 24px;">
+                            <h3 style="margin-bottom: 16px;">Submit Expense Reimbursement</h3>
+                            <form id="expenseForm" class="form-grid">
+                                <div>
+                                    <label for="expenseCategory">Expense Category</label>
+                                    <select id="expenseCategory">
+                                        <option value="Travel">Travel & Transportation</option>
+                                        <option value="Equipment">Hardware & Equipment</option>
+                                        <option value="Software">Software & Licenses</option>
+                                        <option value="Meals">Client Meals & Dining</option>
+                                        <option value="General" selected>Other / General</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="expenseAmount">Amount ($ USD)</label>
+                                    <input id="expenseAmount" type="number" min="1" step="1" placeholder="e.g. 150" required />
+                                </div>
+                                <div>
+                                    <label for="expenseMerchant">Merchant / Vendor</label>
+                                    <input id="expenseMerchant" type="text" placeholder="e.g. AWS / Delta Air" required />
+                                </div>
+                                <div>
+                                    <label for="expenseDate">Expense Date</label>
+                                    <input id="expenseDate" type="date" required />
+                                </div>
+                                <div class="full">
+                                    <label for="expenseDescription">Description / Business Purpose</label>
+                                    <input id="expenseDescription" type="text" placeholder="e.g. Monthly cloud server infrastructure cost" />
+                                </div>
+                                <div class="full">
+                                    <button class="btn btn-primary" type="submit">Submit Claim</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 24px;">
+                        <h3 style="margin-bottom: 16px;">Expense Reimbursement Claims History</h3>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Category</th>
+                                        <th>Merchant</th>
+                                        <th>Amount</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="expenseTableBody">
+                                    <tr>
+                                        <td colspan="7" class="empty">No expense claims submitted yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </section>
             </div>

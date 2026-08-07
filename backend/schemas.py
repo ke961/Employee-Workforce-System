@@ -1276,3 +1276,86 @@ class AdminDashboardResponse(BaseModel):
     employees_present_today: int
     incomplete_onboarding_tasks: int
     active_performance_goals: int
+
+
+# =========================================================
+# Task Schemas
+# =========================================================
+
+class TaskCreate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+    description: Optional[str] = None
+    priority: Literal["low", "medium", "high", "urgent"] = "medium"
+    status: Literal["todo", "in_progress", "review", "completed"] = "todo"
+    due_date: Optional[date] = None
+
+
+class TaskUpdate(BaseModel):
+    title: Optional[str] = Field(None, min_length=1, max_length=200)
+    description: Optional[str] = None
+    priority: Optional[Literal["low", "medium", "high", "urgent"]] = None
+    status: Optional[Literal["todo", "in_progress", "review", "completed"]] = None
+    due_date: Optional[date] = None
+
+
+class TaskResponse(ORMBaseModel):
+    id: int
+    admin_id: int
+    title: str
+    description: Optional[str] = None
+    priority: Literal["low", "medium", "high", "urgent"]
+    status: Literal["todo", "in_progress", "review", "completed"]
+    due_date: Optional[date] = None
+    created_at: datetime
+    updated_at: datetime
+
+
+# =========================================================
+# Announcement Schemas
+# =========================================================
+
+class AnnouncementCreate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+    content: str = Field(..., min_length=1)
+    category: str = Field("General", max_length=50)
+    is_pinned: bool = False
+    author: Optional[str] = "HR Operations"
+
+
+class AnnouncementResponse(ORMBaseModel):
+    id: int
+    title: str
+    content: str
+    category: str
+    is_pinned: bool
+    author: str
+    created_at: datetime
+
+
+# =========================================================
+# Expense Claim Schemas
+# =========================================================
+
+class ExpenseClaimCreate(BaseModel):
+    category: str = Field("General", max_length=50)
+    amount: int = Field(..., gt=0)
+    merchant: str = Field(..., min_length=1, max_length=150)
+    expense_date: date
+    description: Optional[str] = None
+
+
+class ExpenseClaimUpdate(BaseModel):
+    status: Literal["pending", "approved", "rejected"]
+
+
+class ExpenseClaimResponse(ORMBaseModel):
+    id: int
+    admin_id: int
+    category: str
+    amount: int
+    merchant: str
+    expense_date: date
+    description: Optional[str] = None
+    status: Literal["pending", "approved", "rejected"]
+    created_at: datetime
+    updated_at: datetime

@@ -706,6 +706,18 @@ class Admin(Base):
         cascade="all, delete-orphan",
     )
 
+    tasks = relationship(
+        "Task",
+        back_populates="admin",
+        cascade="all, delete-orphan",
+    )
+
+    expense_claims = relationship(
+        "ExpenseClaim",
+        back_populates="admin",
+        cascade="all, delete-orphan",
+    )
+
     __table_args__ = (
         CheckConstraint(
             "leave_balance >= 0",
@@ -1036,3 +1048,216 @@ class OKR(Base):
             name="check_okr_status",
         ),
     )
+
+
+# =========================================================
+# Task & Project Model
+# =========================================================
+
+class Task(Base):
+    __tablename__ = "tasks"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    admin_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    title = Column(
+        String(200),
+        nullable=False,
+    )
+
+    description = Column(
+        Text,
+        nullable=True,
+    )
+
+    priority = Column(
+        String(20),
+        nullable=False,
+        default="medium",
+    )
+
+    status = Column(
+        String(20),
+        nullable=False,
+        default="todo",
+    )
+
+    due_date = Column(
+        Date,
+        nullable=True,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+        onupdate=utc_now,
+    )
+
+    admin = relationship(
+        "Admin",
+        back_populates="tasks",
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "priority IN ('low', 'medium', 'high', 'urgent')",
+            name="check_task_priority",
+        ),
+        CheckConstraint(
+            "status IN ('todo', 'in_progress', 'review', 'completed')",
+            name="check_task_status",
+        ),
+    )
+
+
+# =========================================================
+# Company Announcement Model
+# =========================================================
+
+class Announcement(Base):
+    __tablename__ = "announcements"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    title = Column(
+        String(200),
+        nullable=False,
+    )
+
+    content = Column(
+        Text,
+        nullable=False,
+    )
+
+    category = Column(
+        String(50),
+        nullable=False,
+        default="General",
+    )
+
+    is_pinned = Column(
+        Boolean,
+        nullable=False,
+        default=False,
+    )
+
+    author = Column(
+        String(100),
+        nullable=False,
+        default="HR Operations",
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+
+# =========================================================
+# Expense Claim Model
+# =========================================================
+
+class ExpenseClaim(Base):
+    __tablename__ = "expense_claims"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    admin_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    category = Column(
+        String(50),
+        nullable=False,
+        default="General",
+    )
+
+    amount = Column(
+        Integer,
+        nullable=False,
+    )
+
+    merchant = Column(
+        String(150),
+        nullable=False,
+    )
+
+    expense_date = Column(
+        Date,
+        nullable=False,
+    )
+
+    description = Column(
+        Text,
+        nullable=True,
+    )
+
+    status = Column(
+        String(20),
+        nullable=False,
+        default="pending",
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+        onupdate=utc_now,
+    )
+
+    admin = relationship(
+        "Admin",
+        back_populates="expense_claims",
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('pending', 'approved', 'rejected')",
+            name="check_expense_status",
+        ),
+        CheckConstraint(
+            "amount > 0",
+            name="check_expense_amount",
+        ),
+    )
