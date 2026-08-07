@@ -840,6 +840,13 @@ def create_default_admin() -> None:
                 "job_title": "HR Manager",
                 "department": "People Operations",
             },
+                        {
+                "full_name": "HR Operations Specialist 2",
+                "email": "hr@gmail.com",
+                "password": "HR1234!",
+                "job_title": "HR Manager",
+                "department": "People Operations",
+            },
         ]
 
         for acc in default_accounts:
