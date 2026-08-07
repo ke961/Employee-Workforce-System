@@ -412,6 +412,18 @@ async function loadSectionData(sectionId) {
                 await loadProfile();
                 break;
 
+            case "tasksSection":
+                await loadTasks();
+                break;
+
+            case "announcementsSection":
+                await loadAnnouncements();
+                break;
+
+            case "payrollSection":
+                await loadPayrollAndExpenses();
+                break;
+
             default:
                 break;
         }
@@ -706,6 +718,29 @@ async function loadDashboard() {
 
     dashboardOkrCount.textContent =
         `${okrs.in_progress_okrs || 0} active OKRs`;
+
+    try {
+        const tasks = await apiRequest("/tasks");
+        const activeTasks = tasks.filter(t => t.status !== "completed").length;
+        const taskCountEl = document.getElementById("dashboardTaskCount");
+        const taskNoteEl = document.getElementById("dashboardTaskNote");
+        if (taskCountEl) taskCountEl.textContent = activeTasks;
+        if (taskNoteEl) taskNoteEl.textContent = `${activeTasks} tasks pending`;
+    } catch (e) {
+        console.warn("Failed to load task dashboard stat", e);
+    }
+
+    try {
+        const expenses = await apiRequest("/expenses");
+        const pendingClaims = expenses.filter(e => e.status === "pending");
+        const totalPendingAmt = pendingClaims.reduce((sum, e) => sum + e.amount, 0);
+        const expCountEl = document.getElementById("dashboardExpenseCount");
+        const expNoteEl = document.getElementById("dashboardExpenseNote");
+        if (expCountEl) expCountEl.textContent = `$${totalPendingAmt.toLocaleString()}`;
+        if (expNoteEl) expNoteEl.textContent = `${pendingClaims.length} pending claims`;
+    } catch (e) {
+        console.warn("Failed to load expense dashboard stat", e);
+    }
 }
 
 
@@ -1902,6 +1937,291 @@ function setDefaultFormDates() {
         leaveEndDate.value = formattedDate;
     }
 }
+
+
+/* =========================================================
+   Tasks & Projects Module
+========================================================= */
+
+let currentTaskFilter = "all";
+
+async function loadTasks() {
+    const taskList = document.getElementById("taskList");
+    if (!taskList) return;
+
+    taskList.innerHTML = '<div class="empty">Loading tasks...</div>';
+
+    const tasks = await apiRequest("/tasks");
+    
+    let filteredTasks = tasks;
+    if (currentTaskFilter !== "all") {
+        filteredTasks = tasks.filter(t => t.status === currentTaskFilter);
+    }
+
+    if (filteredTasks.length === 0) {
+        taskList.innerHTML = '<div class="empty">No tasks found for this filter.</div>';
+        return;
+    }
+
+    taskList.innerHTML = filteredTasks.map(task => {
+        const priorityClass = `priority-${task.priority || "medium"}`;
+        const dueDateStr = task.due_date ? new Date(task.due_date).toLocaleDateString() : "No due date";
+        
+        return `
+            <div class="task-card">
+                <div>
+                    <div class="task-header">
+                        <span class="priority-tag ${priorityClass}">${escapeHtml(task.priority)}</span>
+                        <button class="btn btn-secondary" onclick="deleteTaskItem(${task.id})" style="padding: 2px 8px; font-size: 11px;">✕ Delete</button>
+                    </div>
+                    <h4 class="task-title">${escapeHtml(task.title)}</h4>
+                    <p class="task-desc">${escapeHtml(task.description || "No description provided.")}</p>
+                </div>
+                <div class="task-footer">
+                    <span style="font-size: 12px; color: var(--muted-color);">Due: ${escapeHtml(dueDateStr)}</span>
+                    <select class="status-select" onchange="updateTaskStatusItem(${task.id}, this.value)">
+                        <option value="todo" ${task.status === "todo" ? "selected" : ""}>To Do</option>
+                        <option value="in_progress" ${task.status === "in_progress" ? "selected" : ""}>In Progress</option>
+                        <option value="review" ${task.status === "review" ? "selected" : ""}>In Review</option>
+                        <option value="completed" ${task.status === "completed" ? "selected" : ""}>Completed</option>
+                    </select>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+async function updateTaskStatusItem(taskId, newStatus) {
+    try {
+        await apiRequest(`/tasks/${taskId}`, {
+            method: "PATCH",
+            body: { status: newStatus }
+        });
+        showNotification("Task status updated.", "success");
+        await loadTasks();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+async function deleteTaskItem(taskId) {
+    if (!confirm("Are you sure you want to delete this task?")) return;
+    try {
+        await apiRequest(`/tasks/${taskId}`, { method: "DELETE" });
+        showNotification("Task deleted.", "success");
+        await loadTasks();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+// Bind Task Form and Filter Tabs
+document.addEventListener("DOMContentLoaded", () => {
+    const taskForm = document.getElementById("taskForm");
+    if (taskForm) {
+        taskForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const title = document.getElementById("taskTitle").value.trim();
+            const description = document.getElementById("taskDescription").value.trim();
+            const priority = document.getElementById("taskPriority").value;
+            const due_date = document.getElementById("taskDueDate").value || null;
+
+            try {
+                await apiRequest("/tasks", {
+                    method: "POST",
+                    body: { title, description: description || null, priority, due_date }
+                });
+                taskForm.reset();
+                showNotification("Task created successfully!", "success");
+                await loadTasks();
+            } catch (err) {
+                showNotification(err.message, "error");
+            }
+        });
+    }
+
+    const taskFilterTabs = document.getElementById("taskFilterTabs");
+    if (taskFilterTabs) {
+        taskFilterTabs.querySelectorAll(".filter-chip").forEach(btn => {
+            btn.addEventListener("click", () => {
+                taskFilterTabs.querySelectorAll(".filter-chip").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                currentTaskFilter = btn.dataset.filter;
+                loadTasks();
+            });
+        });
+    }
+});
+
+
+/* =========================================================
+   Announcements Module
+========================================================= */
+
+async function loadAnnouncements() {
+    const feed = document.getElementById("announcementFeed");
+    if (!feed) return;
+
+    feed.innerHTML = '<div class="empty">Loading announcements...</div>';
+
+    const announcements = await apiRequest("/announcements");
+    if (announcements.length === 0) {
+        feed.innerHTML = '<div class="empty">No announcements published yet.</div>';
+        return;
+    }
+
+    feed.innerHTML = announcements.map(item => {
+        const dateStr = new Date(item.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+        const pinnedClass = item.is_pinned ? "pinned" : "";
+        const pinnedBadge = item.is_pinned ? '<span class="pinned-badge">📌 PINNED</span>' : '';
+
+        return `
+            <div class="announcement-card ${pinnedClass}">
+                <div class="announcement-meta">
+                    <span class="category-badge">${escapeHtml(item.category)}</span>
+                    ${pinnedBadge}
+                    <span>By ${escapeHtml(item.author)}</span>
+                    <span>•</span>
+                    <span>${escapeHtml(dateStr)}</span>
+                    <button class="btn btn-secondary" onclick="deleteAnnouncementItem(${item.id})" style="margin-left: auto; padding: 2px 8px; font-size: 11px;">Delete</button>
+                </div>
+                <h3 style="margin: 0 0 8px 0; color: var(--ink);">${escapeHtml(item.title)}</h3>
+                <p style="margin: 0; color: #475569; line-height: 1.5; font-size: 14px;">${escapeHtml(item.content)}</p>
+            </div>
+        `;
+    }).join("");
+}
+
+async function deleteAnnouncementItem(announcementId) {
+    if (!confirm("Are you sure you want to remove this announcement?")) return;
+    try {
+        await apiRequest(`/announcements/${announcementId}`, { method: "DELETE" });
+        showNotification("Announcement deleted.", "success");
+        await loadAnnouncements();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const announcementForm = document.getElementById("announcementForm");
+    if (announcementForm) {
+        announcementForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const title = document.getElementById("announcementTitle").value.trim();
+            const category = document.getElementById("announcementCategory").value;
+            const is_pinned = document.getElementById("announcementPinned").checked;
+            const content = document.getElementById("announcementContent").value.trim();
+
+            try {
+                await apiRequest("/announcements", {
+                    method: "POST",
+                    body: { title, category, is_pinned, content }
+                });
+                announcementForm.reset();
+                showNotification("Announcement published!", "success");
+                await loadAnnouncements();
+            } catch (err) {
+                showNotification(err.message, "error");
+            }
+        });
+    }
+});
+
+
+/* =========================================================
+   Payroll & Expense Reimbursements Module
+========================================================= */
+
+async function loadPayrollAndExpenses() {
+    const tbody = document.getElementById("expenseTableBody");
+    if (!tbody) return;
+
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">Loading expense claims...</td></tr>';
+
+    const expenses = await apiRequest("/expenses");
+    if (expenses.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty">No expense claims submitted yet.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = expenses.map(item => {
+        const dateStr = new Date(item.expense_date).toLocaleDateString();
+        let badgeClass = "pending";
+        if (item.status === "approved") badgeClass = "approved";
+        if (item.status === "rejected") badgeClass = "rejected";
+
+        return `
+            <tr>
+                <td>${escapeHtml(dateStr)}</td>
+                <td><strong>${escapeHtml(item.category)}</strong></td>
+                <td>${escapeHtml(item.merchant)}</td>
+                <td style="font-weight: 700; color: var(--ink);">$${item.amount.toLocaleString()}</td>
+                <td>${escapeHtml(item.description || "N/A")}</td>
+                <td><span class="badge ${badgeClass}">${escapeHtml(item.status.toUpperCase())}</span></td>
+                <td>
+                    <div style="display: flex; gap: 4px;">
+                        ${item.status === "pending" ? `
+                            <button class="btn btn-secondary" onclick="updateExpenseStatusItem(${item.id}, 'approved')" style="padding: 2px 8px; font-size: 11px; color: var(--success-color);">Approve</button>
+                            <button class="btn btn-secondary" onclick="updateExpenseStatusItem(${item.id}, 'rejected')" style="padding: 2px 8px; font-size: 11px; color: var(--danger-color);">Reject</button>
+                        ` : ''}
+                        <button class="btn btn-secondary" onclick="deleteExpenseItem(${item.id})" style="padding: 2px 6px; font-size: 11px;">✕</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join("");
+}
+
+async function updateExpenseStatusItem(claimId, newStatus) {
+    try {
+        await apiRequest(`/expenses/${claimId}/status`, {
+            method: "PATCH",
+            body: { status: newStatus }
+        });
+        showNotification(`Expense claim ${newStatus}.`, "success");
+        await loadPayrollAndExpenses();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+async function deleteExpenseItem(claimId) {
+    if (!confirm("Are you sure you want to delete this expense claim?")) return;
+    try {
+        await apiRequest(`/expenses/${claimId}`, { method: "DELETE" });
+        showNotification("Expense claim deleted.", "success");
+        await loadPayrollAndExpenses();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const expenseForm = document.getElementById("expenseForm");
+    if (expenseForm) {
+        expenseForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const category = document.getElementById("expenseCategory").value;
+            const amount = parseInt(document.getElementById("expenseAmount").value, 10);
+            const merchant = document.getElementById("expenseMerchant").value.trim();
+            const expense_date = document.getElementById("expenseDate").value;
+            const description = document.getElementById("expenseDescription").value.trim();
+
+            try {
+                await apiRequest("/expenses", {
+                    method: "POST",
+                    body: { category, amount, merchant, expense_date, description: description || null }
+                });
+                expenseForm.reset();
+                showNotification("Expense claim submitted!", "success");
+                await loadPayrollAndExpenses();
+            } catch (err) {
+                showNotification(err.message, "error");
+            }
+        });
+    }
+});
 
 
 /* =========================================================
