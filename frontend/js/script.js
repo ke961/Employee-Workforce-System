@@ -2256,7 +2256,29 @@ async function initializeApplication() {
 }
 
 
+function initTheme() {
+    const savedTheme = localStorage.getItem("ems_theme") || "light";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    const themeBtn = document.getElementById("themeToggleBtn");
+    if (themeBtn) {
+        themeBtn.textContent = savedTheme === "dark" ? "☀️" : "🌙";
+    }
+}
+
 document.addEventListener(
     "DOMContentLoaded",
-    initializeApplication
+    () => {
+        initTheme();
+        const themeBtn = document.getElementById("themeToggleBtn");
+        if (themeBtn) {
+            themeBtn.addEventListener("click", () => {
+                const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+                const newTheme = currentTheme === "dark" ? "light" : "dark";
+                document.documentElement.setAttribute("data-theme", newTheme);
+                localStorage.setItem("ems_theme", newTheme);
+                themeBtn.textContent = newTheme === "dark" ? "☀️" : "🌙";
+            });
+        }
+        initializeApplication();
+    }
 );

@@ -831,3 +831,71 @@ tr:last-child td { border-bottom: 0; }
   font-size: 11px;
 }
 
+/* =========================================================
+   Dark Mode Theme System
+========================================================= */
+[data-theme="dark"] {
+  --bg: #0b132b;
+  --surface: #1c2541;
+  --surface-hover: #263359;
+  --ink: #f8fafc;
+  --muted: #94a3b8;
+  --border: #334155;
+}
+
+[data-theme="dark"] body {
+  background: #0b132b;
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .sidebar {
+  background: #0f172a;
+  border-right-color: #1e293b;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .topbar,
+[data-theme="dark"] .task-card,
+[data-theme="dark"] .announcement-card,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .hero {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .announcement-card.pinned {
+  background: #1e293b;
+  border-left-color: var(--brand);
+}
+
+[data-theme="dark"] table th {
+  background: #0f172a;
+  color: #94a3b8;
+  border-bottom-color: #334155;
+}
+
+[data-theme="dark"] table td {
+  border-bottom-color: #334155;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: #334155;
+}
+
+
