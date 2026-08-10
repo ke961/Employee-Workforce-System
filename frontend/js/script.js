@@ -741,6 +741,8 @@ async function loadDashboard() {
     } catch (e) {
         console.warn("Failed to load expense dashboard stat", e);
     }
+
+    await loadLandingAttendanceWorkstation();
 }
 
 
@@ -927,6 +929,190 @@ clockOutButton.addEventListener(
         }
     }
 );
+
+
+/* =========================================================
+   Landing Page Time Clock Workstation Module
+========================================================= */
+
+let digitalClockTimer = null;
+let shiftDurationTimer = null;
+
+function startDigitalClock() {
+    if (digitalClockTimer) return;
+    const timeEl = document.getElementById("digitalClockTime");
+    const dateEl = document.getElementById("digitalClockDate");
+
+    function update() {
+        const now = new Date();
+        if (timeEl) {
+            timeEl.textContent = now.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true
+            });
+        }
+        if (dateEl) {
+            dateEl.textContent = now.toLocaleDateString("en-US", {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+            });
+        }
+    }
+    update();
+    digitalClockTimer = setInterval(update, 1000);
+}
+
+function updateShiftDurationCounter(clockInIso) {
+    if (shiftDurationTimer) {
+        clearInterval(shiftDurationTimer);
+        shiftDurationTimer = null;
+    }
+    const shiftTimerEl = document.getElementById("shiftTimerValue");
+
+    if (!clockInIso) {
+        if (shiftTimerEl) shiftTimerEl.textContent = "00:00:00";
+        return;
+    }
+
+    const clockInDate = new Date(clockInIso);
+
+    function tick() {
+        const now = new Date();
+        const diffMs = Math.max(0, now - clockInDate);
+        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+        const formatted =
+            String(hours).padStart(2, "0") + ":" +
+            String(minutes).padStart(2, "0") + ":" +
+            String(seconds).padStart(2, "0");
+
+        if (shiftTimerEl) shiftTimerEl.textContent = formatted;
+    }
+    tick();
+    shiftDurationTimer = setInterval(tick, 1000);
+}
+
+async function loadLandingAttendanceWorkstation() {
+    startDigitalClock();
+
+    const badgeEl = document.getElementById("clockStationBadge");
+    const badgeTextEl = document.getElementById("clockStationBadgeText");
+    const landingClockInBtn = document.getElementById("landingClockInBtn");
+    const landingClockOutBtn = document.getElementById("landingClockOutBtn");
+    const clockInTimeEl = document.getElementById("landingClockInTime");
+    const clockOutTimeEl = document.getElementById("landingClockOutTime");
+    const workTimeNoteEl = document.getElementById("landingWorkTimeNote");
+    const landingTableBody = document.getElementById("landingAttendanceTableBody");
+
+    try {
+        const statusData = await apiRequest("/attendance/status");
+        const isClockedIn = Boolean(statusData.is_clocked_in ?? statusData.clocked_in);
+
+        if (badgeEl && badgeTextEl) {
+            if (isClockedIn) {
+                badgeEl.className = "status-chip working";
+                badgeTextEl.textContent = "CLOCKED IN & WORKING";
+            } else {
+                badgeEl.className = "status-chip offline";
+                badgeTextEl.textContent = "NOT CLOCKED IN";
+            }
+        }
+
+        if (landingClockInBtn) landingClockInBtn.disabled = isClockedIn;
+        if (landingClockOutBtn) landingClockOutBtn.disabled = !isClockedIn;
+
+        if (clockInButton) clockInButton.disabled = isClockedIn;
+        if (clockOutButton) clockOutButton.disabled = !isClockedIn;
+        if (attendanceStatus) attendanceStatus.textContent = isClockedIn ? "Clocked in" : "Not clocked in";
+
+        const response = await apiRequest("/attendance");
+        const records = normalizeListResponse(response, ["records", "attendance", "items", "data"]);
+
+        const latestRecord = records[0];
+        if (latestRecord) {
+            if (clockInTimeEl) clockInTimeEl.textContent = latestRecord.clock_in ? formatTime(latestRecord.clock_in) : "--:--";
+            if (clockOutTimeEl) clockOutTimeEl.textContent = latestRecord.clock_out ? formatTime(latestRecord.clock_out) : "--:--";
+            if (workTimeNoteEl) workTimeNoteEl.textContent = `${latestRecord.total_work_minutes || 0} minutes worked today`;
+
+            if (isClockedIn && latestRecord.clock_in) {
+                updateShiftDurationCounter(latestRecord.clock_in);
+            } else {
+                updateShiftDurationCounter(null);
+            }
+        } else {
+            if (clockInTimeEl) clockInTimeEl.textContent = "--:--";
+            if (clockOutTimeEl) clockOutTimeEl.textContent = "--:--";
+            if (workTimeNoteEl) workTimeNoteEl.textContent = "0 minutes worked";
+            updateShiftDurationCounter(null);
+        }
+
+        if (landingTableBody) {
+            if (!records.length) {
+                landingTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--muted); padding: 20px;">
+                            No attendance records found for today.
+                        </td>
+                    </tr>
+                `;
+            } else {
+                landingTableBody.innerHTML = records.slice(0, 5).map(record => `
+                    <tr>
+                        <td>${escapeHtml(formatDate(record.attendance_date))}</td>
+                        <td><strong>${escapeHtml(formatTime(record.clock_in))}</strong></td>
+                        <td>${record.clock_out ? formatTime(record.clock_out) : '<span style="color: var(--brand); font-weight: 700;">Active Shift...</span>'}</td>
+                        <td>${Number(record.total_work_minutes || 0)} mins</td>
+                        <td>${createStatusBadge(record.status || "present")}</td>
+                    </tr>
+                `).join("");
+            }
+        }
+
+    } catch (err) {
+        console.warn("Failed to load landing attendance workstation", err);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const landingClockInBtn = document.getElementById("landingClockInBtn");
+    const landingClockOutBtn = document.getElementById("landingClockOutBtn");
+
+    if (landingClockInBtn) {
+        landingClockInBtn.addEventListener("click", async () => {
+            landingClockInBtn.disabled = true;
+            try {
+                await apiRequest("/attendance/clock-in", { method: "POST", body: {} });
+                showNotification("Clocked in successfully!", "success");
+                await loadLandingAttendanceWorkstation();
+                await loadDashboard();
+            } catch (err) {
+                landingClockInBtn.disabled = false;
+                showNotification(err.message, "error");
+            }
+        });
+    }
+
+    if (landingClockOutBtn) {
+        landingClockOutBtn.addEventListener("click", async () => {
+            landingClockOutBtn.disabled = true;
+            try {
+                await apiRequest("/attendance/clock-out", { method: "PATCH", body: {} });
+                showNotification("Clocked out successfully!", "success");
+                await loadLandingAttendanceWorkstation();
+                await loadDashboard();
+            } catch (err) {
+                landingClockOutBtn.disabled = false;
+                showNotification(err.message, "error");
+            }
+        });
+    }
+});
 
 
 /* =========================================================

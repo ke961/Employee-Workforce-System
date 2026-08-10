@@ -832,6 +832,175 @@ tr:last-child td { border-bottom: 0; }
 }
 
 /* =========================================================
+   Clock Station Workstation Styles
+========================================================= */
+.clock-station-card {
+  padding: 28px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(18, 35, 63, 0.05);
+}
+
+.clock-station-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.status-chip.offline {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-chip.working {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-chip.working .status-dot {
+  box-shadow: 0 0 0 4px rgba(22, 101, 52, 0.2);
+  animation: pulse-dot 1.8s infinite;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.5; }
+  100% { transform: scale(0.95); opacity: 1; }
+}
+
+.clock-station-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.clock-display-wrap {
+  padding: 20px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.digital-time {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.digital-date {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.clock-actions-wrap {
+  display: flex;
+  gap: 16px;
+}
+
+.btn-clock-in {
+  flex: 1;
+  height: 64px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-clock-in:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(16, 185, 129, 0.35);
+}
+
+.btn-clock-out {
+  flex: 1;
+  height: 64px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 8px 20px rgba(244, 63, 94, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-clock-out:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(244, 63, 94, 0.35);
+}
+
+.btn-clock-in:disabled,
+.btn-clock-out:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.clock-station-footer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+@media (max-width: 768px) {
+  .clock-station-body {
+    grid-template-columns: 1fr;
+  }
+  .clock-station-footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
    Dark Mode Theme System
 ========================================================= */
 [data-theme="dark"] {
@@ -858,9 +1027,19 @@ tr:last-child td { border-bottom: 0; }
 [data-theme="dark"] .task-card,
 [data-theme="dark"] .announcement-card,
 [data-theme="dark"] .stat-card,
-[data-theme="dark"] .hero {
+[data-theme="dark"] .hero,
+[data-theme="dark"] .clock-station-card {
   background: #1e293b;
   border-color: #334155;
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .clock-display-wrap {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .digital-time {
   color: #f8fafc;
 }
 
@@ -897,5 +1076,6 @@ tr:last-child td { border-bottom: 0; }
 [data-theme="dark"] .btn-secondary:hover {
   background: #334155;
 }
+
 
 

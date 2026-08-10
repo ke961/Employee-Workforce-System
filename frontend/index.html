@@ -130,6 +130,76 @@
                         <p>View your workforce attendance, leave balance, onboarding tasks, and OKR progress from one unified hub.</p>
                     </div>
 
+                    <!-- Primary Clock In / Clock Out Workstation -->
+                    <div class="card clock-station-card" style="margin-top: 24px;">
+                        <div class="clock-station-header">
+                            <div>
+                                <span class="eyebrow" style="color: var(--brand);">WORKSTATION TIME CLOCK</span>
+                                <h2 style="margin: 4px 0 0; font-size: 22px;">Attendance & Shift Station</h2>
+                            </div>
+                            <div id="clockStationBadge" class="status-chip offline">
+                                <span class="status-dot"></span>
+                                <span id="clockStationBadgeText">NOT CLOCKED IN</span>
+                            </div>
+                        </div>
+
+                        <div class="clock-station-body">
+                            <div class="clock-display-wrap">
+                                <div id="digitalClockTime" class="digital-time">10:00:00 AM</div>
+                                <div id="digitalClockDate" class="digital-date">August 10, 2026</div>
+                                <div class="shift-timer-wrap" style="margin-top: 10px;">
+                                    <span style="font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Active Shift Duration</span>
+                                    <div id="shiftTimerValue" style="font-weight: 800; font-size: 24px; color: var(--brand); font-family: monospace;">00:00:00</div>
+                                </div>
+                            </div>
+
+                            <div class="clock-actions-wrap">
+                                <button id="landingClockInBtn" class="btn btn-clock-in" type="button">
+                                    <span class="btn-icon">▶</span>
+                                    <span>CLOCK IN</span>
+                                </button>
+                                <button id="landingClockOutBtn" class="btn btn-clock-out" type="button" disabled>
+                                    <span class="btn-icon">⏹</span>
+                                    <span>CLOCK OUT</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="clock-station-footer">
+                            <div><strong>Clock-In Time:</strong> <span id="landingClockInTime">--:--</span></div>
+                            <div><strong>Clock-Out Time:</strong> <span id="landingClockOutTime">--:--</span></div>
+                            <div><strong>Total Shift Duration:</strong> <span id="landingWorkTimeNote">0 minutes worked</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Shift History Log on Landing Page -->
+                    <div class="card" style="margin-top: 24px; padding: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h3 style="margin: 0; font-size: 16px;">Today's Shift & Attendance Records</h3>
+                            <span class="badge pending" style="font-size: 11px;">Real-time Log</span>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Clock In</th>
+                                        <th>Clock Out</th>
+                                        <th>Shift Duration</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="landingAttendanceTableBody">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: var(--muted); padding: 20px;">
+                                            No attendance records found for today.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <div class="grid stats-grid" style="margin-top: 24px;">
                         <article class="card stat-card">
                             <span class="stat-label">ATTENDANCE</span>
