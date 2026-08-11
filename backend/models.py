@@ -718,6 +718,12 @@ class Admin(Base):
         cascade="all, delete-orphan",
     )
 
+    document_acknowledgments = relationship(
+        "DocumentAcknowledgment",
+        back_populates="admin",
+        cascade="all, delete-orphan",
+    )
+
     __table_args__ = (
         CheckConstraint(
             "leave_balance >= 0",
@@ -1260,4 +1266,249 @@ class ExpenseClaim(Base):
             "amount > 0",
             name="check_expense_amount",
         ),
-    )
+    )
+
+
+# =========================================================
+# Performance Review Model
+# =========================================================
+
+class PerformanceReview(Base):
+    __tablename__ = "performance_reviews"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    reviewer_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
+
+    employee_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
+
+    review_cycle = Column(
+        String(50),
+        nullable=False,
+        default="Q3 2026",
+    )
+
+    rating = Column(
+        Integer,
+        nullable=False,
+        default=5,
+    )
+
+    strengths = Column(
+        Text,
+        nullable=True,
+    )
+
+    growth_areas = Column(
+        Text,
+        nullable=True,
+    )
+
+    status = Column(
+        String(20),
+        nullable=False,
+        default="completed",
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+        onupdate=utc_now,
+    )
+
+    reviewer = relationship(
+        "Admin",
+        foreign_keys=[reviewer_id],
+    )
+
+    employee = relationship(
+        "Admin",
+        foreign_keys=[employee_id],
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "rating >= 1 AND rating <= 5",
+            name="check_review_rating",
+        ),
+        CheckConstraint(
+            "status IN ('draft', 'pending', 'completed')",
+            name="check_review_status",
+        ),
+    )
+
+
+# =========================================================
+# Peer Recognition (Kudos) Model
+# =========================================================
+
+class Kudos(Base):
+    __tablename__ = "kudos"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    sender_name = Column(
+        String(100),
+        nullable=False,
+    )
+
+    receiver_name = Column(
+        String(100),
+        nullable=False,
+    )
+
+    category = Column(
+        String(50),
+        nullable=False,
+        default="Teamwork",
+    )
+
+    message = Column(
+        Text,
+        nullable=False,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+
+# =========================================================
+# Company Document Model
+# =========================================================
+
+class CompanyDocument(Base):
+    __tablename__ = "company_documents"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    title = Column(
+        String(200),
+        nullable=False,
+    )
+
+    category = Column(
+        String(50),
+        nullable=False,
+        default="Policy",
+    )
+
+    summary = Column(
+        Text,
+        nullable=False,
+    )
+
+    file_url = Column(
+        String(255),
+        nullable=True,
+    )
+
+    version = Column(
+        String(20),
+        nullable=False,
+        default="v1.0",
+    )
+
+    requires_acknowledgment = Column(
+        Boolean,
+        nullable=False,
+        default=True,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    acknowledgments = relationship(
+        "DocumentAcknowledgment",
+        back_populates="document",
+        cascade="all, delete-orphan",
+    )
+
+
+# =========================================================
+# Document Acknowledgment Model
+# =========================================================
+
+class DocumentAcknowledgment(Base):
+    __tablename__ = "document_acknowledgments"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    document_id = Column(
+        Integer,
+        ForeignKey(
+            "company_documents.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    admin_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    acknowledged_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    document = relationship(
+        "CompanyDocument",
+        back_populates="acknowledgments",
+    )
+
+    admin = relationship(
+        "Admin",
+        back_populates="document_acknowledgments",
+    )
+
