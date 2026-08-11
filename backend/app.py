@@ -941,21 +941,129 @@ def create_default_admin() -> None:
             ]
             database.add_all(initial_kudos)
 
-        # Seed initial Performance Review if table empty
-        if database.query(PerformanceReview).count() == 0:
+        # Seed initial Shift Schedules if table empty
+        if database.query(ShiftSchedule).count() == 0:
             admin_acc = database.query(Admin).first()
             if admin_acc:
-                database.add(
-                    PerformanceReview(
-                        reviewer_id=admin_acc.id,
-                        employee_id=admin_acc.id,
-                        review_cycle="Q2 2026",
-                        rating=5,
-                        strengths="Exceptional leadership, prompt project execution, and strong technical initiative.",
-                        growth_areas="Continue expanding cross-departmental documentation.",
+                shifts_seed = [
+                    ShiftSchedule(
+                        admin_id=admin_acc.id,
+                        shift_name="Standard Daytime Shift",
+                        shift_type="Morning",
+                        start_time="09:00 AM",
+                        end_time="05:00 PM",
+                        work_days="Mon, Tue, Wed, Thu, Fri",
+                        location="Remote Flexible",
+                    ),
+                    ShiftSchedule(
+                        admin_id=admin_acc.id,
+                        shift_name="DevOps On-Call Rotation",
+                        shift_type="Flexible",
+                        start_time="12:00 PM",
+                        end_time="08:00 PM",
+                        work_days="Mon, Tue, Wed, Thu, Fri",
+                        location="Remote HQ",
+                    ),
+                ]
+                database.add_all(shifts_seed)
+
+        # Seed initial IT Assets if table empty
+        if database.query(ITAsset).count() == 0:
+            admin_acc = database.query(Admin).first()
+            admin_id = admin_acc.id if admin_acc else None
+            assets_seed = [
+                ITAsset(
+                    asset_name="MacBook Pro 16-inch M3 Max",
+                    asset_tag="AST-2026-001",
+                    category="Laptop",
+                    serial_number="C02G1829Q168",
+                    admin_id=admin_id,
+                    status="assigned",
+                    assigned_date=None,
+                ),
+                ITAsset(
+                    asset_name="Dell UltraSharp 32-inch 4K Monitor",
+                    asset_tag="AST-2026-002",
+                    category="Monitor",
+                    serial_number="CN098192831A",
+                    admin_id=admin_id,
+                    status="assigned",
+                    assigned_date=None,
+                ),
+                ITAsset(
+                    asset_name="YubiKey 5C NFC Security Key",
+                    asset_tag="AST-2026-003",
+                    category="Peripheral",
+                    serial_number="YK9812456",
+                    admin_id=admin_id,
+                    status="assigned",
+                    assigned_date=None,
+                ),
+                ITAsset(
+                    asset_name="ThinkPad X1 Carbon Gen 11",
+                    asset_tag="AST-2026-004",
+                    category="Laptop",
+                    serial_number="PF9817264",
+                    admin_id=None,
+                    status="available",
+                    assigned_date=None,
+                ),
+            ]
+            database.add_all(assets_seed)
+
+        # Seed initial Company Events if table empty
+        if database.query(CompanyEvent).count() == 0:
+            from datetime import date
+            events_seed = [
+                CompanyEvent(
+                    title="Q3 Global All-Hands Townhall",
+                    event_type="All-Hands",
+                    event_date=date(2026, 8, 25),
+                    description="Quarterly company results, product roadmap reveal, and Q&A session.",
+                    location="Virtual Zoom Main Room",
+                ),
+                CompanyEvent(
+                    title="Labor Day Holiday",
+                    event_type="Company Holiday",
+                    event_date=date(2026, 9, 7),
+                    description="Company-wide official paid holiday.",
+                    location="Global",
+                ),
+                CompanyEvent(
+                    title="Annual Engineering Hackathon 2026",
+                    event_type="Workshop",
+                    event_date=date(2026, 9, 18),
+                    description="48-hour innovation hackathon with prizes for top projects.",
+                    location="Hybrid / Slack #hackathon",
+                ),
+            ]
+            database.add_all(events_seed)
+
+        # Seed initial Training Courses if table empty
+        if database.query(TrainingCourse).count() == 0:
+            admin_acc = database.query(Admin).first()
+            if admin_acc:
+                trainings_seed = [
+                    TrainingCourse(
+                        title="Cyber Security & Phishing Awareness 2026",
+                        category="Security",
+                        description="Mandatory annual security awareness training on remote work hygiene and phishing detection.",
+                        duration_hours=2,
+                        due_date=None,
+                        admin_id=admin_acc.id,
+                        status="assigned",
+                    ),
+                    TrainingCourse(
+                        title="Data Privacy & GDPR Compliance Essentials",
+                        category="Compliance",
+                        description="Guidelines on user data handling, encryption requirements, and compliance standards.",
+                        duration_hours=3,
+                        due_date=None,
+                        admin_id=admin_acc.id,
                         status="completed",
-                    )
-                )
+                    ),
+                ]
+                database.add_all(trainings_seed)
 
         database.commit()
 
