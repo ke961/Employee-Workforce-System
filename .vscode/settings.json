@@ -3,8 +3,10 @@
     "files.associations": {
         "*.html": "html"
     },
-    "html.validate.scripts": true,
-    "html.validate.styles": true,
+    "html.validate.scripts": false,
+    "html.validate.styles": false,
+    "prettier.endOfLine": "auto",
+    "htmlhint.enable": false,
     "search.exclude": {
         "**/node_modules": true,
         "**/venv": true,
