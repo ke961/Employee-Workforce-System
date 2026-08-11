@@ -102,6 +102,18 @@
                 <button class="nav-item menu-item" data-section="analyticsSection">
                     <span class="icon">📊</span><span>Analytics & Reports</span>
                 </button>
+                <button class="nav-item menu-item" data-section="shiftsSection">
+                    <span class="icon">📅</span><span>Work Shifts</span>
+                </button>
+                <button class="nav-item menu-item" data-section="assetsSection">
+                    <span class="icon">💻</span><span>IT Asset Inventory</span>
+                </button>
+                <button class="nav-item menu-item" data-section="calendarSection">
+                    <span class="icon">🗓️</span><span>Team Calendar</span>
+                </button>
+                <button class="nav-item menu-item" data-section="trainingSection">
+                    <span class="icon">🎓</span><span>Training & Skills</span>
+                </button>
                 <button class="nav-item menu-item" data-section="profileSection">
                     <span class="icon">👤</span><span>Profile</span>
                 </button>
@@ -866,8 +878,292 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Work Shifts Section -->
+                <section id="shiftsSection" class="content-section hidden">
+                    <div class="section-header-bar">
+                        <div>
+                            <p class="eyebrow">ROSTER & SCHEDULES</p>
+                            <h2>Work Shifts & Roster Planner</h2>
+                        </div>
+                        <button id="openAddShiftBtn" class="btn btn-primary" type="button">+ Assign Work Shift</button>
+                    </div>
+
+                    <div id="shiftsGrid" class="cards-grid">
+                        <div class="empty-state">Loading work shift schedules...</div>
+                    </div>
+                </section>
+
+                <!-- IT Asset Inventory Section -->
+                <section id="assetsSection" class="content-section hidden">
+                    <div class="section-header-bar">
+                        <div>
+                            <p class="eyebrow">HARDWARE & ASSETS</p>
+                            <h2>IT Asset & Hardware Inventory</h2>
+                        </div>
+                        <button id="openAddAssetBtn" class="btn btn-primary" type="button">+ Add IT Asset</button>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 24px; padding: 20px;">
+                        <div class="filter-controls-row">
+                            <div class="filter-group">
+                                <label for="assetCategoryFilter">Category:</label>
+                                <select id="assetCategoryFilter">
+                                    <option value="All">All Categories</option>
+                                    <option value="Laptop">Laptop</option>
+                                    <option value="Monitor">Monitor</option>
+                                    <option value="Mobile">Mobile</option>
+                                    <option value="Peripheral">Peripheral</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="assetStatusFilter">Status:</label>
+                                <select id="assetStatusFilter">
+                                    <option value="All">All Statuses</option>
+                                    <option value="assigned">Assigned</option>
+                                    <option value="available">Available</option>
+                                    <option value="maintenance">Maintenance</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 24px;">
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Asset Tag</th>
+                                        <th>Asset Name</th>
+                                        <th>Category</th>
+                                        <th>Serial Number</th>
+                                        <th>Assigned To</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="assetTableBody">
+                                    <tr>
+                                        <td colspan="7" class="empty">Loading IT assets...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Team Calendar & Events Section -->
+                <section id="calendarSection" class="content-section hidden">
+                    <div class="section-header-bar">
+                        <div>
+                            <p class="eyebrow">SCHEDULE & HOLIDAYS</p>
+                            <h2>Team Calendar & Company Events</h2>
+                        </div>
+                        <button id="openAddEventBtn" class="btn btn-primary" type="button">+ Add Event</button>
+                    </div>
+
+                    <div id="eventsList" class="reviews-feed">
+                        <div class="empty-state">Loading company events...</div>
+                    </div>
+                </section>
+
+                <!-- Training & Skills Section -->
+                <section id="trainingSection" class="content-section hidden">
+                    <div class="section-header-bar">
+                        <div>
+                            <p class="eyebrow">SKILLS & DEVELOPMENT</p>
+                            <h2>Training Courses & Certifications</h2>
+                        </div>
+                        <button id="openAddTrainingBtn" class="btn btn-primary" type="button">+ Assign Training</button>
+                    </div>
+
+                    <div id="trainingGrid" class="cards-grid">
+                        <div class="empty-state">Loading training courses...</div>
+                    </div>
+                </section>
             </div>
         </section>
+    </div>
+
+    <!-- Modal: Add Work Shift -->
+    <div id="addShiftModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Assign Work Shift Schedule</h3>
+                <button id="closeAddShiftBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <form id="addShiftForm" class="form-stacked" style="padding: 24px;">
+                <label>
+                    Select Employee
+                    <select id="shiftEmployeeSelect" required>
+                        <option value="">Select Employee...</option>
+                    </select>
+                </label>
+                <label>
+                    Shift Name / Designation
+                    <input id="shiftName" type="text" placeholder="e.g. Standard Daytime Shift" required />
+                </label>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Start Time
+                        <input id="shiftStartTime" type="text" placeholder="e.g. 09:00 AM" required />
+                    </label>
+                    <label>
+                        End Time
+                        <input id="shiftEndTime" type="text" placeholder="e.g. 05:00 PM" required />
+                    </label>
+                </div>
+                <label>
+                    Work Days
+                    <input id="shiftDays" type="text" value="Mon, Tue, Wed, Thu, Fri" required />
+                </label>
+                <label>
+                    Work Location
+                    <select id="shiftLocation">
+                        <option value="Remote Flexible">Remote Flexible</option>
+                        <option value="HQ Office">HQ Office</option>
+                        <option value="Hybrid Office/Home">Hybrid Office/Home</option>
+                    </select>
+                </label>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button class="btn btn-secondary" type="button" id="cancelAddShiftBtn">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Assign Shift</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add IT Asset -->
+    <div id="addAssetModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Register IT Hardware Asset</h3>
+                <button id="closeAddAssetBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <form id="addAssetForm" class="form-stacked" style="padding: 24px;">
+                <label>
+                    Asset Tag / Inventory ID
+                    <input id="assetTag" type="text" placeholder="e.g. AST-2026-005" required />
+                </label>
+                <label>
+                    Asset Name / Model
+                    <input id="assetName" type="text" placeholder="e.g. MacBook Pro 14 M3" required />
+                </label>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Category
+                        <select id="assetCategory">
+                            <option value="Laptop">Laptop</option>
+                            <option value="Monitor">Monitor</option>
+                            <option value="Mobile">Mobile</option>
+                            <option value="Peripheral">Peripheral</option>
+                        </select>
+                    </label>
+                    <label>
+                        Serial Number
+                        <input id="assetSerial" type="text" placeholder="e.g. SN-981247" />
+                    </label>
+                </div>
+                <label>
+                    Assign to Employee
+                    <select id="assetEmployeeSelect">
+                        <option value="">Unassigned (Available in Inventory)</option>
+                    </select>
+                </label>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button class="btn btn-secondary" type="button" id="cancelAddAssetBtn">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Register Asset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Calendar Event -->
+    <div id="addEventModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Add Company Event or Holiday</h3>
+                <button id="closeAddEventBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <form id="addEventForm" class="form-stacked" style="padding: 24px;">
+                <label>
+                    Event Title
+                    <input id="eventTitle" type="text" placeholder="e.g. Annual Team Retreat" required />
+                </label>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Event Type
+                        <select id="eventType">
+                            <option value="Company Holiday">Company Holiday</option>
+                            <option value="All-Hands">All-Hands Townhall</option>
+                            <option value="Team Building">Team Building</option>
+                            <option value="Workshop">Workshop / Hackathon</option>
+                        </select>
+                    </label>
+                    <label>
+                        Event Date
+                        <input id="eventDate" type="date" required />
+                    </label>
+                </div>
+                <label>
+                    Location / Link
+                    <input id="eventLocation" type="text" placeholder="e.g. Zoom Room / HQ Assembly" required />
+                </label>
+                <label>
+                    Description
+                    <textarea id="eventDescription" rows="3" placeholder="Event schedule or details..."></textarea>
+                </label>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button class="btn btn-secondary" type="button" id="cancelAddEventBtn">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Create Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Assign Training -->
+    <div id="addTrainingModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Assign Training Course</h3>
+                <button id="closeAddTrainingBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <form id="addTrainingForm" class="form-stacked" style="padding: 24px;">
+                <label>
+                    Select Employee
+                    <select id="trainingEmployeeSelect" required>
+                        <option value="">Select Employee...</option>
+                    </select>
+                </label>
+                <label>
+                    Course Title
+                    <input id="trainingTitle" type="text" placeholder="e.g. SOC2 Security & Compliance 2026" required />
+                </label>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Category
+                        <select id="trainingCategory">
+                            <option value="Security">Security</option>
+                            <option value="Compliance">Compliance</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Leadership">Leadership</option>
+                        </select>
+                    </label>
+                    <label>
+                        Duration (Hours)
+                        <input id="trainingHours" type="number" value="2" min="1" required />
+                    </label>
+                </div>
+                <label>
+                    Course Description
+                    <textarea id="trainingDescription" rows="2" placeholder="Course overview or link..."></textarea>
+                </label>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button class="btn btn-secondary" type="button" id="cancelAddTrainingBtn">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Assign Course</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Modal Dialog for Add Employee -->
