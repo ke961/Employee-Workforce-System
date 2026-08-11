@@ -191,6 +191,7 @@
                             </div>
                         </div>
                     </div>
+                    <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="padding: 6px 12px; font-size: 13px; font-weight: 600;" title="Return to Dashboard Home Page">🏠 Home</button>
                     <button id="cmdPaletteBtn" class="btn btn-secondary" type="button" style="padding: 6px 12px; font-size: 13px; font-weight: 600;" title="Global Command Search (Ctrl+K)">🔍 Quick Search <kbd style="font-family: monospace; font-size: 10px; background: var(--bg); padding: 1px 4px; border-radius: 4px; border: 1px solid var(--border);">Ctrl K</kbd></button>
                     <button id="themeToggleBtn" class="btn btn-secondary" type="button" style="padding: 6px 12px; font-size: 14px;" title="Toggle Dark/Light Mode">🌙</button>
                     <span id="todayDate" class="date-pill">August 3, 2026</span>
@@ -340,12 +341,13 @@
 
                 <!-- Attendance Section -->
                 <section id="attendanceSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1>Attendance Management</h1>
                             <p>Track daily clock-in/out records and working history.</p>
                         </div>
                         <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
                             <button id="clockInButton" class="btn btn-primary" type="button">Clock In</button>
                             <button id="clockOutButton" class="btn btn-secondary" type="button" disabled>Clock Out</button>
                         </div>
@@ -380,11 +382,12 @@
 
                 <!-- Leave Section -->
                 <section id="leaveSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1>Leave Requests</h1>
                             <p>Submit and review personal leave applications.</p>
                         </div>
+                        <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
                     </div>
 
                     <div class="card" style="margin-bottom: 28px; padding: 24px;">
@@ -441,12 +444,15 @@
 
                 <!-- Onboarding Section -->
                 <section id="onboardingSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1>Onboarding Checklist</h1>
                             <p>Complete onboarding items and track progress.</p>
                         </div>
-                        <button id="createDefaultTasksButton" class="btn btn-secondary" type="button">Seed Default Tasks</button>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
+                            <button id="createDefaultTasksButton" class="btn btn-secondary" type="button">Seed Default Tasks</button>
+                        </div>
                     </div>
 
                     <div class="card" style="margin-bottom: 24px; padding: 24px;">
@@ -477,11 +483,12 @@
 
                 <!-- OKR Section -->
                 <section id="okrSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1>Objectives & Key Results (OKRs)</h1>
                             <p>Define strategic objectives and monitor performance metrics.</p>
                         </div>
+                        <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
                     </div>
 
                     <div class="card" style="margin-bottom: 28px; padding: 24px;">
@@ -516,11 +523,12 @@
 
                 <!-- Profile Section -->
                 <section id="profileSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1>Admin Profile</h1>
                             <p>Manage account settings and contact details.</p>
                         </div>
+                        <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
                     </div>
 
                     <div class="card" style="padding: 28px;">
@@ -554,11 +562,12 @@
 
                 <!-- Tasks & Projects Section -->
                 <section id="tasksSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1>Tasks & Project Board</h1>
                             <p>Track team tasks, assign priorities, and manage project progress.</p>
                         </div>
+                        <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
                     </div>
 
                     <div class="card" style="padding: 24px; margin-bottom: 24px;">
@@ -606,11 +615,12 @@
 
                 <!-- Announcements Section -->
                 <section id="announcementsSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1>Company Bulletin & Announcements</h1>
                             <p>Stay up to date with company news, policy updates, and events.</p>
                         </div>
+                        <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
                     </div>
 
                     <div class="card" style="padding: 24px; margin-bottom: 24px;">
@@ -640,11 +650,12 @@
 
                 <!-- Payroll & Expenses Section -->
                 <section id="payrollSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1>Payroll & Expense Claims</h1>
                             <p>View compensation details and submit reimbursement requests.</p>
                         </div>
+                        <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
                     </div>
 
                     <div class="payroll-grid" style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px; margin-bottom: 24px;">
@@ -733,12 +744,15 @@
 
                 <!-- Staff Directory Section -->
                 <section id="employeesSection" class="content-section hidden">
-                    <div class="section-header-bar">
+                    <div class="section-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <p class="eyebrow">WORKFORCE TEAM</p>
                             <h2>Staff & Employee Directory</h2>
                         </div>
-                        <button id="openAddEmployeeBtn" class="btn btn-primary" type="button">+ Add Employee</button>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
+                            <button id="openAddEmployeeBtn" class="btn btn-primary" type="button">+ Add Employee</button>
+                        </div>
                     </div>
 
                     <!-- Search & Filter Controls -->
@@ -770,11 +784,12 @@
 
                 <!-- Performance Reviews & Peer Recognition Section -->
                 <section id="reviewsSection" class="content-section hidden">
-                    <div class="section-header-bar">
+                    <div class="section-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <p class="eyebrow">GROWTH & CULTURE</p>
                             <h2>Performance & Peer Recognition</h2>
                         </div>
+                        <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
                     </div>
 
                     <!-- Module Tabs -->
@@ -871,11 +886,12 @@
 
                 <!-- Document Center Section -->
                 <section id="documentsSection" class="content-section hidden">
-                    <div class="section-header-bar">
+                    <div class="section-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <p class="eyebrow">COMPLIANCE & GUIDELINES</p>
                             <h2>Policy & Document Center</h2>
                         </div>
+                        <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
                     </div>
 
                     <!-- Documents Grid -->
@@ -891,7 +907,8 @@
                             <p class="eyebrow">WORKFORCE INSIGHTS</p>
                             <h2>Executive Analytics & CSV Reports</h2>
                         </div>
-                        <div class="export-actions-header">
+                        <div class="export-actions-header" style="display: flex; gap: 8px; align-items: center;">
+                            <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
                             <button id="exportAttendanceBtn" class="btn btn-secondary" type="button">⬇ Attendance CSV</button>
                             <button id="exportLeaveBtn" class="btn btn-secondary" type="button">⬇ Leave CSV</button>
                             <button id="exportExpenseBtn" class="btn btn-secondary" type="button">⬇ Expenses CSV</button>
@@ -956,12 +973,15 @@
 
                 <!-- Work Shifts Section -->
                 <section id="shiftsSection" class="content-section hidden">
-                    <div class="section-header-bar">
+                    <div class="section-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <p class="eyebrow">ROSTER & SCHEDULES</p>
                             <h2>Work Shifts & Roster Planner</h2>
                         </div>
-                        <button id="openAddShiftBtn" class="btn btn-primary" type="button">+ Assign Work Shift</button>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
+                            <button id="openAddShiftBtn" class="btn btn-primary" type="button">+ Assign Work Shift</button>
+                        </div>
                     </div>
 
                     <div id="shiftsGrid" class="cards-grid">
@@ -971,12 +991,15 @@
 
                 <!-- IT Asset Inventory Section -->
                 <section id="assetsSection" class="content-section hidden">
-                    <div class="section-header-bar">
+                    <div class="section-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <p class="eyebrow">HARDWARE & ASSETS</p>
                             <h2>IT Asset & Hardware Inventory</h2>
                         </div>
-                        <button id="openAddAssetBtn" class="btn btn-primary" type="button">+ Add IT Asset</button>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
+                            <button id="openAddAssetBtn" class="btn btn-primary" type="button">+ Add IT Asset</button>
+                        </div>
                     </div>
 
                     <div class="card" style="margin-bottom: 24px; padding: 20px;">
@@ -1029,12 +1052,15 @@
 
                 <!-- Team Calendar & Events Section -->
                 <section id="calendarSection" class="content-section hidden">
-                    <div class="section-header-bar">
+                    <div class="section-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <p class="eyebrow">SCHEDULE & HOLIDAYS</p>
                             <h2>Team Calendar & Company Events</h2>
                         </div>
-                        <button id="openAddEventBtn" class="btn btn-primary" type="button">+ Add Event</button>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
+                            <button id="openAddEventBtn" class="btn btn-primary" type="button">+ Add Event</button>
+                        </div>
                     </div>
 
                     <div id="eventsList" class="reviews-feed">
@@ -1044,12 +1070,15 @@
 
                 <!-- Training & Skills Section -->
                 <section id="trainingSection" class="content-section hidden">
-                    <div class="section-header-bar">
+                    <div class="section-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <p class="eyebrow">SKILLS & DEVELOPMENT</p>
                             <h2>Training Courses & Certifications</h2>
                         </div>
-                        <button id="openAddTrainingBtn" class="btn btn-primary" type="button">+ Assign Training</button>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
+                            <button id="openAddTrainingBtn" class="btn btn-primary" type="button">+ Assign Training</button>
+                        </div>
                     </div>
 
                     <div id="trainingGrid" class="cards-grid">
