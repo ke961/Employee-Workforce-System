@@ -139,6 +139,43 @@
                     <h2 id="pageTitle">Dashboard</h2>
                 </div>
                 <div class="topbar-actions">
+                    <div class="notif-wrapper">
+                        <button id="notifBellBtn" class="btn btn-secondary notif-bell-btn" type="button" title="System Notifications">
+                            🔔 <span id="notifBadge" class="notif-badge">3</span>
+                        </button>
+                        <div id="notifDropdown" class="notif-dropdown hidden">
+                            <div class="notif-header">
+                                <strong>System Notifications</strong>
+                                <small style="color: var(--brand); cursor: pointer;" id="clearNotifBtn">Clear All</small>
+                            </div>
+                            <div id="notifList" class="notif-list">
+                                <div class="notif-item unread">
+                                    <span class="notif-icon">💳</span>
+                                    <div>
+                                        <strong>Expense Claim Approved</strong>
+                                        <p>Your claim for $150 (AWS Servers) was approved by Finance.</p>
+                                        <small class="muted">10 mins ago</small>
+                                    </div>
+                                </div>
+                                <div class="notif-item unread">
+                                    <span class="notif-icon">📚</span>
+                                    <div>
+                                        <strong>New Policy Published</strong>
+                                        <p>Remote Work Stipend Policy v3.2 requires your acknowledgment.</p>
+                                        <small class="muted">2 hours ago</small>
+                                    </div>
+                                </div>
+                                <div class="notif-item unread">
+                                    <span class="notif-icon">🎉</span>
+                                    <div>
+                                        <strong>New Peer Kudos Received</strong>
+                                        <p>Sarah Connor gave you a shoutout for Teamwork!</p>
+                                        <small class="muted">1 day ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button id="themeToggleBtn" class="btn btn-secondary" type="button" style="padding: 6px 12px; font-size: 14px;" title="Toggle Dark/Light Mode">🌙</button>
                     <span id="todayDate" class="date-pill">August 3, 2026</span>
                     <div id="topAvatar" class="avatar">A</div>
@@ -152,6 +189,18 @@
                         <p class="eyebrow" style="color: #6ff3dc;">WELCOME BACK</p>
                         <h1>Welcome, <span id="welcomeAdminName">Administrator</span></h1>
                         <p>View your workforce attendance, leave balance, onboarding tasks, and OKR progress from one unified hub.</p>
+                    </div>
+
+                    <!-- Quick Action Shortcuts Bar -->
+                    <div class="quick-actions-bar card" style="margin-top: 20px; padding: 16px 24px;">
+                        <span class="eyebrow" style="margin: 0; color: var(--muted);">QUICK SHORTCUTS</span>
+                        <div class="quick-btns-row" style="margin-top: 10px;">
+                            <button class="btn btn-secondary" onclick="showSection('leaveSection')">🏖️ Request Leave</button>
+                            <button class="btn btn-secondary" onclick="showSection('payrollSection')">💳 Submit Expense</button>
+                            <button class="btn btn-secondary" onclick="showSection('reviewsSection')">🎉 Send Peer Kudos</button>
+                            <button class="btn btn-secondary" onclick="showSection('shiftsSection')">📅 View Roster</button>
+                            <button class="btn btn-secondary" onclick="showSection('employeesSection')">👥 Staff Directory</button>
+                        </div>
                     </div>
 
                     <!-- Primary Clock In / Clock Out Workstation -->
@@ -1217,8 +1266,45 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal: Employee Detail Drawer -->
+    <div id="employeeDetailModal" class="modal-backdrop hidden">
+        <div class="modal-card" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Employee Profile Details</h3>
+                <button id="closeEmpDetailBtn" class="modal-close-btn">&times;</button>
             </div>
-        </section>
+            <div style="padding: 24px;">
+                <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+                    <div id="empDetailAvatar" class="employee-avatar" style="width: 60px; height: 60px; font-size: 24px;">EM</div>
+                    <div>
+                        <h2 id="empDetailName" style="margin: 0; font-size: 20px;">Employee Name</h2>
+                        <span id="empDetailTitle" class="muted" style="font-weight: 600; font-size: 14px;">Job Title</span>
+                    </div>
+                </div>
+                <div class="grid-2col" style="gap: 16px; margin-bottom: 20px;">
+                    <div>
+                        <small class="muted" style="display: block; font-weight: 700;">WORK EMAIL</small>
+                        <strong id="empDetailEmail" style="font-size: 14px;">email@domain.com</strong>
+                    </div>
+                    <div>
+                        <small class="muted" style="display: block; font-weight: 700;">DEPARTMENT</small>
+                        <strong id="empDetailDept" style="font-size: 14px;">Engineering</strong>
+                    </div>
+                    <div>
+                        <small class="muted" style="display: block; font-weight: 700;">PHONE</small>
+                        <strong id="empDetailPhone" style="font-size: 14px;">+1 555-0192</strong>
+                    </div>
+                    <div>
+                        <small class="muted" style="display: block; font-weight: 700;">LEAVE ALLOWANCE</small>
+                        <strong id="empDetailLeave" style="font-size: 14px;">20 Days Available</strong>
+                    </div>
+                </div>
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
+                    <button id="closeEmpDetailBtn2" class="btn btn-secondary" type="button">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/script.js"></script>
