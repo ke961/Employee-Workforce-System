@@ -1579,6 +1579,39 @@ tr:last-child td { border-bottom: 0; }
   border-color: #334155;
 }
 
+/* Command Palette Styling */
+.cmd-item {
+  padding: 10px 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+
+.cmd-item:hover {
+  background: var(--brand);
+  color: #fff;
+}
+
+.cmd-item span {
+  font-size: 16px;
+}
+
+.demo-login-btn {
+  transition: all 0.15s ease;
+}
+
+.demo-login-btn:hover {
+  border-color: var(--brand);
+  transform: translateY(-1px);
+}
+
+
 @keyframes notifIn {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }
