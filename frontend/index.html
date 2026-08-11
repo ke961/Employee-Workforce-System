@@ -25,13 +25,13 @@
                 <p class="eyebrow">REMOTE WORK, SIMPLIFIED</p>
                 <h1>One workspace for people, time, leave and goals.</h1>
                 <p class="login-copy">
-                    A role-based employee management prototype for remote and hybrid teams.
+                    A role-based employee management hub for remote and hybrid teams.
                 </p>
             </div>
             <div class="visual-stats">
-                <div><strong>3</strong><span>Role-based workspaces</span></div>
-                <div><strong>5</strong><span>Core workforce modules</span></div>
-                <div><strong>100%</strong><span>Browser-based prototype</span></div>
+                <div><strong>14</strong><span>Active Staff Profiles</span></div>
+                <div><strong>8</strong><span>Workforce Modules</span></div>
+                <div><strong>100%</strong><span>Browser-Based Platform</span></div>
             </div>
         </section>
 
@@ -199,6 +199,7 @@
             </header>
 
             <div id="pageContainer" class="page-container">
+                <!-- Dashboard Section -->
                 <section id="dashboardSection" class="content-section">
                     <div class="hero animated-hero">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -218,7 +219,7 @@
                     </div>
 
                     <!-- Quick Action Shortcuts Bar -->
-                    <div class="quick-actions-bar card" style="margin-top: 20px; padding: 16px 24px;">
+                    <div class="quick-actions-bar card stagger-card-1" style="margin-top: 20px; padding: 16px 24px;">
                         <span class="eyebrow" style="margin: 0; color: var(--muted);">QUICK SHORTCUTS</span>
                         <div class="quick-btns-row" style="margin-top: 10px;">
                             <button class="btn btn-secondary" onclick="showSection('leaveSection')">🏖️ Request Leave</button>
@@ -230,7 +231,7 @@
                     </div>
 
                     <!-- Primary Clock In / Clock Out Workstation -->
-                    <div class="card clock-station-card" style="margin-top: 24px;">
+                    <div class="card clock-station-card stagger-card-2" style="margin-top: 24px;">
                         <div class="clock-station-header">
                             <div>
                                 <span class="eyebrow" style="color: var(--brand);">WORKSTATION TIME CLOCK</span>
@@ -251,32 +252,114 @@
                                     <div id="shiftTimerValue" style="font-weight: 800; font-size: 24px; color: var(--brand); font-family: monospace;">00:00:00</div>
                                 </div>
                             </div>
-
-                            <div class="clock-actions-wrap">
-                                <button id="landingClockInBtn" class="btn btn-clock-in" type="button">
-                                    <span class="btn-icon">▶</span>
-                                    <span>CLOCK IN</span>
-                                </button>
-                                <button id="landingClockOutBtn" class="btn btn-clock-out" type="button" disabled>
-                                    <span class="btn-icon">⏹</span>
-                                    <span>CLOCK OUT</span>
-                                </button>
+                            <div class="clock-action-wrap">
+                                <p class="muted" style="margin-bottom: 12px; font-size: 13px;">Log your shift start time or record breaks directly to the backend database.</p>
+                                <div class="btn-group-row">
+                                    <button id="clockInButton" class="btn btn-primary btn-lg" type="button">▶ Clock In</button>
+                                    <button id="clockOutButton" class="btn btn-danger btn-lg" type="button" disabled>⏹ Clock Out</button>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="clock-station-footer">
-                            <div><strong>Clock-In Time:</strong> <span id="landingClockInTime">--:--</span></div>
-                            <div><strong>Clock-Out Time:</strong> <span id="landingClockOutTime">--:--</span></div>
-                            <div><strong>Total Shift Duration:</strong> <span id="landingWorkTimeNote">0 minutes worked</span></div>
                         </div>
                     </div>
 
-                    <!-- Recent Shift History Log on Landing Page -->
-                    <div class="card" style="margin-top: 24px; padding: 24px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                            <h3 style="margin: 0; font-size: 16px;">Today's Shift & Attendance Records</h3>
-                            <span class="badge pending" style="font-size: 11px;">Real-time Log</span>
+                    <!-- KPI Overview Stat Cards -->
+                    <div class="grid-4col stagger-card-3" style="margin-top: 24px; gap: 16px;">
+                        <div class="card stat-card">
+                            <span class="stat-icon">🕒</span>
+                            <div>
+                                <small>Today's Status</small>
+                                <strong id="dashboardAttendanceStatus">Not Clocked In</strong>
+                            </div>
                         </div>
+
+                        <div class="card stat-card">
+                            <span class="stat-icon">⏱️</span>
+                            <div>
+                                <small>Work Duration Today</small>
+                                <strong id="dashboardWorkTime">0 mins</strong>
+                            </div>
+                        </div>
+
+                        <div class="card stat-card">
+                            <span class="stat-icon">🌴</span>
+                            <div>
+                                <small>Leave Balance</small>
+                                <strong id="dashboardLeaveBalance">-- days</strong>
+                                <span id="dashboardPendingLeave" class="trend neutral">0 pending</span>
+                            </div>
+                        </div>
+
+                        <div class="card stat-card">
+                            <span class="stat-icon">📋</span>
+                            <div>
+                                <small>Active Kanban Tasks</small>
+                                <strong id="dashboardTaskCount">--</strong>
+                                <span id="dashboardTaskNote" class="trend neutral">-- tasks</span>
+                            </div>
+                        </div>
+
+                        <div class="card stat-card">
+                            <span class="stat-icon">💳</span>
+                            <div>
+                                <small>Pending Expenses</small>
+                                <strong id="dashboardExpenseCount">$0</strong>
+                                <span id="dashboardExpenseNote" class="trend neutral">0 claims</span>
+                            </div>
+                        </div>
+
+                        <div class="card stat-card">
+                            <span class="stat-icon">🎯</span>
+                            <div>
+                                <small>OKR Average Progress</small>
+                                <strong id="dashboardOkrProgress">0%</strong>
+                                <span id="dashboardOkrCount" class="trend neutral">0 OKRs</span>
+                            </div>
+                        </div>
+
+                        <div class="card stat-card">
+                            <span class="stat-icon">🚀</span>
+                            <div>
+                                <small>Onboarding Completion</small>
+                                <strong id="dashboardOnboardingProgress">0%</strong>
+                                <span id="dashboardOnboardingTasks" class="trend neutral">0 tasks</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Tasks & Activity Grid -->
+                    <div class="grid-2col stagger-card-4" style="margin-top: 24px; gap: 24px;">
+                        <div class="card" style="padding: 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3>Active Kanban Tasks</h3>
+                                <button class="btn btn-secondary" style="font-size: 12px;" onclick="showSection('tasksSection')">View All</button>
+                            </div>
+                            <div id="dashboardTaskList" class="activity-feed">
+                                <div class="empty-state">Loading tasks...</div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3>Company Announcements</h3>
+                                <button class="btn btn-secondary" style="font-size: 12px;" onclick="showSection('announcementsSection')">View All</button>
+                            </div>
+                            <div id="dashboardAnnouncementsList" class="activity-feed">
+                                <div class="empty-state">Loading announcements...</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Attendance Section -->
+                <section id="attendanceSection" class="content-section hidden">
+                    <div class="section-header-bar">
+                        <div>
+                            <p class="eyebrow">TIME & ATTENDANCE</p>
+                            <h2>Attendance Records</h2>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 24px;">
                         <div class="table-wrap">
                             <table>
                                 <thead>
@@ -284,449 +367,197 @@
                                         <th>Date</th>
                                         <th>Clock In</th>
                                         <th>Clock Out</th>
-                                        <th>Shift Duration</th>
+                                        <th>Total Work Minutes</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
-                                <tbody id="landingAttendanceTableBody">
+                                <tbody id="attendanceTableBody">
                                     <tr>
-                                        <td colspan="5" style="text-align: center; color: var(--muted); padding: 20px;">
-                                            No attendance records found for today.
-                                        </td>
+                                        <td colspan="5" class="empty">Loading attendance records...</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-
-                    <div class="grid stats-grid" style="margin-top: 24px;">
-                        <article class="card stat-card">
-                            <span class="stat-label">ATTENDANCE</span>
-                            <span id="dashboardAttendanceStatus" class="stat-value" style="font-size: 20px;">Not clocked in</span>
-                            <span id="dashboardWorkTime" class="stat-note">0 minutes worked</span>
-                        </article>
-
-                        <article class="card stat-card">
-                            <span class="stat-label">LEAVE BALANCE</span>
-                            <span id="dashboardLeaveBalance" class="stat-value">20 days</span>
-                            <span id="dashboardPendingLeave" class="stat-note">0 pending requests</span>
-                        </article>
-
-                        <article class="card stat-card">
-                            <span class="stat-label">ONBOARDING</span>
-                            <span id="dashboardOnboardingProgress" class="stat-value">0%</span>
-                            <span id="dashboardOnboardingTasks" class="stat-note">0 of 0 tasks completed</span>
-                        </article>
-
-                        <article class="card stat-card">
-                            <span class="stat-label">OKR PROGRESS</span>
-                            <span id="dashboardOkrProgress" class="stat-value">0%</span>
-                            <span id="dashboardOkrCount" class="stat-note">0 active OKRs</span>
-                        </article>
-
-                        <article class="card stat-card">
-                            <span class="stat-label">ACTIVE TASKS</span>
-                            <span id="dashboardTaskCount" class="stat-value">0</span>
-                            <span id="dashboardTaskNote" class="stat-note">0 tasks pending</span>
-                        </article>
-
-                        <article class="card stat-card">
-                            <span class="stat-label">EXPENSE CLAIMS</span>
-                            <span id="dashboardExpenseCount" class="stat-value">$0</span>
-                            <span id="dashboardExpenseNote" class="stat-note">0 pending claims</span>
-                        </article>
-                    </div>
-                </section>
-
-                <!-- Attendance Section -->
-                <section id="attendanceSection" class="content-section hidden">
-                    <div class="page-header">
-                        <div>
-                            <h1>Attendance Management</h1>
-                            <p>Track daily clock-in/out records and working history.</p>
-                        </div>
-                        <div style="display: flex; gap: 12px; align-items: center;">
-                            <button id="clockInButton" class="btn btn-primary" type="button">Clock In</button>
-                            <button id="clockOutButton" class="btn btn-secondary" type="button" disabled>Clock Out</button>
-                        </div>
-                    </div>
-
-                    <div class="card" style="margin-bottom: 24px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;">
-                        <span style="font-weight: 700; color: var(--ink);">Current Status</span>
-                        <span id="attendanceStatus" class="badge pending" style="font-size: 13px; padding: 6px 14px;">Not clocked in</span>
-                    </div>
-
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Clock In</th>
-                                    <th>Clock Out</th>
-                                    <th>Total Time</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="attendanceTableBody">
-                                <tr>
-                                    <td colspan="5" style="text-align: center; color: var(--muted); padding: 30px;">
-                                        No attendance records found.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </section>
 
                 <!-- Leave Section -->
                 <section id="leaveSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="section-header-bar">
                         <div>
-                            <h1>Leave Requests</h1>
-                            <p>Submit and review personal leave applications.</p>
+                            <p class="eyebrow">TIME OFF</p>
+                            <h2>Leave Management</h2>
                         </div>
                     </div>
 
-                    <div class="card" style="margin-bottom: 28px; padding: 24px;">
-                        <h3 style="margin-top: 0; margin-bottom: 18px;">Apply for Leave</h3>
-                        <form id="leaveForm">
-                            <div class="form-grid">
-                                <div>
-                                    <label for="leaveType">Leave Type</label>
+                    <div class="grid-2col" style="gap: 24px;">
+                        <div class="card" style="padding: 24px;">
+                            <h3>Submit Leave Request</h3>
+                            <form id="leaveForm" class="form-stacked" style="margin-top: 16px;">
+                                <label>
+                                    Leave Type
                                     <select id="leaveType" required>
-                                        <option value="annual">Annual Leave</option>
+                                        <option value="annual">Annual Vacation</option>
                                         <option value="sick">Sick Leave</option>
-                                        <option value="casual">Casual Leave</option>
+                                        <option value="casual">Casual PTO</option>
+                                        <option value="unpaid">Unpaid Leave</option>
                                     </select>
+                                </label>
+                                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                                    <label>
+                                        Start Date
+                                        <input id="leaveStartDate" type="date" required />
+                                    </label>
+                                    <label>
+                                        End Date
+                                        <input id="leaveEndDate" type="date" required />
+                                    </label>
                                 </div>
-                                <div>
-                                    <label for="leaveStartDate">Start Date</label>
-                                    <input type="date" id="leaveStartDate" required />
-                                </div>
-                                <div>
-                                    <label for="leaveEndDate">End Date</label>
-                                    <input type="date" id="leaveEndDate" required />
-                                </div>
-                                <div class="full">
-                                    <label for="leaveReason">Reason</label>
-                                    <textarea id="leaveReason" rows="3" placeholder="Explain the reason for leave request..." required></textarea>
-                                </div>
-                            </div>
-                            <button class="btn btn-primary" type="submit" style="margin-top: 18px;">Submit Request</button>
-                        </form>
-                    </div>
+                                <label>
+                                    Reason for Request
+                                    <textarea id="leaveReason" rows="3" placeholder="Briefly describe your leave request..."></textarea>
+                                </label>
+                                <button class="btn btn-primary" type="submit">Submit Request</button>
+                            </form>
+                        </div>
 
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>Total Days</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="leaveTableBody">
-                                <tr>
-                                    <td colspan="6" style="text-align: center; color: var(--muted); padding: 30px;">
-                                        No leave requests found.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="card" style="padding: 24px;">
+                            <h3>My Leave Request History</h3>
+                            <div id="leaveList" class="reviews-feed" style="margin-top: 16px;">
+                                <div class="empty-state">Loading leave history...</div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
                 <!-- Onboarding Section -->
                 <section id="onboardingSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="section-header-bar">
                         <div>
-                            <h1>Onboarding Checklist</h1>
-                            <p>Complete onboarding items and track progress.</p>
+                            <p class="eyebrow">TEAM ONBOARDING</p>
+                            <h2>Onboarding Checklist</h2>
                         </div>
-                        <button id="createDefaultTasksButton" class="btn btn-secondary" type="button">Seed Default Tasks</button>
                     </div>
 
-                    <div class="card" style="margin-bottom: 24px; padding: 24px;">
-                        <h3 style="margin-top: 0; margin-bottom: 16px;">Add New Task</h3>
-                        <form id="onboardingForm">
-                            <div class="form-grid">
-                                <div>
-                                    <label for="taskTitle">Task Title</label>
-                                    <input id="taskTitle" type="text" placeholder="e.g. Set up 2FA security" required />
-                                </div>
-                                <div>
-                                    <label for="taskDueDate">Due Date</label>
-                                    <input id="taskDueDate" type="date" />
-                                </div>
-                                <div class="full">
-                                    <label for="taskDescription">Description</label>
-                                    <input id="taskDescription" type="text" placeholder="Task details or requirements..." />
-                                </div>
-                            </div>
-                            <button class="btn btn-primary" type="submit" style="margin-top: 18px;">Add Task</button>
-                        </form>
-                    </div>
-
-                    <div id="onboardingTaskList" class="task-list">
-                        <div class="empty">No onboarding tasks created yet.</div>
+                    <div class="card" style="padding: 24px;">
+                        <div id="onboardingTaskList" class="checklist">
+                            <div class="empty-state">Loading onboarding checklist...</div>
+                        </div>
                     </div>
                 </section>
 
                 <!-- OKR Section -->
                 <section id="okrSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="section-header-bar">
                         <div>
-                            <h1>Objectives & Key Results (OKRs)</h1>
-                            <p>Define strategic objectives and monitor performance metrics.</p>
+                            <p class="eyebrow">GOALS & STRATEGY</p>
+                            <h2>Objectives and Key Results</h2>
                         </div>
                     </div>
 
-                    <div class="card" style="margin-bottom: 28px; padding: 24px;">
-                        <h3 style="margin-top: 0; margin-bottom: 16px;">Set New Objective</h3>
-                        <form id="okrForm">
-                            <div class="form-grid">
-                                <div>
-                                    <label for="okrObjective">Objective</label>
-                                    <input id="okrObjective" type="text" placeholder="e.g. Expand platform security" required />
-                                </div>
-                                <div>
-                                    <label for="okrQuarter">Quarter</label>
-                                    <input id="okrQuarter" type="text" value="Q3 2026" required />
-                                </div>
-                                <div class="full">
-                                    <label for="okrKeyResult">Key Result</label>
-                                    <textarea id="okrKeyResult" rows="2" placeholder="Measurable outcome..." required></textarea>
-                                </div>
-                                <div>
-                                    <label for="okrProgress">Initial Progress (%)</label>
-                                    <input id="okrProgress" type="number" min="0" max="100" value="0" required />
-                                </div>
-                            </div>
-                            <button class="btn btn-primary" type="submit" style="margin-top: 18px;">Save Objective</button>
-                        </form>
-                    </div>
-
-                    <div id="okrList" class="okr-list">
-                        <div class="empty">No OKRs created yet.</div>
-                    </div>
-                </section>
-
-                <!-- Profile Section -->
-                <section id="profileSection" class="content-section hidden">
-                    <div class="page-header">
-                        <div>
-                            <h1>Admin Profile</h1>
-                            <p>Manage account settings and contact details.</p>
-                        </div>
-                    </div>
-
-                    <div class="card" style="padding: 28px;">
-                        <form id="profileForm">
-                            <div class="form-grid">
-                                <div>
-                                    <label for="profileName">Full Name</label>
-                                    <input id="profileName" type="text" required />
-                                </div>
-                                <div>
-                                    <label for="profileEmail">Email Address</label>
-                                    <input id="profileEmail" type="email" required />
-                                </div>
-                                <div>
-                                    <label for="profileJobTitle">Job Title</label>
-                                    <input id="profileJobTitle" type="text" />
-                                </div>
-                                <div>
-                                    <label for="profileDepartment">Department</label>
-                                    <input id="profileDepartment" type="text" />
-                                </div>
-                                <div class="full">
-                                    <label for="profilePhone">Phone Number</label>
-                                    <input id="profilePhone" type="text" />
-                                </div>
-                            </div>
-                            <button class="btn btn-primary" type="submit" style="margin-top: 20px;">Update Profile</button>
-                        </form>
+                    <div id="okrList" class="cards-grid">
+                        <div class="empty-state">Loading OKRs...</div>
                     </div>
                 </section>
 
                 <!-- Tasks & Projects Section -->
                 <section id="tasksSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="section-header-bar">
                         <div>
-                            <h1>Tasks & Project Board</h1>
-                            <p>Track team tasks, assign priorities, and manage project progress.</p>
+                            <p class="eyebrow">PROJECT MANAGEMENT</p>
+                            <h2>Kanban Task Board</h2>
                         </div>
                     </div>
 
-                    <div class="card" style="padding: 24px; margin-bottom: 24px;">
-                        <h3 style="margin-bottom: 16px;">Create New Task</h3>
-                        <form id="taskForm" class="form-grid">
-                            <div class="full">
-                                <label for="taskTitle">Task Title</label>
-                                <input id="taskTitle" type="text" placeholder="e.g. Update user authentication module" required />
+                    <div class="kanban-grid">
+                        <div class="kanban-column">
+                            <h3>To Do</h3>
+                            <div id="tasksTodo" class="kanban-tasks">
+                                <div class="empty-state">Loading tasks...</div>
                             </div>
-                            <div class="full">
-                                <label for="taskDescription">Description</label>
-                                <input id="taskDescription" type="text" placeholder="Task overview and instructions..." />
+                        </div>
+                        <div class="kanban-column">
+                            <h3>In Progress</h3>
+                            <div id="tasksInProgress" class="kanban-tasks">
+                                <div class="empty-state">Loading tasks...</div>
                             </div>
-                            <div>
-                                <label for="taskPriority">Priority Level</label>
-                                <select id="taskPriority">
-                                    <option value="low">Low Priority</option>
-                                    <option value="medium" selected>Medium Priority</option>
-                                    <option value="high">High Priority</option>
-                                    <option value="urgent">Urgent</option>
-                                </select>
+                        </div>
+                        <div class="kanban-column">
+                            <h3>Completed</h3>
+                            <div id="tasksCompleted" class="kanban-tasks">
+                                <div class="empty-state">Loading tasks...</div>
                             </div>
-                            <div>
-                                <label for="taskDueDate">Due Date</label>
-                                <input id="taskDueDate" type="date" />
-                            </div>
-                            <div class="full">
-                                <button class="btn btn-primary" type="submit">Add Task</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div style="display: flex; gap: 8px; margin-bottom: 20px;" id="taskFilterTabs">
-                        <button class="filter-chip active" data-filter="all">All Tasks</button>
-                        <button class="filter-chip" data-filter="todo">To Do</button>
-                        <button class="filter-chip" data-filter="in_progress">In Progress</button>
-                        <button class="filter-chip" data-filter="review">In Review</button>
-                        <button class="filter-chip" data-filter="completed">Completed</button>
-                    </div>
-
-                    <div id="taskList" class="task-grid">
-                        <div class="empty">No tasks found.</div>
+                        </div>
                     </div>
                 </section>
 
                 <!-- Announcements Section -->
                 <section id="announcementsSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="section-header-bar">
                         <div>
-                            <h1>Company Bulletin & Announcements</h1>
-                            <p>Stay up to date with company news, policy updates, and events.</p>
+                            <p class="eyebrow">COMMUNICATION</p>
+                            <h2>Company Broadcasts</h2>
                         </div>
                     </div>
 
-                    <div class="card" style="padding: 24px; margin-bottom: 24px;">
-                        <h3 style="margin-bottom: 16px;">Post Announcement</h3>
-                        <form id="announcementForm" style="display: flex; flex-direction: column; gap: 14px;">
-                            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px;">
-                                <input id="announcementTitle" type="text" placeholder="Announcement Headline" required />
-                                <select id="announcementCategory">
-                                    <option value="General">General</option>
-                                    <option value="Policy">Policy Update</option>
-                                    <option value="IT">IT & Tech</option>
-                                    <option value="Event">Team Event</option>
-                                </select>
-                                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
-                                    <input id="announcementPinned" type="checkbox" style="width: auto;" /> Pin Notice
-                                </label>
-                            </div>
-                            <textarea id="announcementContent" rows="3" placeholder="Enter announcement body text..." required style="padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: inherit; resize: vertical;"></textarea>
-                            <button class="btn btn-primary" type="submit" style="align-self: flex-start;">Publish Announcement</button>
-                        </form>
-                    </div>
-
-                    <div id="announcementFeed" class="announcement-feed">
-                        <div class="empty">No announcements published yet.</div>
+                    <div id="announcementsList" class="reviews-feed">
+                        <div class="empty-state">Loading broadcasts...</div>
                     </div>
                 </section>
 
                 <!-- Payroll & Expenses Section -->
                 <section id="payrollSection" class="content-section hidden">
-                    <div class="page-header">
+                    <div class="section-header-bar">
                         <div>
-                            <h1>Payroll & Expense Claims</h1>
-                            <p>View compensation details and submit reimbursement requests.</p>
+                            <p class="eyebrow">FINANCIAL REIMBURSEMENTS</p>
+                            <h2>Payroll & Expenses</h2>
                         </div>
                     </div>
 
-                    <div class="payroll-grid" style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px; margin-bottom: 24px;">
+                    <div class="grid-2col" style="gap: 24px;">
                         <div class="card" style="padding: 24px;">
-                            <h3 style="margin-bottom: 16px;">Monthly Payslip Preview</h3>
-                            <div style="display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px;">
-                                <div style="display: flex; justify-content: space-between; font-size: 14px;">
-                                    <span style="color: var(--muted-color);">Base Salary</span>
-                                    <strong>$7,500.00</strong>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; font-size: 14px;">
-                                    <span style="color: var(--muted-color);">Remote Housing Allowance</span>
-                                    <strong style="color: var(--success-color);">+$500.00</strong>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; font-size: 14px;">
-                                    <span style="color: var(--muted-color);">Tax Deductions (Estimated)</span>
-                                    <strong style="color: var(--danger-color);">-$1,250.00</strong>
-                                </div>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800;">
-                                <span>Estimated Net Salary</span>
-                                <span style="color: var(--brand-accent); font-size: 20px;">$6,750.00</span>
-                            </div>
-                        </div>
-
-                        <div class="card" style="padding: 24px;">
-                            <h3 style="margin-bottom: 16px;">Submit Expense Reimbursement</h3>
-                            <form id="expenseForm" class="form-grid">
-                                <div>
-                                    <label for="expenseCategory">Expense Category</label>
-                                    <select id="expenseCategory">
-                                        <option value="Travel">Travel & Transportation</option>
-                                        <option value="Equipment">Hardware & Equipment</option>
-                                        <option value="Software">Software & Licenses</option>
-                                        <option value="Meals">Client Meals & Dining</option>
-                                        <option value="General" selected>Other / General</option>
+                            <h3>Submit Expense Reimbursement</h3>
+                            <form id="expenseForm" class="form-stacked" style="margin-top: 16px;">
+                                <label>
+                                    Expense Category
+                                    <select id="expenseCategory" required>
+                                        <option value="Software & Tools">Software & Cloud Tools</option>
+                                        <option value="Travel & Meals">Business Travel & Meals</option>
+                                        <option value="Hardware & Office">Hardware & WFH Office Setup</option>
+                                        <option value="Learning & Certifications">Learning & Conferences</option>
                                     </select>
-                                </div>
-                                <div>
-                                    <label for="expenseAmount">Amount ($ USD)</label>
-                                    <input id="expenseAmount" type="number" min="1" step="1" placeholder="e.g. 150" required />
-                                </div>
-                                <div>
-                                    <label for="expenseMerchant">Merchant / Vendor</label>
-                                    <input id="expenseMerchant" type="text" placeholder="e.g. AWS / Delta Air" required />
-                                </div>
-                                <div>
-                                    <label for="expenseDate">Expense Date</label>
-                                    <input id="expenseDate" type="date" required />
-                                </div>
-                                <div class="full">
-                                    <label for="expenseDescription">Description / Business Purpose</label>
-                                    <input id="expenseDescription" type="text" placeholder="e.g. Monthly cloud server infrastructure cost" />
-                                </div>
-                                <div class="full">
-                                    <button class="btn btn-primary" type="submit">Submit Claim</button>
-                                </div>
+                                </label>
+                                <label>
+                                    Amount ($ USD)
+                                    <input id="expenseAmount" type="number" step="0.01" min="1" placeholder="e.g. 150.00" required />
+                                </label>
+                                <label>
+                                    Description / Vendor
+                                    <textarea id="expenseDescription" rows="3" placeholder="Vendor name, purpose, or receipt notes..." required></textarea>
+                                </label>
+                                <button class="btn btn-primary" type="submit">Submit Claim</button>
                             </form>
                         </div>
-                    </div>
 
-                    <div class="card" style="padding: 24px;">
-                        <h3 style="margin-bottom: 16px;">Expense Reimbursement Claims History</h3>
-                        <div class="table-wrap">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Category</th>
-                                        <th>Merchant</th>
-                                        <th>Amount</th>
-                                        <th>Description</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="expenseTableBody">
-                                    <tr>
-                                        <td colspan="7" class="empty">No expense claims submitted yet.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="card" style="padding: 24px;">
+                            <h3>My Expense Claims</h3>
+                            <div class="table-wrap" style="margin-top: 16px;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Amount</th>
+                                            <th>Description</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="expenseTableBody">
+                                        <tr>
+                                            <td colspan="4" class="empty">Loading expense claims...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -735,133 +566,127 @@
                 <section id="employeesSection" class="content-section hidden">
                     <div class="section-header-bar">
                         <div>
-                            <p class="eyebrow">WORKFORCE TEAM</p>
-                            <h2>Staff & Employee Directory</h2>
+                            <p class="eyebrow">WORKFORCE DIRECTORY</p>
+                            <h2>Staff Directory</h2>
                         </div>
-                        <button id="openAddEmployeeBtn" class="btn btn-primary" type="button">+ Add Employee</button>
+                        <button id="openAddEmployeeBtn" class="btn btn-primary" type="button">+ Add Employee Profile</button>
                     </div>
 
-                    <!-- Search & Filter Controls -->
                     <div class="card" style="margin-bottom: 24px; padding: 20px;">
                         <div class="filter-controls-row">
-                            <div class="search-box">
-                                <span class="search-icon">🔍</span>
-                                <input id="employeeSearchInput" type="text" placeholder="Search employee by name, email or job title..." />
+                            <div class="filter-group" style="flex: 1;">
+                                <label for="employeeSearchInput">Search Staff:</label>
+                                <input id="employeeSearchInput" type="text" placeholder="Search by name or title..." />
                             </div>
                             <div class="filter-group">
                                 <label for="employeeDeptFilter">Department:</label>
                                 <select id="employeeDeptFilter">
                                     <option value="All">All Departments</option>
                                     <option value="Engineering">Engineering</option>
+                                    <option value="Product">Product</option>
                                     <option value="People Operations">People Operations</option>
                                     <option value="Operations">Operations</option>
-                                    <option value="Development">Development</option>
-                                    <option value="Administration">Administration</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Support">Support</option>
+                                    <option value="Marketing">Marketing</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Staff Cards Grid -->
                     <div id="employeeGrid" class="cards-grid">
-                        <div class="empty-state">Loading employee directory...</div>
+                        <div class="empty-state">Loading staff directory...</div>
                     </div>
                 </section>
 
-                <!-- Performance Reviews & Peer Recognition Section -->
+                <!-- Performance & Kudos Section -->
                 <section id="reviewsSection" class="content-section hidden">
                     <div class="section-header-bar">
                         <div>
-                            <p class="eyebrow">GROWTH & CULTURE</p>
-                            <h2>Performance & Peer Recognition</h2>
+                            <p class="eyebrow">FEEDBACK & CULTURE</p>
+                            <h2>Performance Reviews & Kudos</h2>
                         </div>
                     </div>
 
-                    <!-- Module Tabs -->
-                    <div class="sub-tab-bar">
-                        <button class="sub-tab active" data-tab="performanceTab">⭐ Performance Reviews</button>
-                        <button class="sub-tab" data-tab="kudosTab">🙌 Peer Kudos & Shoutouts</button>
+                    <div class="sub-tabs-row" style="margin-bottom: 20px;">
+                        <button class="sub-tab active" data-tab="tabPerformance">⭐ Performance Reviews</button>
+                        <button class="sub-tab" data-tab="tabKudos">🎉 Peer Shoutouts (Kudos)</button>
                     </div>
 
-                    <!-- Performance Tab Content -->
-                    <div id="performanceTab" class="sub-tab-content">
-                        <div class="grid-2col" style="grid-template-columns: 1fr 2fr; gap: 24px;">
+                    <!-- Tab 1: Performance Reviews -->
+                    <div id="tabPerformance" class="sub-tab-content">
+                        <div class="grid-2col" style="gap: 24px;">
                             <div class="card" style="padding: 24px;">
                                 <h3>Conduct Performance Review</h3>
-                                <form id="performanceForm" class="form-stacked">
+                                <form id="reviewForm" class="form-stacked" style="margin-top: 16px;">
                                     <label>
-                                        Employee ID / Name
+                                        Select Employee
                                         <select id="reviewEmployeeSelect" required>
                                             <option value="">Select Employee...</option>
                                         </select>
                                     </label>
                                     <label>
-                                        Review Cycle
-                                        <input id="reviewCycle" type="text" value="Q3 2026" required />
-                                    </label>
-                                    <label>
-                                        Rating (1 to 5 Stars)
-                                        <div id="starRatingPicker" class="star-picker">
+                                        Performance Score (1 - 5 Stars)
+                                        <div id="starRatingPicker" class="star-rating-picker" style="margin-top: 6px;">
                                             <span data-star="1">★</span>
                                             <span data-star="2">★</span>
                                             <span data-star="3">★</span>
-                                            <span data-star="4">★</span>
+                                            <span data-star="4" class="active">★</span>
                                             <span data-star="5" class="active">★</span>
                                         </div>
                                         <input id="reviewRatingInput" type="hidden" value="5" />
                                     </label>
                                     <label>
-                                        Key Strengths
-                                        <textarea id="reviewStrengths" rows="3" placeholder="Highlight top achievements and strengths..." required></textarea>
+                                        Review Cycle Period
+                                        <input id="reviewPeriod" type="text" value="Q3 2026 Performance Review" required />
                                     </label>
                                     <label>
-                                        Growth & Development Areas
-                                        <textarea id="reviewGrowth" rows="2" placeholder="Areas for growth and goals..."></textarea>
+                                        Feedback Comments & Growth Areas
+                                        <textarea id="reviewFeedback" rows="3" placeholder="Provide detailed constructive feedback..." required></textarea>
                                     </label>
-                                    <button class="btn btn-primary btn-block" type="submit">Submit Performance Review</button>
+                                    <button class="btn btn-primary" type="submit">Submit Review</button>
                                 </form>
                             </div>
 
                             <div class="card" style="padding: 24px;">
-                                <h3>Review History & Feedback Log</h3>
-                                <div id="reviewsList" class="reviews-feed">
-                                    <div class="empty-state">Loading reviews history...</div>
+                                <h3>Recent Review Logs</h3>
+                                <div id="reviewsList" class="reviews-feed" style="margin-top: 16px;">
+                                    <div class="empty-state">Loading reviews...</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Kudos Tab Content -->
-                    <div id="kudosTab" class="sub-tab-content hidden">
-                        <div class="grid-2col" style="grid-template-columns: 1fr 2fr; gap: 24px;">
+                    <!-- Tab 2: Kudos Wall -->
+                    <div id="tabKudos" class="sub-tab-content hidden">
+                        <div class="grid-2col" style="gap: 24px;">
                             <div class="card" style="padding: 24px;">
-                                <h3>Send Peer Kudos Shoutout 🎉</h3>
-                                <form id="kudosForm" class="form-stacked">
+                                <h3>Post Peer Shoutout</h3>
+                                <form id="kudosForm" class="form-stacked" style="margin-top: 16px;">
                                     <label>
-                                        Recipient Name
-                                        <input id="kudosReceiver" type="text" placeholder="e.g. Sarah Connor" required />
+                                        Teammate Name
+                                        <input id="kudosReceiver" type="text" placeholder="e.g. Alex Rivera" required />
                                     </label>
                                     <label>
-                                        Recognition Category
+                                        Shoutout Category
                                         <select id="kudosCategory">
-                                            <option value="Teamwork">🤝 Teamwork & Collaboration</option>
-                                            <option value="Innovation">💡 Innovation & Problem Solving</option>
-                                            <option value="Leadership">🌟 Leadership & Mentorship</option>
-                                            <option value="Customer First">🎯 Customer Excellence</option>
-                                            <option value="Going Extra Mile">🚀 Going The Extra Mile</option>
+                                            <option value="Innovation">Innovation</option>
+                                            <option value="Leadership">Leadership</option>
+                                            <option value="Teamwork">Teamwork</option>
+                                            <option value="Customer Obsession">Customer Obsession</option>
                                         </select>
                                     </label>
                                     <label>
-                                        Personal Message / Shoutout
-                                        <textarea id="kudosMessage" rows="4" placeholder="Write your praise or shoutout..." required></textarea>
+                                        Message of Praise
+                                        <textarea id="kudosMessage" rows="3" placeholder="Recognize your teammate's hard work..." required></textarea>
                                     </label>
-                                    <button class="btn btn-primary btn-block" type="submit">Post Shoutout</button>
+                                    <button class="btn btn-primary" type="submit">Post Shoutout</button>
                                 </form>
                             </div>
 
                             <div class="card" style="padding: 24px;">
-                                <h3>Company Wall of Recognition 🏆</h3>
-                                <div id="kudosFeed" class="kudos-feed">
+                                <h3>Wall of Recognition</h3>
+                                <div id="kudosFeed" class="reviews-feed" style="margin-top: 16px;">
                                     <div class="empty-state">Loading peer shoutouts...</div>
                                 </div>
                             </div>
@@ -873,23 +698,22 @@
                 <section id="documentsSection" class="content-section hidden">
                     <div class="section-header-bar">
                         <div>
-                            <p class="eyebrow">COMPLIANCE & GUIDELINES</p>
-                            <h2>Policy & Document Center</h2>
+                            <p class="eyebrow">POLICY & REPOSITORY</p>
+                            <h2>Document Center</h2>
                         </div>
                     </div>
 
-                    <!-- Documents Grid -->
-                    <div id="documentGrid" class="cards-grid">
-                        <div class="empty-state">Loading company documents...</div>
+                    <div id="documentsGrid" class="cards-grid">
+                        <div class="empty-state">Loading policy documents...</div>
                     </div>
                 </section>
 
-                <!-- Analytics & Reports Section -->
+                <!-- Executive Analytics Section -->
                 <section id="analyticsSection" class="content-section hidden">
                     <div class="section-header-bar">
                         <div>
-                            <p class="eyebrow">WORKFORCE INSIGHTS</p>
-                            <h2>Executive Analytics & CSV Reports</h2>
+                            <p class="eyebrow">EXECUTIVE METRICS</p>
+                            <h2>Analytics & Reports</h2>
                         </div>
                         <div class="export-actions-header">
                             <button id="exportAttendanceBtn" class="btn btn-secondary" type="button">⬇ Attendance CSV</button>
@@ -1056,8 +880,140 @@
                         <div class="empty-state">Loading training courses...</div>
                     </div>
                 </section>
+
+                <!-- Profile Section -->
+                <section id="profileSection" class="content-section hidden">
+                    <div class="section-header-bar">
+                        <div>
+                            <p class="eyebrow">ACCOUNT SETTINGS</p>
+                            <h2>My Profile</h2>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 24px; max-width: 640px;">
+                        <form id="profileForm" class="form-stacked">
+                            <label>
+                                Full Name
+                                <input id="profileName" type="text" required />
+                            </label>
+                            <label>
+                                Work Email
+                                <input id="profileEmail" type="email" required />
+                            </label>
+                            <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                                <label>
+                                    Job Title
+                                    <input id="profileJobTitle" type="text" />
+                                </label>
+                                <label>
+                                    Department
+                                    <input id="profileDepartment" type="text" />
+                                </label>
+                            </div>
+                            <label>
+                                Phone Number
+                                <input id="profilePhone" type="text" />
+                            </label>
+                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                        </form>
+                    </div>
+                </section>
             </div>
         </section>
+    </div>
+
+    <!-- Modal: Add Employee Profile -->
+    <div id="addEmployeeModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Add New Employee Profile</h3>
+                <button id="closeAddEmployeeBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <form id="addEmployeeForm" class="form-stacked" style="padding: 24px;">
+                <label>
+                    Full Name
+                    <input id="newEmpName" type="text" placeholder="e.g. Keya Rahman" required />
+                </label>
+                <label>
+                    Work Email
+                    <input id="newEmpEmail" type="email" placeholder="e.g. keya@ems.local" required />
+                </label>
+                <label>
+                    Default Password
+                    <input id="newEmpPassword" type="password" placeholder="Minimum 6 characters" required />
+                </label>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Job Title
+                        <input id="newEmpTitle" type="text" placeholder="e.g. Senior Software Engineer" required />
+                    </label>
+                    <label>
+                        Department
+                        <select id="newEmpDept">
+                            <option value="Engineering">Engineering</option>
+                            <option value="Product">Product</option>
+                            <option value="People Operations">People Operations</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Support">Support</option>
+                            <option value="Marketing">Marketing</option>
+                        </select>
+                    </label>
+                </div>
+                <label>
+                    Phone Number
+                    <input id="newEmpPhone" type="text" placeholder="e.g. +1 555-0192" />
+                </label>
+                <label>
+                    Annual Leave Allowance (Days)
+                    <input id="newEmpLeave" type="number" value="20" min="0" max="365" required />
+                </label>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button class="btn btn-secondary" type="button" id="cancelAddEmployeeBtn">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Create Employee Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Employee Detail Drawer -->
+    <div id="employeeDetailModal" class="modal-backdrop hidden">
+        <div class="modal-card" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Employee Profile Details</h3>
+                <button id="closeEmpDetailBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <div style="padding: 24px;">
+                <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+                    <div id="empDetailAvatar" class="employee-avatar" style="width: 60px; height: 60px; font-size: 24px;">EM</div>
+                    <div>
+                        <h2 id="empDetailName" style="margin: 0; font-size: 20px;">Employee Name</h2>
+                        <span id="empDetailTitle" class="muted" style="font-weight: 600; font-size: 14px;">Job Title</span>
+                    </div>
+                </div>
+                <div class="grid-2col" style="gap: 16px; margin-bottom: 20px;">
+                    <div>
+                        <small class="muted" style="display: block; font-weight: 700;">WORK EMAIL</small>
+                        <strong id="empDetailEmail" style="font-size: 14px;">email@domain.com</strong>
+                    </div>
+                    <div>
+                        <small class="muted" style="display: block; font-weight: 700;">DEPARTMENT</small>
+                        <strong id="empDetailDept" style="font-size: 14px;">Engineering</strong>
+                    </div>
+                    <div>
+                        <small class="muted" style="display: block; font-weight: 700;">PHONE</small>
+                        <strong id="empDetailPhone" style="font-size: 14px;">+1 555-0192</strong>
+                    </div>
+                    <div>
+                        <small class="muted" style="display: block; font-weight: 700;">LEAVE ALLOWANCE</small>
+                        <strong id="empDetailLeave" style="font-size: 14px;">20 Days Available</strong>
+                    </div>
+                </div>
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
+                    <button id="closeEmpDetailBtn2" class="btn btn-secondary" type="button">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Modal: Add Work Shift -->
@@ -1241,98 +1197,6 @@
         </div>
     </div>
 
-    <!-- Modal Dialog for Add Employee -->
-    <div id="addEmployeeModal" class="modal-backdrop hidden">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3>Add New Employee Profile</h3>
-                <button id="closeAddEmployeeBtn" class="modal-close-btn">&times;</button>
-            </div>
-            <form id="addEmployeeForm" class="form-stacked" style="padding: 24px;">
-                <label>
-                    Full Name
-                    <input id="newEmpName" type="text" placeholder="e.g. Keya Rahman" required />
-                </label>
-                <label>
-                    Work Email
-                    <input id="newEmpEmail" type="email" placeholder="e.g. keya@ems.local" required />
-                </label>
-                <label>
-                    Default Password
-                    <input id="newEmpPassword" type="password" placeholder="Minimum 6 characters" required />
-                </label>
-                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
-                    <label>
-                        Job Title
-                        <input id="newEmpTitle" type="text" placeholder="e.g. Senior Software Engineer" required />
-                    </label>
-                    <label>
-                        Department
-                        <select id="newEmpDept">
-                            <option value="Engineering">Engineering</option>
-                            <option value="People Operations">People Operations</option>
-                            <option value="Operations">Operations</option>
-                            <option value="Development">Development</option>
-                            <option value="Administration">Administration</option>
-                        </select>
-                    </label>
-                </div>
-                <label>
-                    Phone Number
-                    <input id="newEmpPhone" type="text" placeholder="e.g. +1 555-0192" />
-                </label>
-                <label>
-                    Annual Leave Allowance (Days)
-                    <input id="newEmpLeave" type="number" value="20" min="0" max="365" required />
-                </label>
-                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
-                    <button class="btn btn-secondary" type="button" id="cancelAddEmployeeBtn">Cancel</button>
-                    <button class="btn btn-primary" type="submit">Create Employee Profile</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal: Employee Detail Drawer -->
-    <div id="employeeDetailModal" class="modal-backdrop hidden">
-        <div class="modal-card" style="max-width: 600px;">
-            <div class="modal-header">
-                <h3>Employee Profile Details</h3>
-                <button id="closeEmpDetailBtn" class="modal-close-btn">&times;</button>
-            </div>
-            <div style="padding: 24px;">
-                <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-                    <div id="empDetailAvatar" class="employee-avatar" style="width: 60px; height: 60px; font-size: 24px;">EM</div>
-                    <div>
-                        <h2 id="empDetailName" style="margin: 0; font-size: 20px;">Employee Name</h2>
-                        <span id="empDetailTitle" class="muted" style="font-weight: 600; font-size: 14px;">Job Title</span>
-                    </div>
-                </div>
-                <div class="grid-2col" style="gap: 16px; margin-bottom: 20px;">
-                    <div>
-                        <small class="muted" style="display: block; font-weight: 700;">WORK EMAIL</small>
-                        <strong id="empDetailEmail" style="font-size: 14px;">email@domain.com</strong>
-                    </div>
-                    <div>
-                        <small class="muted" style="display: block; font-weight: 700;">DEPARTMENT</small>
-                        <strong id="empDetailDept" style="font-size: 14px;">Engineering</strong>
-                    </div>
-                    <div>
-                        <small class="muted" style="display: block; font-weight: 700;">PHONE</small>
-                        <strong id="empDetailPhone" style="font-size: 14px;">+1 555-0192</strong>
-                    </div>
-                    <div>
-                        <small class="muted" style="display: block; font-weight: 700;">LEAVE ALLOWANCE</small>
-                        <strong id="empDetailLeave" style="font-size: 14px;">20 Days Available</strong>
-                    </div>
-                </div>
-                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
-                    <button id="closeEmpDetailBtn2" class="btn btn-secondary" type="button">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal: Universal Command Palette (Ctrl+K) -->
     <div id="cmdPaletteModal" class="modal-backdrop hidden">
         <div class="modal-card" style="max-width: 500px; margin-top: 80px; align-self: flex-start;">
@@ -1359,6 +1223,6 @@
         </div>
     </div>
 
-    <script src="js/script.js"></script>
+    <script type="module" src="js/script.js"></script>
 </body>
 </html>
