@@ -764,11 +764,22 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from auth import hash_password
 from database import Base, SessionLocal, engine
-from models import Admin, CompanyDocument, Kudos, PerformanceReview
+from models import (
+    Admin,
+    CompanyDocument,
+    CompanyEvent,
+    ITAsset,
+    Kudos,
+    PerformanceReview,
+    ShiftSchedule,
+    TrainingCourse,
+)
 from routers import (
     analytics,
     announcements,
+    assets,
     attendance,
+    calendar,
     dashboard,
     documents,
     employees,
@@ -778,7 +789,9 @@ from routers import (
     okrs,
     onboarding,
     reviews,
+    shifts,
     tasks,
+    trainings,
 )
 
 
