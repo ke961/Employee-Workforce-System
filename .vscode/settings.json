@@ -1,3 +1,19 @@
 {
-    "python-envs.defaultEnvManager": "ms-python.python:system"
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "files.associations": {
+        "*.html": "html"
+    },
+    "html.validate.scripts": true,
+    "html.validate.styles": true,
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/venv": true,
+        "**/.venv": true,
+        "**/__pycache__": true
+    },
+    "files.watcherExclude": {
+        "**/node_modules/**": true,
+        "**/venv/**": true,
+        "**/.venv/**": true
+    }
 }

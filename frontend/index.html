@@ -44,14 +44,16 @@
                 <h2>Sign in to your workspace</h2>
                 <p class="muted">Enter your registered email and password to access your dashboard.</p>
 
-                <label>
-                    Email
-                    <input id="email" type="email" placeholder="e.g. employee@gmail.com" autocomplete="email" required />
-                </label>
-                <label>
-                    Password
-                    <input id="password" type="password" placeholder="Enter password" autocomplete="current-password" required />
-                </label>
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="email" style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px;">Email Address</label>
+                    <input id="email" name="email" type="email" placeholder="e.g. employee@gmail.com" autocomplete="email" required style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--ink);" />
+                </div>
+
+                <div class="form-group" style="margin-bottom: 18px;">
+                    <label for="password" style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px;">Password</label>
+                    <input id="password" name="password" type="password" placeholder="Enter password" autocomplete="current-password" required style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--ink);" />
+                </div>
+
                 <button class="btn btn-primary btn-block" type="submit">Sign in</button>
 
                 <!-- One-Click Demo Sign In Selector -->

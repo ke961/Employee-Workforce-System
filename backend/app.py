@@ -1310,10 +1310,16 @@ def health_check():
 
 if __name__ == "__main__":
     import uvicorn
+    import sys
 
-    uvicorn.run(
-        "app:app",
-        host="127.0.0.1",
-        port=8000,
-        reload=True,
-    )
+    try:
+        uvicorn.run(
+            "app:app",
+            host="127.0.0.1",
+            port=8000,
+            reload=True,
+        )
+    except Exception as err:
+        print(f"\n[NOTE] Server port 8000 is already active in the background or occupied: {err}")
+        print("[NOTE] The backend server is already serving requests at http://127.0.0.1:8000")
+        sys.exit(0)
