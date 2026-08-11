@@ -2724,7 +2724,73 @@ document.addEventListener("DOMContentLoaded", () => {
     [closeEmpDetailBtn, closeEmpDetailBtn2].forEach(btn => {
         if (btn && empDetailModal) btn.addEventListener("click", () => empDetailModal.classList.add("hidden"));
     });
+
+    // Command Palette Open & Close Handlers
+    const cmdBtn = document.getElementById("cmdPaletteBtn");
+    const cmdModal = document.getElementById("cmdPaletteModal");
+    const closeCmdBtn = document.getElementById("closeCmdPaletteBtn");
+    const cmdSearch = document.getElementById("cmdSearchInput");
+
+    if (cmdBtn && cmdModal) {
+        cmdBtn.addEventListener("click", () => {
+            cmdModal.classList.remove("hidden");
+            if (cmdSearch) {
+                cmdSearch.value = "";
+                cmdSearch.focus();
+            }
+        });
+    }
+    if (closeCmdBtn && cmdModal) {
+        closeCmdBtn.addEventListener("click", () => cmdModal.classList.add("hidden"));
+    }
+
+    // Ctrl+K or Cmd+K Global Shortcut Listener
+    document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+            e.preventDefault();
+            if (cmdModal) {
+                cmdModal.classList.toggle("hidden");
+                if (!cmdModal.classList.contains("hidden") && cmdSearch) {
+                    cmdSearch.value = "";
+                    cmdSearch.focus();
+                }
+            }
+        }
+    });
+
+    // Filter Command Items in Palette
+    if (cmdSearch) {
+        cmdSearch.addEventListener("input", () => {
+            const query = cmdSearch.value.toLowerCase().trim();
+            document.querySelectorAll(".cmd-item").forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? "flex" : "none";
+            });
+        });
+    }
 });
+
+
+/* One-Click Demo Sign In Handler */
+async function demoLogin(email, password) {
+    const emailField = document.getElementById("email");
+    const passField = document.getElementById("password");
+    if (emailField && passField) {
+        emailField.value = email;
+        passField.value = password;
+        const form = document.getElementById("loginForm");
+        if (form) {
+            form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+        }
+    }
+}
+
+/* Command Palette Executive Command Runner */
+function execCmd(sectionId) {
+    const cmdModal = document.getElementById("cmdPaletteModal");
+    if (cmdModal) cmdModal.classList.add("hidden");
+    showSection(sectionId);
+}
 
 
 function setupModalTrigger(openId, closeId, cancelId, modalId) {
