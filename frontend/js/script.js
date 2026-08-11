@@ -134,11 +134,11 @@ const onboardingForm = document.getElementById(
     "onboardingForm"
 );
 
-const taskTitle = document.getElementById("taskTitle");
-const taskDueDate = document.getElementById("taskDueDate");
+const onboardingTaskTitle = document.getElementById("onboardingTaskTitle");
+const onboardingTaskDueDate = document.getElementById("onboardingTaskDueDate");
 
-const taskDescription = document.getElementById(
-    "taskDescription"
+const onboardingTaskDescription = document.getElementById(
+    "onboardingTaskDescription"
 );
 
 const onboardingTaskList = document.getElementById(
@@ -207,7 +207,7 @@ async function apiRequest(
     };
 
     if (accessToken) {
-        requestOptions.headers.Authorization =
+        requestOptions.headers.Authorization = `Bearer ${accessToken}`;
             `Bearer ${accessToken}`;
     }
 
@@ -1408,11 +1408,11 @@ onboardingForm.addEventListener(
         event.preventDefault();
 
         const payload = {
-            title: taskTitle.value.trim(),
+            title: onboardingTaskTitle.value.trim(),
             description:
-                taskDescription.value.trim() || null,
+                onboardingTaskDescription.value.trim() || null,
             due_date:
-                taskDueDate.value || null
+                onboardingTaskDueDate.value || null
         };
 
         try {
