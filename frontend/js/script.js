@@ -371,6 +371,13 @@ function showSection(sectionId) {
         leaveSection: "Leave",
         onboardingSection: "Onboarding",
         okrSection: "Objectives and Key Results",
+        tasksSection: "Tasks & Projects",
+        announcementsSection: "Company Announcements",
+        payrollSection: "Payroll & Expenses",
+        employeesSection: "Staff Directory",
+        reviewsSection: "Performance & Peer Recognition",
+        documentsSection: "Document Center",
+        analyticsSection: "Analytics & Reports",
         profileSection: "Profile"
     };
 
@@ -422,6 +429,24 @@ async function loadSectionData(sectionId) {
 
             case "payrollSection":
                 await loadPayrollAndExpenses();
+                break;
+
+            case "employeesSection":
+                await loadEmployees();
+                break;
+
+            case "reviewsSection":
+                await loadReviews();
+                await loadKudos();
+                await populateReviewEmployeeDropdown();
+                break;
+
+            case "documentsSection":
+                await loadDocuments();
+                break;
+
+            case "analyticsSection":
+                await loadAnalytics();
                 break;
 
             default:
@@ -2407,7 +2432,410 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    // Sub-tabs switcher (Performance vs Kudos)
+    document.querySelectorAll(".sub-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+            document.querySelectorAll(".sub-tab").forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+            const targetId = tab.dataset.tab;
+            document.querySelectorAll(".sub-tab-content").forEach(c => c.classList.add("hidden"));
+            document.getElementById(targetId)?.classList.remove("hidden");
+        });
+    });
+
+    // Star rating picker for Performance Form
+    const starPicker = document.getElementById("starRatingPicker");
+    if (starPicker) {
+        starPicker.querySelectorAll("span").forEach(star => {
+            star.addEventListener("click", () => {
+                const rating = parseInt(star.dataset.star);
+                document.getElementById("reviewRatingInput").value = rating;
+                starPicker.querySelectorAll("span").forEach(s => {
+                    const sVal = parseInt(s.dataset.star);
+                    s.classList.toggle("active", sVal <= rating);
+                });
+            });
+        });
+    }
+
+    // Add Employee Modal handlers
+    const openModalBtn = document.getElementById("openAddEmployeeBtn");
+    const closeModalBtn = document.getElementById("closeAddEmployeeBtn");
+    const cancelModalBtn = document.getElementById("cancelAddEmployeeBtn");
+    const addEmpModal = document.getElementById("addEmployeeModal");
+
+    if (openModalBtn && addEmpModal) {
+        openModalBtn.addEventListener("click", () => addEmpModal.classList.remove("hidden"));
+    }
+    [closeModalBtn, cancelModalBtn].forEach(btn => {
+        if (btn && addEmpModal) {
+            btn.addEventListener("click", () => addEmpModal.classList.add("hidden"));
+        }
+    });
+
+    // Add Employee Form submit
+    const addEmpForm = document.getElementById("addEmployeeForm");
+    if (addEmpForm) {
+        addEmpForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+                const full_name = document.getElementById("newEmpName").value.trim();
+                const email = document.getElementById("newEmpEmail").value.trim();
+                const password = document.getElementById("newEmpPassword").value;
+                const job_title = document.getElementById("newEmpTitle").value.trim();
+                const department = document.getElementById("newEmpDept").value;
+                const phone = document.getElementById("newEmpPhone").value.trim();
+                const leave_balance = parseInt(document.getElementById("newEmpLeave").value);
+
+                await apiRequest("/employees", {
+                    method: "POST",
+                    body: { full_name, email, password, job_title, department, phone, leave_balance }
+                });
+
+                addEmpForm.reset();
+                if (addEmpModal) addEmpModal.classList.add("hidden");
+                showNotification("Employee profile created successfully!", "success");
+                await loadEmployees();
+            } catch (err) {
+                showNotification(err.message, "error");
+            }
+        });
+    }
+
+    // Search and Dept Filter input listeners for Staff Directory
+    document.getElementById("employeeSearchInput")?.addEventListener("input", () => loadEmployees());
+    document.getElementById("employeeDeptFilter")?.addEventListener("change", () => loadEmployees());
+
+    // Performance Form submit
+    const perfForm = document.getElementById("performanceForm");
+    if (perfForm) {
+        perfForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+                const employee_id = parseInt(document.getElementById("reviewEmployeeSelect").value);
+                const review_cycle = document.getElementById("reviewCycle").value.trim();
+                const rating = parseInt(document.getElementById("reviewRatingInput").value);
+                const strengths = document.getElementById("reviewStrengths").value.trim();
+                const growth_areas = document.getElementById("reviewGrowth").value.trim();
+
+                await apiRequest("/reviews/performance", {
+                    method: "POST",
+                    body: { employee_id, review_cycle, rating, strengths, growth_areas, status: "completed" }
+                });
+
+                perfForm.reset();
+                showNotification("Performance review submitted!", "success");
+                await loadReviews();
+            } catch (err) {
+                showNotification(err.message, "error");
+            }
+        });
+    }
+
+    // Kudos Form submit
+    const kudosForm = document.getElementById("kudosForm");
+    if (kudosForm) {
+        kudosForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+                const receiver_name = document.getElementById("kudosReceiver").value.trim();
+                const category = document.getElementById("kudosCategory").value;
+                const message = document.getElementById("kudosMessage").value.trim();
+
+                await apiRequest("/reviews/kudos", {
+                    method: "POST",
+                    body: { receiver_name, category, message }
+                });
+
+                kudosForm.reset();
+                showNotification("Peer shoutout posted!", "success");
+                await loadKudos();
+            } catch (err) {
+                showNotification(err.message, "error");
+            }
+        });
+    }
+
+    // Export CSV button listeners
+    document.getElementById("exportAttendanceBtn")?.addEventListener("click", () => {
+        window.open(`${API_BASE_URL}/analytics/export/attendance`, "_blank");
+    });
+    document.getElementById("exportLeaveBtn")?.addEventListener("click", () => {
+        window.open(`${API_BASE_URL}/analytics/export/leave`, "_blank");
+    });
+    document.getElementById("exportExpenseBtn")?.addEventListener("click", () => {
+        window.open(`${API_BASE_URL}/analytics/export/expenses`, "_blank");
+    });
 });
+
+
+/* =========================================================
+   Staff Directory Module
+========================================================= */
+
+async function loadEmployees() {
+    const grid = document.getElementById("employeeGrid");
+    if (!grid) return;
+    grid.innerHTML = `<div class="empty-state">Loading staff directory...</div>`;
+
+    try {
+        const searchVal = document.getElementById("employeeSearchInput")?.value.trim() || "";
+        const deptVal = document.getElementById("employeeDeptFilter")?.value || "All";
+
+        let url = "/employees?";
+        if (searchVal) url += `search=${encodeURIComponent(searchVal)}&`;
+        if (deptVal !== "All") url += `department=${encodeURIComponent(deptVal)}&`;
+
+        const employees = await apiRequest(url);
+
+        if (!employees || employees.length === 0) {
+            grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">No employees match the specified filters.</div>`;
+            return;
+        }
+
+        grid.innerHTML = employees.map(emp => {
+            const initials = emp.full_name ? emp.full_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "EM";
+            return `
+                <div class="employee-card">
+                    <div class="employee-header">
+                        <div class="employee-avatar">${initials}</div>
+                        <div>
+                            <strong style="font-size: 16px; display: block;">${escapeHtml(emp.full_name)}</strong>
+                            <small class="muted" style="font-weight: 600;">${escapeHtml(emp.job_title)}</small>
+                        </div>
+                    </div>
+                    <div class="employee-details-list">
+                        <div>🏢 <strong>Department:</strong> ${escapeHtml(emp.department)}</div>
+                        <div>✉️ <strong>Email:</strong> ${escapeHtml(emp.email)}</div>
+                        <div>📞 <strong>Phone:</strong> ${escapeHtml(emp.phone)}</div>
+                        <div>🏖️ <strong>Leave Balance:</strong> ${emp.leave_balance} Days Available</div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--border);">
+                        <span class="badge ${emp.is_active ? 'approved' : 'rejected'}">${emp.is_active ? 'Active Employee' : 'Inactive'}</span>
+                        <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="deleteEmployeeProfile(${emp.id})">Remove</button>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    } catch (error) {
+        grid.innerHTML = `<div class="empty-state error" style="grid-column: 1 / -1;">Failed to load staff directory: ${error.message}</div>`;
+    }
+}
+
+async function deleteEmployeeProfile(empId) {
+    if (!confirm("Are you sure you want to remove this employee profile?")) return;
+    try {
+        await apiRequest(`/employees/${empId}`, { method: "DELETE" });
+        showNotification("Employee profile removed.", "success");
+        await loadEmployees();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+
+/* =========================================================
+   Performance Reviews & Kudos Module
+========================================================= */
+
+async function populateReviewEmployeeDropdown() {
+    const select = document.getElementById("reviewEmployeeSelect");
+    if (!select) return;
+    try {
+        const employees = await apiRequest("/employees");
+        select.innerHTML = `<option value="">Select Employee...</option>` + employees.map(e => `
+            <option value="${e.id}">${escapeHtml(e.full_name)} (${escapeHtml(e.department)})</option>
+        `).join("");
+    } catch (e) {
+        console.error("Failed to load employee list for reviews", e);
+    }
+}
+
+async function loadReviews() {
+    const list = document.getElementById("reviewsList");
+    if (!list) return;
+    list.innerHTML = `<div class="empty-state">Loading reviews...</div>`;
+
+    try {
+        const reviews = await apiRequest("/reviews/performance");
+        if (!reviews || reviews.length === 0) {
+            list.innerHTML = `<div class="empty-state">No performance reviews recorded yet.</div>`;
+            return;
+        }
+
+        list.innerHTML = reviews.map(rev => {
+            const stars = "★".repeat(rev.rating) + "☆".repeat(5 - rev.rating);
+            return `
+                <div class="review-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong style="font-size: 15px;">Cycle: ${escapeHtml(rev.review_cycle)}</strong>
+                        <span style="color: #f59e0b; font-size: 18px; font-weight: bold;">${stars}</span>
+                    </div>
+                    <p style="margin: 4px 0 0; font-size: 13px; color: var(--ink);">
+                        <strong>Strengths:</strong> ${escapeHtml(rev.strengths || "None documented")}
+                    </p>
+                    ${rev.growth_areas ? `<p style="margin: 4px 0 0; font-size: 13px; color: var(--muted);"><strong>Growth Areas:</strong> ${escapeHtml(rev.growth_areas)}</p>` : ''}
+                    <div style="font-size: 11px; color: var(--muted); margin-top: 4px; display: flex; justify-content: space-between;">
+                        <span>Review ID #${rev.id}</span>
+                        <span class="badge approved">${rev.status.toUpperCase()}</span>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    } catch (err) {
+        list.innerHTML = `<div class="empty-state error">Failed to load performance reviews: ${err.message}</div>`;
+    }
+}
+
+async function loadKudos() {
+    const feed = document.getElementById("kudosFeed");
+    if (!feed) return;
+    feed.innerHTML = `<div class="empty-state">Loading peer shoutouts...</div>`;
+
+    try {
+        const kudos = await apiRequest("/reviews/kudos");
+        if (!kudos || kudos.length === 0) {
+            feed.innerHTML = `<div class="empty-state">No peer shoutouts posted yet. Be the first!</div>`;
+            return;
+        }
+
+        feed.innerHTML = kudos.map(k => `
+            <div class="kudos-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: var(--brand); font-size: 14px;">${escapeHtml(k.sender_name)}</strong>
+                        <span class="muted" style="font-size: 13px;"> recognized </span>
+                        <strong style="font-size: 14px;">${escapeHtml(k.receiver_name)}</strong>
+                    </div>
+                    <span class="badge pending" style="font-size: 11px;">${escapeHtml(k.category)}</span>
+                </div>
+                <p style="margin: 6px 0 0; font-size: 13px; line-height: 1.4; color: var(--ink);">"${escapeHtml(k.message)}"</p>
+            </div>
+        `).join("");
+    } catch (err) {
+        feed.innerHTML = `<div class="empty-state error">Failed to load kudos feed: ${err.message}</div>`;
+    }
+}
+
+
+/* =========================================================
+   Document Center Module
+========================================================= */
+
+async function loadDocuments() {
+    const grid = document.getElementById("documentGrid");
+    if (!grid) return;
+    grid.innerHTML = `<div class="empty-state">Loading company policies...</div>`;
+
+    try {
+        const docs = await apiRequest("/documents");
+        if (!docs || docs.length === 0) {
+            grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">No company policy documents available.</div>`;
+            return;
+        }
+
+        grid.innerHTML = docs.map(doc => {
+            const catClass = (doc.category || "policy").toLowerCase();
+            return `
+                <div class="doc-card">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <span class="doc-badge ${catClass}">${escapeHtml(doc.category)}</span>
+                            <span class="muted" style="font-size: 12px; font-weight: 700;">${escapeHtml(doc.version)}</span>
+                        </div>
+                        <h3 style="font-size: 16px; margin: 0 0 8px;">${escapeHtml(doc.title)}</h3>
+                        <p class="muted" style="font-size: 13px; line-height: 1.5; margin: 0;">${escapeHtml(doc.summary)}</p>
+                    </div>
+                    <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                        ${doc.is_acknowledged 
+                            ? `<span class="badge approved">✓ Acknowledged</span>` 
+                            : `<button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="acknowledgeDoc(${doc.id})">Mark as Read & Acknowledge</button>`
+                        }
+                    </div>
+                </div>
+            `;
+        }).join("");
+    } catch (err) {
+        grid.innerHTML = `<div class="empty-state error" style="grid-column: 1 / -1;">Failed to load documents: ${err.message}</div>`;
+    }
+}
+
+async function acknowledgeDoc(docId) {
+    try {
+        await apiRequest(`/documents/${docId}/acknowledge`, { method: "POST" });
+        showNotification("Policy document acknowledged!", "success");
+        await loadDocuments();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+
+/* =========================================================
+   Analytics & Reports Module
+========================================================= */
+
+async function loadAnalytics() {
+    try {
+        const metrics = await apiRequest("/analytics/metrics");
+        const s = metrics.summary;
+
+        const activeStaffEl = document.getElementById("statActiveStaff");
+        if (activeStaffEl) activeStaffEl.textContent = s.active_staff || 0;
+        
+        const clockedInEl = document.getElementById("statClockedIn");
+        if (clockedInEl) clockedInEl.textContent = s.clocked_in_now || 0;
+        
+        const taskRateEl = document.getElementById("statTaskRate");
+        if (taskRateEl) taskRateEl.textContent = `${s.task_completion_rate || 0}%`;
+        
+        const avgRatingEl = document.getElementById("statAvgRating");
+        if (avgRatingEl) avgRatingEl.textContent = `${s.average_performance_rating || 5.0} / 5.0`;
+
+        // Render Expense Categories Chart
+        const expenseChart = document.getElementById("chartExpenseCategories");
+        if (expenseChart && metrics.expense_breakdown) {
+            const maxVal = Math.max(...metrics.expense_breakdown.map(b => b.total), 1);
+            expenseChart.innerHTML = metrics.expense_breakdown.map(b => {
+                const pct = Math.min(100, Math.round((b.total / maxVal) * 100));
+                return `
+                    <div class="bar-item">
+                        <div class="bar-label-row">
+                            <span>${escapeHtml(b.category)}</span>
+                            <strong>$${b.total.toLocaleString()}</strong>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: ${pct}%;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        // Render Department Headcount Chart
+        const deptChart = document.getElementById("chartDepartments");
+        if (deptChart && metrics.department_breakdown) {
+            const maxVal = Math.max(...metrics.department_breakdown.map(b => b.count), 1);
+            deptChart.innerHTML = metrics.department_breakdown.map(b => {
+                const pct = Math.min(100, Math.round((b.count / maxVal) * 100));
+                return `
+                    <div class="bar-item">
+                        <div class="bar-label-row">
+                            <span>${escapeHtml(b.department)}</span>
+                            <strong>${b.count} Members</strong>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: ${pct}%; background: linear-gradient(90deg, #10b981, #3b82f6);"></div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+    } catch (err) {
+        showNotification(`Failed to load analytics metrics: ${err.message}`, "error");
+    }
+}
 
 
 /* =========================================================

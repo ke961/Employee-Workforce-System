@@ -90,6 +90,18 @@
                 <button class="nav-item menu-item" data-section="payrollSection">
                     <span class="icon">💳</span><span>Payroll & Expenses</span>
                 </button>
+                <button class="nav-item menu-item" data-section="employeesSection">
+                    <span class="icon">👥</span><span>Staff Directory</span>
+                </button>
+                <button class="nav-item menu-item" data-section="reviewsSection">
+                    <span class="icon">⭐</span><span>Performance & Kudos</span>
+                </button>
+                <button class="nav-item menu-item" data-section="documentsSection">
+                    <span class="icon">📚</span><span>Document Center</span>
+                </button>
+                <button class="nav-item menu-item" data-section="analyticsSection">
+                    <span class="icon">📊</span><span>Analytics & Reports</span>
+                </button>
                 <button class="nav-item menu-item" data-section="profileSection">
                     <span class="icon">👤</span><span>Profile</span>
                 </button>
@@ -631,6 +643,284 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Staff Directory Section -->
+                <section id="employeesSection" class="content-section hidden">
+                    <div class="section-header-bar">
+                        <div>
+                            <p class="eyebrow">WORKFORCE TEAM</p>
+                            <h2>Staff & Employee Directory</h2>
+                        </div>
+                        <button id="openAddEmployeeBtn" class="btn btn-primary" type="button">+ Add Employee</button>
+                    </div>
+
+                    <!-- Search & Filter Controls -->
+                    <div class="card" style="margin-bottom: 24px; padding: 20px;">
+                        <div class="filter-controls-row">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input id="employeeSearchInput" type="text" placeholder="Search employee by name, email or job title..." />
+                            </div>
+                            <div class="filter-group">
+                                <label for="employeeDeptFilter">Department:</label>
+                                <select id="employeeDeptFilter">
+                                    <option value="All">All Departments</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="People Operations">People Operations</option>
+                                    <option value="Operations">Operations</option>
+                                    <option value="Development">Development</option>
+                                    <option value="Administration">Administration</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Staff Cards Grid -->
+                    <div id="employeeGrid" class="cards-grid">
+                        <div class="empty-state">Loading employee directory...</div>
+                    </div>
+                </section>
+
+                <!-- Performance Reviews & Peer Recognition Section -->
+                <section id="reviewsSection" class="content-section hidden">
+                    <div class="section-header-bar">
+                        <div>
+                            <p class="eyebrow">GROWTH & CULTURE</p>
+                            <h2>Performance & Peer Recognition</h2>
+                        </div>
+                    </div>
+
+                    <!-- Module Tabs -->
+                    <div class="sub-tab-bar">
+                        <button class="sub-tab active" data-tab="performanceTab">⭐ Performance Reviews</button>
+                        <button class="sub-tab" data-tab="kudosTab">🙌 Peer Kudos & Shoutouts</button>
+                    </div>
+
+                    <!-- Performance Tab Content -->
+                    <div id="performanceTab" class="sub-tab-content">
+                        <div class="grid-2col" style="grid-template-columns: 1fr 2fr; gap: 24px;">
+                            <div class="card" style="padding: 24px;">
+                                <h3>Conduct Performance Review</h3>
+                                <form id="performanceForm" class="form-stacked">
+                                    <label>
+                                        Employee ID / Name
+                                        <select id="reviewEmployeeSelect" required>
+                                            <option value="">Select Employee...</option>
+                                        </select>
+                                    </label>
+                                    <label>
+                                        Review Cycle
+                                        <input id="reviewCycle" type="text" value="Q3 2026" required />
+                                    </label>
+                                    <label>
+                                        Rating (1 to 5 Stars)
+                                        <div id="starRatingPicker" class="star-picker">
+                                            <span data-star="1">★</span>
+                                            <span data-star="2">★</span>
+                                            <span data-star="3">★</span>
+                                            <span data-star="4">★</span>
+                                            <span data-star="5" class="active">★</span>
+                                        </div>
+                                        <input id="reviewRatingInput" type="hidden" value="5" />
+                                    </label>
+                                    <label>
+                                        Key Strengths
+                                        <textarea id="reviewStrengths" rows="3" placeholder="Highlight top achievements and strengths..." required></textarea>
+                                    </label>
+                                    <label>
+                                        Growth & Development Areas
+                                        <textarea id="reviewGrowth" rows="2" placeholder="Areas for growth and goals..."></textarea>
+                                    </label>
+                                    <button class="btn btn-primary btn-block" type="submit">Submit Performance Review</button>
+                                </form>
+                            </div>
+
+                            <div class="card" style="padding: 24px;">
+                                <h3>Review History & Feedback Log</h3>
+                                <div id="reviewsList" class="reviews-feed">
+                                    <div class="empty-state">Loading reviews history...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kudos Tab Content -->
+                    <div id="kudosTab" class="sub-tab-content hidden">
+                        <div class="grid-2col" style="grid-template-columns: 1fr 2fr; gap: 24px;">
+                            <div class="card" style="padding: 24px;">
+                                <h3>Send Peer Kudos Shoutout 🎉</h3>
+                                <form id="kudosForm" class="form-stacked">
+                                    <label>
+                                        Recipient Name
+                                        <input id="kudosReceiver" type="text" placeholder="e.g. Sarah Connor" required />
+                                    </label>
+                                    <label>
+                                        Recognition Category
+                                        <select id="kudosCategory">
+                                            <option value="Teamwork">🤝 Teamwork & Collaboration</option>
+                                            <option value="Innovation">💡 Innovation & Problem Solving</option>
+                                            <option value="Leadership">🌟 Leadership & Mentorship</option>
+                                            <option value="Customer First">🎯 Customer Excellence</option>
+                                            <option value="Going Extra Mile">🚀 Going The Extra Mile</option>
+                                        </select>
+                                    </label>
+                                    <label>
+                                        Personal Message / Shoutout
+                                        <textarea id="kudosMessage" rows="4" placeholder="Write your praise or shoutout..." required></textarea>
+                                    </label>
+                                    <button class="btn btn-primary btn-block" type="submit">Post Shoutout</button>
+                                </form>
+                            </div>
+
+                            <div class="card" style="padding: 24px;">
+                                <h3>Company Wall of Recognition 🏆</h3>
+                                <div id="kudosFeed" class="kudos-feed">
+                                    <div class="empty-state">Loading peer shoutouts...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Document Center Section -->
+                <section id="documentsSection" class="content-section hidden">
+                    <div class="section-header-bar">
+                        <div>
+                            <p class="eyebrow">COMPLIANCE & GUIDELINES</p>
+                            <h2>Policy & Document Center</h2>
+                        </div>
+                    </div>
+
+                    <!-- Documents Grid -->
+                    <div id="documentGrid" class="cards-grid">
+                        <div class="empty-state">Loading company documents...</div>
+                    </div>
+                </section>
+
+                <!-- Analytics & Reports Section -->
+                <section id="analyticsSection" class="content-section hidden">
+                    <div class="section-header-bar">
+                        <div>
+                            <p class="eyebrow">WORKFORCE INSIGHTS</p>
+                            <h2>Executive Analytics & CSV Reports</h2>
+                        </div>
+                        <div class="export-actions-header">
+                            <button id="exportAttendanceBtn" class="btn btn-secondary" type="button">⬇ Attendance CSV</button>
+                            <button id="exportLeaveBtn" class="btn btn-secondary" type="button">⬇ Leave CSV</button>
+                            <button id="exportExpenseBtn" class="btn btn-secondary" type="button">⬇ Expenses CSV</button>
+                        </div>
+                    </div>
+
+                    <!-- Summary KPI Stat Cards -->
+                    <div class="metrics-grid">
+                        <div class="card metric-card">
+                            <div class="metric-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--brand);">👥</div>
+                            <div>
+                                <small>Total Active Staff</small>
+                                <strong id="statActiveStaff">--</strong>
+                                <span class="trend positive">100% Active</span>
+                            </div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success-color);">🕒</div>
+                            <div>
+                                <small>Clocked In Right Now</small>
+                                <strong id="statClockedIn">--</strong>
+                                <span class="trend">Live Status</span>
+                            </div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">📋</div>
+                            <div>
+                                <small>Task Completion Rate</small>
+                                <strong id="statTaskRate">--%</strong>
+                                <span class="trend positive">Tasks Done</span>
+                            </div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-icon" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;">⭐</div>
+                            <div>
+                                <small>Avg Performance Score</small>
+                                <strong id="statAvgRating">-- / 5.0</strong>
+                                <span class="trend positive">Excellent</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Charts Grid -->
+                    <div class="grid-2col" style="margin-top: 24px; gap: 24px;">
+                        <div class="card" style="padding: 24px;">
+                            <h3>Expense Claim Category Breakdown</h3>
+                            <p class="muted" style="font-size: 13px;">Distribution of claimed expenses across categories</p>
+                            <div id="chartExpenseCategories" class="bar-chart-container" style="margin-top: 16px;">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 24px;">
+                            <h3>Department Headcount Allocation</h3>
+                            <p class="muted" style="font-size: 13px;">Employee breakdown by organization unit</p>
+                            <div id="chartDepartments" class="bar-chart-container" style="margin-top: 16px;">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal Dialog for Add Employee -->
+    <div id="addEmployeeModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Add New Employee Profile</h3>
+                <button id="closeAddEmployeeBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <form id="addEmployeeForm" class="form-stacked" style="padding: 24px;">
+                <label>
+                    Full Name
+                    <input id="newEmpName" type="text" placeholder="e.g. Keya Rahman" required />
+                </label>
+                <label>
+                    Work Email
+                    <input id="newEmpEmail" type="email" placeholder="e.g. keya@ems.local" required />
+                </label>
+                <label>
+                    Default Password
+                    <input id="newEmpPassword" type="password" placeholder="Minimum 6 characters" required />
+                </label>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Job Title
+                        <input id="newEmpTitle" type="text" placeholder="e.g. Senior Software Engineer" required />
+                    </label>
+                    <label>
+                        Department
+                        <select id="newEmpDept">
+                            <option value="Engineering">Engineering</option>
+                            <option value="People Operations">People Operations</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Development">Development</option>
+                            <option value="Administration">Administration</option>
+                        </select>
+                    </label>
+                </div>
+                <label>
+                    Phone Number
+                    <input id="newEmpPhone" type="text" placeholder="e.g. +1 555-0192" />
+                </label>
+                <label>
+                    Annual Leave Allowance (Days)
+                    <input id="newEmpLeave" type="number" value="20" min="0" max="365" required />
+                </label>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button class="btn btn-secondary" type="button" id="cancelAddEmployeeBtn">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Create Employee Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
             </div>
         </section>
     </div>

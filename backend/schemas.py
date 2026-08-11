@@ -1358,4 +1358,103 @@ class ExpenseClaimResponse(ORMBaseModel):
     description: Optional[str] = None
     status: Literal["pending", "approved", "rejected"]
     created_at: datetime
-    updated_at: datetime
+    updated_at: datetime
+
+
+# =========================================================
+# Employee Schemas
+# =========================================================
+
+class AdminCreate(BaseModel):
+    full_name: str = Field(..., min_length=2, max_length=100)
+    email: EmailStr
+    password: str = Field(..., min_length=6)
+    job_title: Optional[str] = Field("Team Member", max_length=100)
+    department: Optional[str] = Field("Engineering", max_length=100)
+    phone: Optional[str] = Field(None, max_length=30)
+    leave_balance: int = Field(20, ge=0)
+
+
+class AdminUpdate(BaseModel):
+    full_name: Optional[str] = Field(None, min_length=2, max_length=100)
+    email: Optional[EmailStr] = None
+    job_title: Optional[str] = Field(None, max_length=100)
+    department: Optional[str] = Field(None, max_length=100)
+    phone: Optional[str] = Field(None, max_length=30)
+    leave_balance: Optional[int] = Field(None, ge=0)
+    is_active: Optional[bool] = None
+
+
+# =========================================================
+# Performance Review & Kudos Schemas
+# =========================================================
+
+class PerformanceReviewCreate(BaseModel):
+    employee_id: int
+    review_cycle: str = Field("Q3 2026", max_length=50)
+    rating: int = Field(5, ge=1, le=5)
+    strengths: Optional[str] = None
+    growth_areas: Optional[str] = None
+    status: Literal["draft", "pending", "completed"] = "completed"
+
+
+class PerformanceReviewUpdate(BaseModel):
+    review_cycle: Optional[str] = Field(None, max_length=50)
+    rating: Optional[int] = Field(None, ge=1, le=5)
+    strengths: Optional[str] = None
+    growth_areas: Optional[str] = None
+    status: Optional[Literal["draft", "pending", "completed"]] = None
+
+
+class PerformanceReviewResponse(ORMBaseModel):
+    id: int
+    reviewer_id: int
+    employee_id: int
+    review_cycle: str
+    rating: int
+    strengths: Optional[str] = None
+    growth_areas: Optional[str] = None
+    status: Literal["draft", "pending", "completed"]
+    created_at: datetime
+    updated_at: datetime
+
+
+class KudosCreate(BaseModel):
+    receiver_name: str = Field(..., min_length=1, max_length=100)
+    category: str = Field("Teamwork", max_length=50)
+    message: str = Field(..., min_length=1)
+
+
+class KudosResponse(ORMBaseModel):
+    id: int
+    sender_name: str
+    receiver_name: str
+    category: str
+    message: str
+    created_at: datetime
+
+
+# =========================================================
+# Company Document Schemas
+# =========================================================
+
+class CompanyDocumentCreate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+    category: str = Field("Policy", max_length=50)
+    summary: str = Field(..., min_length=1)
+    file_url: Optional[str] = None
+    version: str = Field("v1.0", max_length=20)
+    requires_acknowledgment: bool = True
+
+
+class CompanyDocumentResponse(ORMBaseModel):
+    id: int
+    title: str
+    category: str
+    summary: str
+    file_url: Optional[str] = None
+    version: str
+    requires_acknowledgment: bool
+    created_at: datetime
+    is_acknowledged: bool = False
+

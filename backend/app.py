@@ -764,16 +764,20 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from auth import hash_password
 from database import Base, SessionLocal, engine
-from models import Admin
+from models import Admin, CompanyDocument, Kudos, PerformanceReview
 from routers import (
+    analytics,
     announcements,
     attendance,
     dashboard,
+    documents,
+    employees,
     expenses,
     leave,
     login,
     okrs,
     onboarding,
+    reviews,
     tasks,
 )
 
@@ -863,6 +867,82 @@ def create_default_admin() -> None:
                     is_active=True,
                 )
                 database.add(user)
+
+        database.commit()
+
+        # Seed initial Company Documents if table empty
+        if database.query(CompanyDocument).count() == 0:
+            docs = [
+                CompanyDocument(
+                    title="Employee Code of Conduct & Ethics",
+                    category="Policy",
+                    summary="Outlines standards for professional conduct, workplace equality, anti-harassment, and remote work integrity.",
+                    version="v2.1",
+                    requires_acknowledgment=True,
+                ),
+                CompanyDocument(
+                    title="Remote & Hybrid Work Security Guidelines",
+                    category="Security",
+                    summary="Mandatory security standards regarding VPN usage, multi-factor authentication, password hygiene, and data protection.",
+                    version="v1.4",
+                    requires_acknowledgment=True,
+                ),
+                CompanyDocument(
+                    title="Annual Leave & PTO Allowance Policy",
+                    category="Benefits",
+                    summary="Detailed guidelines on annual leave accrual, sick leave notifications, and request notice periods.",
+                    version="v1.0",
+                    requires_acknowledgment=True,
+                ),
+                CompanyDocument(
+                    title="Expense Reimbursement & Travel Policy",
+                    category="Finance",
+                    summary="Eligible business expenses, submission deadlines, receipt requirements, and approval workflows.",
+                    version="v3.0",
+                    requires_acknowledgment=False,
+                ),
+            ]
+            database.add_all(docs)
+
+        # Seed initial Peer Kudos if table empty
+        if database.query(Kudos).count() == 0:
+            initial_kudos = [
+                Kudos(
+                    sender_name="Sarah Connor",
+                    receiver_name="Alex Rivera",
+                    category="Innovation",
+                    message="Outstanding job automating the CI/CD pipeline! Saved the team hours every sprint.",
+                ),
+                Kudos(
+                    sender_name="Michael Scott",
+                    receiver_name="System Administrator",
+                    category="Leadership",
+                    message="Great leadership during the quarterly strategy meeting and smooth onboarding of new engineers.",
+                ),
+                Kudos(
+                    sender_name="HR Operations",
+                    receiver_name="Sarah Connor",
+                    category="Teamwork",
+                    message="Thank you for mentoring the new junior developers during their first week!",
+                ),
+            ]
+            database.add_all(initial_kudos)
+
+        # Seed initial Performance Review if table empty
+        if database.query(PerformanceReview).count() == 0:
+            admin_acc = database.query(Admin).first()
+            if admin_acc:
+                database.add(
+                    PerformanceReview(
+                        reviewer_id=admin_acc.id,
+                        employee_id=admin_acc.id,
+                        review_cycle="Q2 2026",
+                        rating=5,
+                        strengths="Exceptional leadership, prompt project execution, and strong technical initiative.",
+                        growth_areas="Continue expanding cross-departmental documentation.",
+                        status="completed",
+                    )
+                )
 
         database.commit()
 
@@ -989,6 +1069,30 @@ app.include_router(
     expenses.router,
     prefix="/api/expenses",
     tags=["Payroll & Expenses"],
+)
+
+app.include_router(
+    employees.router,
+    prefix="/api/employees",
+    tags=["Staff Directory"],
+)
+
+app.include_router(
+    reviews.router,
+    prefix="/api/reviews",
+    tags=["Performance & Kudos"],
+)
+
+app.include_router(
+    documents.router,
+    prefix="/api/documents",
+    tags=["Document Center"],
+)
+
+app.include_router(
+    analytics.router,
+    prefix="/api/analytics",
+    tags=["Analytics & Reports"],
 )
 
 
