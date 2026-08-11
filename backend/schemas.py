@@ -1457,4 +1457,118 @@ class CompanyDocumentResponse(ORMBaseModel):
     requires_acknowledgment: bool
     created_at: datetime
     is_acknowledged: bool = False
+
+
+# =========================================================
+# Work Shift Schedule Schemas
+# =========================================================
+
+class ShiftScheduleCreate(BaseModel):
+    admin_id: int
+    shift_name: str = Field("Standard Morning Shift", max_length=100)
+    shift_type: str = Field("Morning", max_length=50)
+    start_time: str = Field("09:00 AM", max_length=20)
+    end_time: str = Field("05:00 PM", max_length=20)
+    work_days: str = Field("Mon, Tue, Wed, Thu, Fri", max_length=100)
+    location: str = Field("Remote Flexible", max_length=50)
+
+
+class ShiftScheduleResponse(ORMBaseModel):
+    id: int
+    admin_id: int
+    shift_name: str
+    shift_type: str
+    start_time: str
+    end_time: str
+    work_days: str
+    location: str
+    created_at: datetime
+
+
+# =========================================================
+# IT Hardware & Asset Schemas
+# =========================================================
+
+class ITAssetCreate(BaseModel):
+    asset_name: str = Field(..., min_length=1, max_length=150)
+    asset_tag: str = Field(..., min_length=1, max_length=50)
+    category: str = Field("Laptop", max_length=50)
+    serial_number: Optional[str] = Field(None, max_length=100)
+    admin_id: Optional[int] = None
+    status: str = Field("assigned", max_length=30)
+    assigned_date: Optional[date] = None
+
+
+class ITAssetUpdate(BaseModel):
+    asset_name: Optional[str] = Field(None, max_length=150)
+    category: Optional[str] = Field(None, max_length=50)
+    serial_number: Optional[str] = Field(None, max_length=100)
+    admin_id: Optional[int] = None
+    status: Optional[str] = Field(None, max_length=30)
+    assigned_date: Optional[date] = None
+
+
+class ITAssetResponse(ORMBaseModel):
+    id: int
+    asset_name: str
+    asset_tag: str
+    category: str
+    serial_number: Optional[str] = None
+    admin_id: Optional[int] = None
+    status: str
+    assigned_date: Optional[date] = None
+    created_at: datetime
+
+
+# =========================================================
+# Company Event Schemas
+# =========================================================
+
+class CompanyEventCreate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+    event_type: str = Field("Company Holiday", max_length=50)
+    event_date: date
+    description: Optional[str] = None
+    location: str = Field("Company-Wide", max_length=100)
+
+
+class CompanyEventResponse(ORMBaseModel):
+    id: int
+    title: str
+    event_type: str
+    event_date: date
+    description: Optional[str] = None
+    location: str
+    created_at: datetime
+
+
+# =========================================================
+# Training Course Schemas
+# =========================================================
+
+class TrainingCourseCreate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+    category: str = Field("Security", max_length=50)
+    description: Optional[str] = None
+    duration_hours: int = Field(2, ge=1)
+    due_date: Optional[date] = None
+    admin_id: int
+
+
+class TrainingCourseUpdate(BaseModel):
+    status: Literal["assigned", "in_progress", "completed"]
+
+
+class TrainingCourseResponse(ORMBaseModel):
+    id: int
+    title: str
+    category: str
+    description: Optional[str] = None
+    duration_hours: int
+    due_date: Optional[date] = None
+    admin_id: int
+    status: Literal["assigned", "in_progress", "completed"]
+    completed_at: Optional[datetime] = None
+    created_at: datetime
+
 
