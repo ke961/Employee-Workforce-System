@@ -1216,6 +1216,30 @@ app.include_router(
     tags=["Analytics & Reports"],
 )
 
+app.include_router(
+    shifts.router,
+    prefix="/api/shifts",
+    tags=["Shift Roster"],
+)
+
+app.include_router(
+    assets.router,
+    prefix="/api/assets",
+    tags=["IT Asset Inventory"],
+)
+
+app.include_router(
+    calendar.router,
+    prefix="/api/calendar",
+    tags=["Team Calendar"],
+)
+
+app.include_router(
+    trainings.router,
+    prefix="/api/trainings",
+    tags=["Training & Skills"],
+)
+
 
 # =========================================================
 # Basic system routes
