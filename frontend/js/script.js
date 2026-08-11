@@ -2776,7 +2776,28 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
+
+    // Sign Out / Logout Listener
+    const logoutBtn = document.getElementById("logoutButton");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            clearAuthentication();
+            showLoginPage();
+            showNotification("Signed out successfully.", "info");
+        });
+    }
 });
+
+/* Global Logout / Go To Login Page Helper */
+window.logout = function() {
+    clearAuthentication();
+    showLoginPage();
+};
+
+window.goToLogin = function() {
+    clearAuthentication();
+    showLoginPage();
+};
 
 
 /* One-Click Demo Sign In Handler */
