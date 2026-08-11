@@ -1511,4 +1511,261 @@ class DocumentAcknowledgment(Base):
         "Admin",
         back_populates="document_acknowledgments",
     )
+
+
+# =========================================================
+# Work Shift Schedule Model
+# =========================================================
+
+class ShiftSchedule(Base):
+    __tablename__ = "shift_schedules"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    admin_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
+
+    shift_name = Column(
+        String(100),
+        nullable=False,
+        default="Standard Morning Shift",
+    )
+
+    shift_type = Column(
+        String(50),
+        nullable=False,
+        default="Morning",
+    )
+
+    start_time = Column(
+        String(20),
+        nullable=False,
+        default="09:00 AM",
+    )
+
+    end_time = Column(
+        String(20),
+        nullable=False,
+        default="05:00 PM",
+    )
+
+    work_days = Column(
+        String(100),
+        nullable=False,
+        default="Mon, Tue, Wed, Thu, Fri",
+    )
+
+    location = Column(
+        String(50),
+        nullable=False,
+        default="Remote Flexible",
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    admin = relationship(
+        "Admin",
+        foreign_keys=[admin_id],
+    )
+
+
+# =========================================================
+# IT Hardware & Asset Model
+# =========================================================
+
+class ITAsset(Base):
+    __tablename__ = "it_assets"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    asset_name = Column(
+        String(150),
+        nullable=False,
+    )
+
+    asset_tag = Column(
+        String(50),
+        nullable=False,
+        unique=True,
+    )
+
+    category = Column(
+        String(50),
+        nullable=False,
+        default="Laptop",
+    )
+
+    serial_number = Column(
+        String(100),
+        nullable=True,
+    )
+
+    admin_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="SET NULL",
+        ),
+        nullable=True,
+    )
+
+    status = Column(
+        String(30),
+        nullable=False,
+        default="assigned",
+    )
+
+    assigned_date = Column(
+        Date,
+        nullable=True,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    assigned_user = relationship(
+        "Admin",
+        foreign_keys=[admin_id],
+    )
+
+
+# =========================================================
+# Company Event & Calendar Model
+# =========================================================
+
+class CompanyEvent(Base):
+    __tablename__ = "company_events"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    title = Column(
+        String(200),
+        nullable=False,
+    )
+
+    event_type = Column(
+        String(50),
+        nullable=False,
+        default="Company Holiday",
+    )
+
+    event_date = Column(
+        Date,
+        nullable=False,
+    )
+
+    description = Column(
+        Text,
+        nullable=True,
+    )
+
+    location = Column(
+        String(100),
+        nullable=False,
+        default="Company-Wide",
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+
+# =========================================================
+# Training Course & Certifications Model
+# =========================================================
+
+class TrainingCourse(Base):
+    __tablename__ = "training_courses"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    title = Column(
+        String(200),
+        nullable=False,
+    )
+
+    category = Column(
+        String(50),
+        nullable=False,
+        default="Security",
+    )
+
+    description = Column(
+        Text,
+        nullable=True,
+    )
+
+    duration_hours = Column(
+        Integer,
+        nullable=False,
+        default=2,
+    )
+
+    due_date = Column(
+        Date,
+        nullable=True,
+    )
+
+    admin_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
+
+    status = Column(
+        String(20),
+        nullable=False,
+        default="assigned",
+    )
+
+    completed_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    admin = relationship(
+        "Admin",
+        foreign_keys=[admin_id],
+    )
+
 
