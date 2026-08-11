@@ -3374,10 +3374,27 @@ function initTheme() {
     }
 }
 
+function startLiveDigitalClock() {
+    function tick() {
+        const now = new Date();
+        const timeEl = document.getElementById("digitalClockTime");
+        const dateEl = document.getElementById("digitalClockDate");
+        if (timeEl) {
+            timeEl.textContent = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        }
+        if (dateEl) {
+            dateEl.textContent = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+        }
+    }
+    tick();
+    setInterval(tick, 1000);
+}
+
 document.addEventListener(
     "DOMContentLoaded",
     () => {
         initTheme();
+        startLiveDigitalClock();
         const themeBtn = document.getElementById("themeToggleBtn");
         if (themeBtn) {
             themeBtn.addEventListener("click", () => {
