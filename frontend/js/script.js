@@ -2692,6 +2692,14 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             document.getElementById("addTrainingForm").reset();
+            document.getElementById("addTrainingModal")?.classList.add("hidden");
+            showNotification("Training course assigned!", "success");
+            await loadTrainings();
+        } catch (err) {
+            showNotification(err.message, "error");
+        }
+    });
+
     // Notification bell handlers
     const notifBtn = document.getElementById("notifBellBtn");
     const notifDropdown = document.getElementById("notifDropdown");
