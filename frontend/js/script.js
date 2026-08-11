@@ -378,6 +378,10 @@ function showSection(sectionId) {
         reviewsSection: "Performance & Peer Recognition",
         documentsSection: "Document Center",
         analyticsSection: "Analytics & Reports",
+        shiftsSection: "Work Shift Roster",
+        assetsSection: "IT Asset & Hardware Inventory",
+        calendarSection: "Team Calendar & Events",
+        trainingSection: "Training Courses & Certifications",
         profileSection: "Profile"
     };
 
@@ -447,6 +451,25 @@ async function loadSectionData(sectionId) {
 
             case "analyticsSection":
                 await loadAnalytics();
+                break;
+
+            case "shiftsSection":
+                await loadShifts();
+                await populateDropdown("shiftEmployeeSelect");
+                break;
+
+            case "assetsSection":
+                await loadAssets();
+                await populateDropdown("assetEmployeeSelect", true);
+                break;
+
+            case "calendarSection":
+                await loadCalendar();
+                break;
+
+            case "trainingSection":
+                await loadTrainings();
+                await populateDropdown("trainingEmployeeSelect");
                 break;
 
             default:
@@ -2557,7 +2580,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Export CSV button listeners
+        // Export CSV button listeners
     document.getElementById("exportAttendanceBtn")?.addEventListener("click", () => {
         window.open(`${API_BASE_URL}/analytics/export/attendance`, "_blank");
     });
@@ -2567,7 +2590,366 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("exportExpenseBtn")?.addEventListener("click", () => {
         window.open(`${API_BASE_URL}/analytics/export/expenses`, "_blank");
     });
+
+    // Phase 2 Modal triggers
+    setupModalTrigger("openAddShiftBtn", "closeAddShiftBtn", "cancelAddShiftBtn", "addShiftModal");
+    setupModalTrigger("openAddAssetBtn", "closeAddAssetBtn", "cancelAddAssetBtn", "addAssetModal");
+    setupModalTrigger("openAddEventBtn", "closeAddEventBtn", "cancelAddEventBtn", "addEventModal");
+    setupModalTrigger("openAddTrainingBtn", "closeAddTrainingBtn", "cancelAddTrainingBtn", "addTrainingModal");
+
+    // Add Shift Form submit
+    document.getElementById("addShiftForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+            const admin_id = parseInt(document.getElementById("shiftEmployeeSelect").value);
+            const shift_name = document.getElementById("shiftName").value.trim();
+            const start_time = document.getElementById("shiftStartTime").value.trim();
+            const end_time = document.getElementById("shiftEndTime").value.trim();
+            const work_days = document.getElementById("shiftDays").value.trim();
+            const location = document.getElementById("shiftLocation").value;
+
+            await apiRequest("/shifts", {
+                method: "POST",
+                body: { admin_id, shift_name, shift_type: "Morning", start_time, end_time, work_days, location }
+            });
+
+            document.getElementById("addShiftForm").reset();
+            document.getElementById("addShiftModal")?.classList.add("hidden");
+            showNotification("Work shift schedule assigned!", "success");
+            await loadShifts();
+        } catch (err) {
+            showNotification(err.message, "error");
+        }
+    });
+
+    // Add Asset Form submit
+    document.getElementById("addAssetForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+            const asset_tag = document.getElementById("assetTag").value.trim();
+            const asset_name = document.getElementById("assetName").value.trim();
+            const category = document.getElementById("assetCategory").value;
+            const serial_number = document.getElementById("assetSerial").value.trim() || null;
+            const empVal = document.getElementById("assetEmployeeSelect").value;
+            const admin_id = empVal ? parseInt(empVal) : null;
+            const status = admin_id ? "assigned" : "available";
+
+            await apiRequest("/assets", {
+                method: "POST",
+                body: { asset_tag, asset_name, category, serial_number, admin_id, status }
+            });
+
+            document.getElementById("addAssetForm").reset();
+            document.getElementById("addAssetModal")?.classList.add("hidden");
+            showNotification("IT asset registered successfully!", "success");
+            await loadAssets();
+        } catch (err) {
+            showNotification(err.message, "error");
+        }
+    });
+
+    // Filter listeners for IT Assets
+    document.getElementById("assetCategoryFilter")?.addEventListener("change", () => loadAssets());
+    document.getElementById("assetStatusFilter")?.addEventListener("change", () => loadAssets());
+
+    // Add Event Form submit
+    document.getElementById("addEventForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+            const title = document.getElementById("eventTitle").value.trim();
+            const event_type = document.getElementById("eventType").value;
+            const event_date = document.getElementById("eventDate").value;
+            const location = document.getElementById("eventLocation").value.trim();
+            const description = document.getElementById("eventDescription").value.trim();
+
+            await apiRequest("/calendar/events", {
+                method: "POST",
+                body: { title, event_type, event_date, location, description: description || null }
+            });
+
+            document.getElementById("addEventForm").reset();
+            document.getElementById("addEventModal")?.classList.add("hidden");
+            showNotification("Company event added!", "success");
+            await loadCalendar();
+        } catch (err) {
+            showNotification(err.message, "error");
+        }
+    });
+
+    // Add Training Form submit
+    document.getElementById("addTrainingForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+            const admin_id = parseInt(document.getElementById("trainingEmployeeSelect").value);
+            const title = document.getElementById("trainingTitle").value.trim();
+            const category = document.getElementById("trainingCategory").value;
+            const duration_hours = parseInt(document.getElementById("trainingHours").value);
+            const description = document.getElementById("trainingDescription").value.trim();
+
+            await apiRequest("/trainings", {
+                method: "POST",
+                body: { admin_id, title, category, duration_hours, description: description || null }
+            });
+
+            document.getElementById("addTrainingForm").reset();
+            document.getElementById("addTrainingModal")?.classList.add("hidden");
+            showNotification("Training course assigned!", "success");
+            await loadTrainings();
+        } catch (err) {
+            showNotification(err.message, "error");
+        }
+    });
 });
+
+
+function setupModalTrigger(openId, closeId, cancelId, modalId) {
+    const openBtn = document.getElementById(openId);
+    const closeBtn = document.getElementById(closeId);
+    const cancelBtn = document.getElementById(cancelId);
+    const modal = document.getElementById(modalId);
+
+    if (openBtn && modal) openBtn.addEventListener("click", () => modal.classList.remove("hidden"));
+    [closeBtn, cancelBtn].forEach(btn => {
+        if (btn && modal) btn.addEventListener("click", () => modal.classList.add("hidden"));
+    });
+}
+
+async function populateDropdown(elementId, allowUnassigned = false) {
+    const select = document.getElementById(elementId);
+    if (!select) return;
+    try {
+        const employees = await apiRequest("/employees");
+        select.innerHTML = (allowUnassigned ? `<option value="">Unassigned (Available)</option>` : `<option value="">Select Employee...</option>`) +
+            employees.map(e => `<option value="${e.id}">${escapeHtml(e.full_name)} (${escapeHtml(e.department)})</option>`).join("");
+    } catch (e) {
+        console.error(`Failed to populate dropdown #${elementId}`, e);
+    }
+}
+
+
+/* =========================================================
+   Work Shift Schedules Module
+========================================================= */
+
+async function loadShifts() {
+    const grid = document.getElementById("shiftsGrid");
+    if (!grid) return;
+    grid.innerHTML = `<div class="empty-state">Loading shift schedules...</div>`;
+
+    try {
+        const shifts = await apiRequest("/shifts");
+        if (!shifts || shifts.length === 0) {
+            grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">No work shifts assigned yet.</div>`;
+            return;
+        }
+
+        grid.innerHTML = shifts.map(s => `
+            <div class="shift-card">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <span class="shift-pill">⏰ ${escapeHtml(s.shift_type)} Shift</span>
+                        <span class="badge approved" style="font-size: 11px;">${escapeHtml(s.location)}</span>
+                    </div>
+                    <h3 style="font-size: 16px; margin: 0 0 6px;">${escapeHtml(s.shift_name)}</h3>
+                    <div class="muted" style="font-size: 13px;">📅 <strong>Days:</strong> ${escapeHtml(s.work_days)}</div>
+                    <div class="muted" style="font-size: 13px; margin-top: 2px;">🕒 <strong>Hours:</strong> ${escapeHtml(s.start_time)} – ${escapeHtml(s.end_time)}</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border);">
+                    <small class="muted">Employee #${s.admin_id}</small>
+                    <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="deleteShiftSchedule(${s.id})">Delete</button>
+                </div>
+            </div>
+        `).join("");
+    } catch (err) {
+        grid.innerHTML = `<div class="empty-state error" style="grid-column: 1 / -1;">Failed to load shifts: ${err.message}</div>`;
+    }
+}
+
+async function deleteShiftSchedule(id) {
+    if (!confirm("Are you sure you want to delete this shift schedule?")) return;
+    try {
+        await apiRequest(`/shifts/${id}`, { method: "DELETE" });
+        showNotification("Shift schedule deleted.", "success");
+        await loadShifts();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+
+/* =========================================================
+   IT Hardware & Asset Inventory Module
+========================================================= */
+
+async function loadAssets() {
+    const body = document.getElementById("assetTableBody");
+    if (!body) return;
+    body.innerHTML = `<tr><td colspan="7" class="empty">Loading IT assets...</td></tr>`;
+
+    try {
+        const catVal = document.getElementById("assetCategoryFilter")?.value || "All";
+        const statusVal = document.getElementById("assetStatusFilter")?.value || "All";
+
+        let url = "/assets?";
+        if (catVal !== "All") url += `category=${encodeURIComponent(catVal)}&`;
+        if (statusVal !== "All") url += `status=${encodeURIComponent(statusVal)}&`;
+
+        const assets = await apiRequest(url);
+        if (!assets || assets.length === 0) {
+            body.innerHTML = `<tr><td colspan="7" class="empty">No IT assets found.</td></tr>`;
+            return;
+        }
+
+        body.innerHTML = assets.map(a => `
+            <tr>
+                <td><span class="asset-tag-badge">${escapeHtml(a.asset_tag)}</span></td>
+                <td><strong>${escapeHtml(a.asset_name)}</strong></td>
+                <td>${escapeHtml(a.category)}</td>
+                <td class="muted">${escapeHtml(a.serial_number || 'N/A')}</td>
+                <td>${a.admin_id ? `Employee #${a.admin_id}` : '<span class="muted">Unassigned</span>'}</td>
+                <td><span class="badge ${a.status === 'assigned' ? 'approved' : a.status === 'available' ? 'pending' : 'rejected'}">${a.status.toUpperCase()}</span></td>
+                <td><button class="btn btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="deleteITAsset(${a.id})">Delete</button></td>
+            </tr>
+        `).join("");
+    } catch (err) {
+        body.innerHTML = `<tr><td colspan="7" class="empty error">Failed to load IT assets: ${err.message}</td></tr>`;
+    }
+}
+
+async function deleteITAsset(id) {
+    if (!confirm("Are you sure you want to delete this IT asset record?")) return;
+    try {
+        await apiRequest(`/assets/${id}`, { method: "DELETE" });
+        showNotification("IT asset item deleted.", "success");
+        await loadAssets();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+
+/* =========================================================
+   Team Calendar & Events Module
+========================================================= */
+
+async function loadCalendar() {
+    const list = document.getElementById("eventsList");
+    if (!list) return;
+    list.innerHTML = `<div class="empty-state">Loading company events...</div>`;
+
+    try {
+        const events = await apiRequest("/calendar/events");
+        if (!events || events.length === 0) {
+            list.innerHTML = `<div class="empty-state">No upcoming company events scheduled.</div>`;
+            return;
+        }
+
+        list.innerHTML = events.map(e => `
+            <div class="event-card">
+                <div style="display: flex; gap: 16px; align-items: center;">
+                    <div class="event-date-badge">
+                        ${new Date(e.event_date).toLocaleDateString("en-US", { month: "short", day: "numeric" }).toUpperCase()}
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 4px;">
+                            <span class="badge pending" style="font-size: 11px;">${escapeHtml(e.event_type)}</span>
+                            <small class="muted">📍 ${escapeHtml(e.location)}</small>
+                        </div>
+                        <h3 style="margin: 0 0 4px; font-size: 16px;">${escapeHtml(e.title)}</h3>
+                        ${e.description ? `<p class="muted" style="margin: 0; font-size: 13px;">${escapeHtml(e.description)}</p>` : ''}
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; padding-top: 8px; border-top: 1px solid var(--border);">
+                    <button class="btn btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="deleteCalendarEvent(${e.id})">Delete</button>
+                </div>
+            </div>
+        `).join("");
+    } catch (err) {
+        list.innerHTML = `<div class="empty-state error">Failed to load calendar events: ${err.message}</div>`;
+    }
+}
+
+async function deleteCalendarEvent(id) {
+    if (!confirm("Are you sure you want to delete this event?")) return;
+    try {
+        await apiRequest(`/calendar/events/${id}`, { method: "DELETE" });
+        showNotification("Calendar event deleted.", "success");
+        await loadCalendar();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+
+/* =========================================================
+   Training Courses & Skills Module
+========================================================= */
+
+async function loadTrainings() {
+    const grid = document.getElementById("trainingGrid");
+    if (!grid) return;
+    grid.innerHTML = `<div class="empty-state">Loading training courses...</div>`;
+
+    try {
+        const trainings = await apiRequest("/trainings");
+        if (!trainings || trainings.length === 0) {
+            grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">No training courses assigned.</div>`;
+            return;
+        }
+
+        grid.innerHTML = trainings.map(t => {
+            const isDone = t.status === "completed";
+            return `
+                <div class="training-card">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <span class="doc-badge policy">${escapeHtml(t.category)}</span>
+                            <span class="muted" style="font-size: 12px; font-weight: 700;">⏳ ${t.duration_hours} Hours</span>
+                        </div>
+                        <h3 style="font-size: 16px; margin: 0 0 6px;">${escapeHtml(t.title)}</h3>
+                        ${t.description ? `<p class="muted" style="font-size: 13px; margin: 0 0 10px;">${escapeHtml(t.description)}</p>` : ''}
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: ${isDone ? 100 : 35}%;"></div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border);">
+                        <span class="badge ${isDone ? 'approved' : 'pending'}">${isDone ? '✓ Completed' : 'In Progress'}</span>
+                        <div>
+                            ${!isDone ? `<button class="btn btn-primary" style="padding: 4px 10px; font-size: 12px;" onclick="completeTrainingCourse(${t.id})">Mark Complete</button>` : ''}
+                            <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="deleteTrainingCourse(${t.id})">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    } catch (err) {
+        grid.innerHTML = `<div class="empty-state error" style="grid-column: 1 / -1;">Failed to load trainings: ${err.message}</div>`;
+    }
+}
+
+async function completeTrainingCourse(id) {
+    try {
+        await apiRequest(`/trainings/${id}/status`, {
+            method: "PATCH",
+            body: { status: "completed" }
+        });
+        showNotification("Training course completed!", "success");
+        await loadTrainings();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+async function deleteTrainingCourse(id) {
+    if (!confirm("Are you sure you want to delete this training course assignment?")) return;
+    try {
+        await apiRequest(`/trainings/${id}`, { method: "DELETE" });
+        showNotification("Training assignment removed.", "success");
+        await loadTrainings();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
 
 
 /* =========================================================
