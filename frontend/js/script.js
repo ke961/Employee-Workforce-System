@@ -2692,12 +2692,37 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             document.getElementById("addTrainingForm").reset();
-            document.getElementById("addTrainingModal")?.classList.add("hidden");
-            showNotification("Training course assigned!", "success");
-            await loadTrainings();
-        } catch (err) {
-            showNotification(err.message, "error");
-        }
+    // Notification bell handlers
+    const notifBtn = document.getElementById("notifBellBtn");
+    const notifDropdown = document.getElementById("notifDropdown");
+    const clearNotifBtn = document.getElementById("clearNotifBtn");
+
+    if (notifBtn && notifDropdown) {
+        notifBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            notifDropdown.classList.toggle("hidden");
+        });
+
+        document.addEventListener("click", () => {
+            notifDropdown.classList.add("hidden");
+        });
+    }
+
+    if (clearNotifBtn) {
+        clearNotifBtn.addEventListener("click", () => {
+            const list = document.getElementById("notifList");
+            const badge = document.getElementById("notifBadge");
+            if (list) list.innerHTML = `<div class="notif-item"><p class="muted">No unread notifications.</p></div>`;
+            if (badge) badge.style.display = "none";
+        });
+    }
+
+    // Employee Detail modal close handlers
+    const closeEmpDetailBtn = document.getElementById("closeEmpDetailBtn");
+    const closeEmpDetailBtn2 = document.getElementById("closeEmpDetailBtn2");
+    const empDetailModal = document.getElementById("employeeDetailModal");
+    [closeEmpDetailBtn, closeEmpDetailBtn2].forEach(btn => {
+        if (btn && empDetailModal) btn.addEventListener("click", () => empDetailModal.classList.add("hidden"));
     });
 });
 
@@ -2956,6 +2981,8 @@ async function deleteTrainingCourse(id) {
    Staff Directory Module
 ========================================================= */
 
+let currentEmployeesCache = [];
+
 async function loadEmployees() {
     const grid = document.getElementById("employeeGrid");
     if (!grid) return;
@@ -2970,6 +2997,7 @@ async function loadEmployees() {
         if (deptVal !== "All") url += `department=${encodeURIComponent(deptVal)}&`;
 
         const employees = await apiRequest(url);
+        currentEmployeesCache = employees || [];
 
         if (!employees || employees.length === 0) {
             grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">No employees match the specified filters.</div>`;
@@ -2994,7 +3022,7 @@ async function loadEmployees() {
                         <div>🏖️ <strong>Leave Balance:</strong> ${emp.leave_balance} Days Available</div>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--border);">
-                        <span class="badge ${emp.is_active ? 'approved' : 'rejected'}">${emp.is_active ? 'Active Employee' : 'Inactive'}</span>
+                        <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="viewEmployeeDetail(${emp.id})">🔍 Inspect Profile</button>
                         <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="deleteEmployeeProfile(${emp.id})">Remove</button>
                     </div>
                 </div>
@@ -3003,6 +3031,25 @@ async function loadEmployees() {
     } catch (error) {
         grid.innerHTML = `<div class="empty-state error" style="grid-column: 1 / -1;">Failed to load staff directory: ${error.message}</div>`;
     }
+}
+
+function viewEmployeeDetail(empId) {
+    const emp = currentEmployeesCache.find(e => e.id === empId);
+    if (!emp) return;
+
+    const modal = document.getElementById("employeeDetailModal");
+    if (!modal) return;
+
+    const initials = emp.full_name ? emp.full_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "EM";
+    document.getElementById("empDetailAvatar").textContent = initials;
+    document.getElementById("empDetailName").textContent = emp.full_name;
+    document.getElementById("empDetailTitle").textContent = emp.job_title || "Team Member";
+    document.getElementById("empDetailEmail").textContent = emp.email;
+    document.getElementById("empDetailDept").textContent = emp.department || "General";
+    document.getElementById("empDetailPhone").textContent = emp.phone || "N/A";
+    document.getElementById("empDetailLeave").textContent = `${emp.leave_balance} Days Available`;
+
+    modal.classList.remove("hidden");
 }
 
 async function deleteEmployeeProfile(empId) {
