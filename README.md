@@ -157,3 +157,5 @@ python -m http.server 5173
 - **Backend**: Python 3.11+,  FastAPI, SQLAlchemy, SQLite, Pydantic, Passlib, PyJWT, Uvicorn
 - **Frontend**: HTML5, Vanilla JavaScript (ES6+), Vanilla CSS3 Design System with CSS Custom Properties
 - **Aesthetics**: Glassmorphic cards, mesh ambient glow animations, dark/light theme tokens, responsive layouts
+
+<!-- Pair badge update for ke961 -->
