@@ -129,6 +129,18 @@
                 <button class="nav-item menu-item" data-section="trainingSection">
                     <span class="icon">🎓</span><span>Training & Skills</span>
                 </button>
+                <button class="nav-item menu-item" data-section="payslipsSection">
+                    <span class="icon">💰</span><span>Salary & Payslips</span>
+                </button>
+                <button class="nav-item menu-item" data-section="recruitmentSection">
+                    <span class="icon">🏢</span><span>Recruitment & ATS</span>
+                </button>
+                <button class="nav-item menu-item" data-section="chatSection">
+                    <span class="icon">💬</span><span>Team Messenger</span>
+                </button>
+                <button class="nav-item menu-item" data-section="surveysSection">
+                    <span class="icon">💡</span><span>Pulse & Ideas</span>
+                </button>
                 <button class="nav-item menu-item" data-section="profileSection">
                     <span class="icon">👤</span><span>Profile</span>
                 </button>
@@ -1085,6 +1097,214 @@
                         <div class="empty-state">Loading training courses...</div>
                     </div>
                 </section>
+
+                <!-- Salary, Compensation & Payslips Section -->
+                <section id="payslipsSection" class="content-section hidden">
+                    <div class="section-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p class="eyebrow">COMPENSATION & REMUNERATION</p>
+                            <h2>Salary, Compensation & Payslips</h2>
+                        </div>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
+                            <button id="openGeneratePayslipBtn" class="btn btn-primary" type="button">+ Issue Monthly Payslip</button>
+                        </div>
+                    </div>
+
+                    <!-- Payslips Filter Row -->
+                    <div class="card" style="margin-bottom: 24px; padding: 20px;">
+                        <div class="filter-controls-row">
+                            <div class="filter-group">
+                                <label for="payslipMonthFilter">Pay Month:</label>
+                                <select id="payslipMonthFilter">
+                                    <option value="All">All Months</option>
+                                    <option value="January">January</option>
+                                    <option value="February">February</option>
+                                    <option value="March">March</option>
+                                    <option value="April">April</option>
+                                    <option value="May">May</option>
+                                    <option value="June">June</option>
+                                    <option value="July">July</option>
+                                    <option value="August" selected>August</option>
+                                    <option value="September">September</option>
+                                    <option value="October">October</option>
+                                    <option value="November">November</option>
+                                    <option value="December">December</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="payslipStatusFilter">Payment Status:</label>
+                                <select id="payslipStatusFilter">
+                                    <option value="All">All Statuses</option>
+                                    <option value="paid">Paid</option>
+                                    <option value="pending">Pending</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="payslipEmployeeFilter">Employee:</label>
+                                <select id="payslipEmployeeFilter">
+                                    <option value="">All Team Members</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payslips Data Table -->
+                    <div class="card" style="padding: 24px;">
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Department</th>
+                                        <th>Period</th>
+                                        <th>Basic Salary</th>
+                                        <th>Bonus / Allow.</th>
+                                        <th>Deductions</th>
+                                        <th>Net Payout</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="payslipsTableBody">
+                                    <tr>
+                                        <td colspan="9" class="empty">Loading compensation records...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Recruitment & ATS Section -->
+                <section id="recruitmentSection" class="content-section hidden">
+                    <div class="section-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p class="eyebrow">TALENT ACQUISITION & ATS</p>
+                            <h2>Recruitment & Hiring Pipeline</h2>
+                        </div>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
+                            <button id="openAddJobBtn" class="btn btn-secondary" type="button">+ Post Job Opening</button>
+                            <button id="openAddCandidateBtn" class="btn btn-primary" type="button">+ Add Candidate</button>
+                        </div>
+                    </div>
+
+                    <!-- Sub Tab Bar -->
+                    <div class="sub-tab-bar">
+                        <button class="sub-tab active" data-tab="recruitmentJobsTab">💼 Job Openings</button>
+                        <button class="sub-tab" data-tab="recruitmentCandidatesTab">👥 Candidate Pipeline</button>
+                    </div>
+
+                    <!-- Job Openings Tab Content -->
+                    <div id="recruitmentJobsTab" class="sub-tab-content">
+                        <div id="jobsGrid" class="cards-grid">
+                            <div class="empty-state">Loading job requisitions...</div>
+                        </div>
+                    </div>
+
+                    <!-- Candidate Pipeline Tab Content -->
+                    <div id="recruitmentCandidatesTab" class="sub-tab-content hidden">
+                        <div class="card" style="margin-bottom: 24px; padding: 20px;">
+                            <div class="filter-controls-row">
+                                <div class="filter-group">
+                                    <label for="candidateStageFilter">Pipeline Stage:</label>
+                                    <select id="candidateStageFilter">
+                                        <option value="All">All Pipeline Stages</option>
+                                        <option value="applied">Applied</option>
+                                        <option value="screening">Screening</option>
+                                        <option value="interview">Interview</option>
+                                        <option value="offered">Offered</option>
+                                        <option value="hired">Hired</option>
+                                        <option value="rejected">Rejected</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="candidatesGrid" class="cards-grid">
+                            <div class="empty-state">Loading candidate applications...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Workforce Team Messenger Section -->
+                <section id="chatSection" class="content-section hidden">
+                    <div class="section-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p class="eyebrow">REAL-TIME COLLABORATION</p>
+                            <h2>Workforce Team Messenger</h2>
+                        </div>
+                        <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
+                    </div>
+
+                    <div class="messenger-shell">
+                        <!-- Left Channels Sidebar -->
+                        <div class="messenger-sidebar">
+                            <div class="messenger-sidebar-header">
+                                <h3>Team Spaces & Channels</h3>
+                            </div>
+                            <div id="chatChannelsList" class="channels-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Right Chat Stream Panel -->
+                        <div class="chat-pane">
+                            <div class="chat-pane-header">
+                                <div>
+                                    <strong id="activeChannelTitle" style="font-size: 16px;"># general</strong>
+                                    <p id="activeChannelDesc" class="muted" style="margin: 2px 0 0; font-size: 12px;">Company-wide discussions and updates</p>
+                                </div>
+                                <span class="badge approved" style="font-size: 11px;">● LIVE STREAM</span>
+                            </div>
+
+                            <div id="chatMessagesStream" class="chat-messages-stream">
+                                <div class="empty-state">Loading conversations...</div>
+                            </div>
+
+                            <form id="chatComposerForm" class="chat-composer">
+                                <input id="chatInput" class="chat-input" type="text" placeholder="Type a message to team space... (Press Enter to send)" autocomplete="off" required />
+                                <button class="btn btn-primary" type="submit" style="padding: 10px 18px;">Send 🚀</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pulse Surveys & Ideas Section -->
+                <section id="surveysSection" class="content-section hidden">
+                    <div class="section-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p class="eyebrow">EMPLOYEE ENGAGEMENT & VOICE</p>
+                            <h2>Pulse Surveys & Innovation Ideas</h2>
+                        </div>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn btn-secondary" type="button" onclick="showSection('dashboardSection')" style="font-size: 13px; font-weight: 600;">🏠 Back to Home</button>
+                            <button id="openAddSurveyBtn" class="btn btn-secondary" type="button">+ Launch Pulse Poll</button>
+                            <button id="openAddIdeaBtn" class="btn btn-primary" type="button">+ Share Innovation Idea</button>
+                        </div>
+                    </div>
+
+                    <!-- Sub Tab Bar -->
+                    <div class="sub-tab-bar">
+                        <button class="sub-tab active" data-tab="surveysPollsTab">📊 Active Pulse Polls</button>
+                        <button class="sub-tab" data-tab="surveysIdeasTab">💡 Company Ideas & Suggestions</button>
+                    </div>
+
+                    <!-- Pulse Polls Tab Content -->
+                    <div id="surveysPollsTab" class="sub-tab-content">
+                        <div id="surveysGrid" class="grid-2col" style="gap: 24px;">
+                            <div class="empty-state">Loading active pulse polls...</div>
+                        </div>
+                    </div>
+
+                    <!-- Ideas Tab Content -->
+                    <div id="surveysIdeasTab" class="sub-tab-content hidden">
+                        <div id="ideasFeed" style="display: flex; flex-direction: column; gap: 16px;">
+                            <div class="empty-state">Loading company suggestions...</div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </section>
     </div>
@@ -1362,6 +1582,414 @@
         </div>
     </div>
 
+    <!-- Modal: Generate Payslip -->
+    <div id="generatePayslipModal" class="modal-backdrop hidden">
+        <div class="modal-card" style="max-width: 580px;">
+            <div class="modal-header">
+                <h3>Issue Monthly Employee Payslip</h3>
+                <button id="closeGeneratePayslipBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <form id="generatePayslipForm" class="form-stacked" style="padding: 24px;">
+                <label>
+                    Select Employee
+                    <select id="payslipEmployeeSelect" required>
+                        <option value="">Select Employee...</option>
+                    </select>
+                </label>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Pay Month
+                        <select id="payslipMonthSelect" required>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August" selected>August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
+                    </label>
+                    <label>
+                        Pay Year
+                        <input id="payslipYearInput" type="number" value="2026" min="2020" max="2030" required />
+                    </label>
+                </div>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Basic Salary ($)
+                        <input id="payslipBasicSalary" type="number" step="0.01" placeholder="e.g. 7500" required />
+                    </label>
+                    <label>
+                        Allowances ($)
+                        <input id="payslipAllowances" type="number" step="0.01" value="500" />
+                    </label>
+                </div>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Performance Bonus ($)
+                        <input id="payslipBonus" type="number" step="0.01" value="0" />
+                    </label>
+                    <label>
+                        Income Tax Deduction ($)
+                        <input id="payslipTax" type="number" step="0.01" placeholder="e.g. 1200" />
+                    </label>
+                </div>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Health Insurance ($)
+                        <input id="payslipInsurance" type="number" step="0.01" value="250" />
+                    </label>
+                    <label>
+                        Provident Fund / 401k ($)
+                        <input id="payslipProvidentFund" type="number" step="0.01" value="300" />
+                    </label>
+                </div>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Payment Method
+                        <select id="payslipPaymentMethod">
+                            <option value="Direct Bank Deposit">Direct Bank Deposit</option>
+                            <option value="International Wire Transfer">International Wire Transfer</option>
+                            <option value="Corporate PayPal">Corporate PayPal</option>
+                            <option value="Cheque Payout">Cheque Payout</option>
+                        </select>
+                    </label>
+                    <label>
+                        Payment Status
+                        <select id="payslipPaymentStatus">
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                        </select>
+                    </label>
+                </div>
+                <label>
+                    Remuneration Notes / Payroll Reference
+                    <textarea id="payslipNotes" rows="2" placeholder="e.g. Monthly salary with standard tax & benefits deductions."></textarea>
+                </label>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button class="btn btn-secondary" type="button" id="cancelGeneratePayslipBtn">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Issue Payslip</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Official Printable Payslip Invoice -->
+    <div id="payslipInvoiceModal" class="modal-backdrop hidden">
+        <div class="modal-card" style="max-width: 760px;">
+            <div class="modal-header">
+                <h3>Official Employee Payslip</h3>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button class="btn btn-secondary" type="button" onclick="window.print()" style="font-size: 12px; padding: 4px 10px;">🖨️ Print / Save PDF</button>
+                    <button id="closePayslipInvoiceBtn" class="modal-close-btn">&times;</button>
+                </div>
+            </div>
+            <div style="padding: 24px;">
+                <div class="payslip-invoice-sheet">
+                    <div class="payslip-invoice-header">
+                        <div class="payslip-company-brand">
+                            <div class="brand-lockup" style="margin-bottom: 6px;">
+                                <span class="brand-mark">E</span><span>EMS WORKFORCE</span>
+                            </div>
+                            <small class="muted" style="display: block;">EMS Global Remote Technologies Inc.</small>
+                            <small class="muted">100 Enterprise Way, Silicon Valley, CA</small>
+                        </div>
+                        <div class="payslip-doc-tag">
+                            <h3>PAYSLIP INVOICE</h3>
+                            <small id="invoicePayPeriod" style="font-weight: 700; font-size: 13px; color: var(--ink);">August 2026</small><br />
+                            <small id="invoiceReferenceNo" class="muted">REF: EMS-PAY-2026-0812</small>
+                        </div>
+                    </div>
+
+                    <div class="payslip-meta-grid">
+                        <div class="payslip-meta-col">
+                            <div><strong class="muted">EMPLOYEE NAME:</strong> <span id="invoiceEmpName">Sarah Connor</span></div>
+                            <div><strong class="muted">JOB TITLE:</strong> <span id="invoiceEmpTitle">Senior UX Designer</span></div>
+                            <div><strong class="muted">DEPARTMENT:</strong> <span id="invoiceEmpDept">Product</span></div>
+                        </div>
+                        <div class="payslip-meta-col">
+                            <div><strong class="muted">PAY DATE:</strong> <span id="invoicePayDate">August 31, 2026</span></div>
+                            <div><strong class="muted">PAYMENT METHOD:</strong> <span id="invoicePayMethod">Direct Bank Deposit</span></div>
+                            <div><strong class="muted">PAYMENT STATUS:</strong> <span id="invoicePayStatus" class="badge approved">PAID</span></div>
+                        </div>
+                    </div>
+
+                    <div class="payslip-breakdown-tables">
+                        <!-- Earnings Column -->
+                        <div class="payslip-breakdown-box">
+                            <h4>💰 Earnings Itemization</h4>
+                            <div class="payslip-row-item">
+                                <span>Basic Salary</span>
+                                <strong id="invoiceBasicSalary">$7,200.00</strong>
+                            </div>
+                            <div class="payslip-row-item">
+                                <span>Monthly Allowances</span>
+                                <strong id="invoiceAllowances">$500.00</strong>
+                            </div>
+                            <div class="payslip-row-item">
+                                <span>Performance Bonus</span>
+                                <strong id="invoiceBonus">$600.00</strong>
+                            </div>
+                            <div class="payslip-row-total">
+                                <span>Gross Total Earnings:</span>
+                                <span id="invoiceGrossSalary" style="color: var(--primary);">$8,300.00</span>
+                            </div>
+                        </div>
+
+                        <!-- Deductions Column -->
+                        <div class="payslip-breakdown-box">
+                            <h4>🛡️ Deductions Itemization</h4>
+                            <div class="payslip-row-item">
+                                <span>Income Tax Withholding</span>
+                                <strong id="invoiceTax">$1,250.00</strong>
+                            </div>
+                            <div class="payslip-row-item">
+                                <span>Health & Medical Care</span>
+                                <strong id="invoiceInsurance">$250.00</strong>
+                            </div>
+                            <div class="payslip-row-item">
+                                <span>Provident Fund / 401(k)</span>
+                                <strong id="invoiceProvident">$300.00</strong>
+                            </div>
+                            <div class="payslip-row-total">
+                                <span>Total Deductions:</span>
+                                <span id="invoiceTotalDeductions" style="color: var(--danger);">$1,800.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Net Pay Callout Banner -->
+                    <div class="payslip-net-banner">
+                        <div>
+                            <span>NET REMUNERATION PAID</span>
+                            <small style="display: block; opacity: 0.9; font-size: 11px;">Deposited to employee bank account</small>
+                        </div>
+                        <strong id="invoiceNetSalary">$6,500.00</strong>
+                    </div>
+
+                    <div class="payslip-footer-notes">
+                        <div>
+                            <strong>CONFIDENTIAL DOCUMENT</strong> — Generated by EMS Remote Workforce System.
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="badge approved">✓ Certified Payroll</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Post Job Opening -->
+    <div id="addJobModal" class="modal-backdrop hidden">
+        <div class="modal-card" style="max-width: 580px;">
+            <div class="modal-header">
+                <h3>Post New Job Requisition</h3>
+                <button id="closeAddJobBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <form id="addJobForm" class="form-stacked" style="padding: 24px;">
+                <label>
+                    Job Requisition Title
+                    <input id="jobTitle" type="text" placeholder="e.g. Senior Backend Systems Engineer" required />
+                </label>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Department
+                        <select id="jobDepartment">
+                            <option value="Engineering">Engineering</option>
+                            <option value="Product">Product</option>
+                            <option value="People Operations">People Operations</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Support">Support</option>
+                            <option value="Marketing">Marketing</option>
+                        </select>
+                    </label>
+                    <label>
+                        Job Type
+                        <select id="jobType">
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract / Freelance">Contract / Freelance</option>
+                            <option value="Internship">Internship</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Experience Level
+                        <select id="jobExpLevel">
+                            <option value="Entry-Level">Entry-Level</option>
+                            <option value="Mid-Level" selected>Mid-Level</option>
+                            <option value="Senior">Senior</option>
+                            <option value="Lead / Staff">Lead / Staff</option>
+                        </select>
+                    </label>
+                    <label>
+                        Salary Range
+                        <input id="jobSalary" type="text" placeholder="e.g. $110,000 - $140,000" required />
+                    </label>
+                </div>
+                <label>
+                    Work Location
+                    <input id="jobLocation" type="text" value="Remote Flexible (Global)" required />
+                </label>
+                <label>
+                    Role Overview / Description
+                    <textarea id="jobDescription" rows="3" placeholder="Core responsibilities and scope of role..." required></textarea>
+                </label>
+                <label>
+                    Key Requirements & Qualifications
+                    <textarea id="jobRequirements" rows="3" placeholder="Key skills, tech stack, and background requirements..."></textarea>
+                </label>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button class="btn btn-secondary" type="button" id="cancelAddJobBtn">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Publish Job Opening</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Job Candidate -->
+    <div id="addCandidateModal" class="modal-backdrop hidden">
+        <div class="modal-card" style="max-width: 580px;">
+            <div class="modal-header">
+                <h3>Register Candidate Application</h3>
+                <button id="closeAddCandidateBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <form id="addCandidateForm" class="form-stacked" style="padding: 24px;">
+                <label>
+                    Applied Position
+                    <select id="candidateJobSelect" required>
+                        <option value="">Select Job Opening...</option>
+                    </select>
+                </label>
+                <label>
+                    Candidate Full Name
+                    <input id="candidateName" type="text" placeholder="e.g. Liam Henderson" required />
+                </label>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Email Address
+                        <input id="candidateEmail" type="email" placeholder="e.g. liam.henderson@mail.com" required />
+                    </label>
+                    <label>
+                        Phone Number
+                        <input id="candidatePhone" type="text" placeholder="e.g. +1 555-019-2231" />
+                    </label>
+                </div>
+                <div class="grid-2col" style="gap: 12px; grid-template-columns: 1fr 1fr;">
+                    <label>
+                        Initial Pipeline Stage
+                        <select id="candidateStage">
+                            <option value="applied">Applied</option>
+                            <option value="screening">Screening</option>
+                            <option value="interview">Interview</option>
+                            <option value="offered">Offered</option>
+                        </select>
+                    </label>
+                    <label>
+                        Initial Evaluation Rating
+                        <select id="candidateRating">
+                            <option value="5">⭐⭐⭐⭐⭐ (5 Stars - Exceptional)</option>
+                            <option value="4" selected>⭐⭐⭐⭐ (4 Stars - Strong Fit)</option>
+                            <option value="3">⭐⭐⭐ (3 Stars - Promising)</option>
+                            <option value="2">⭐⭐ (2 Stars - Needs Review)</option>
+                            <option value="1">⭐ (1 Star - Poor Fit)</option>
+                        </select>
+                    </label>
+                </div>
+                <label>
+                    Portfolio / Resume Link
+                    <input id="candidateResume" type="text" placeholder="e.g. https://linkedin.com/in/liam-henderson-demo" />
+                </label>
+                <label>
+                    Interview Notes & Strengths
+                    <textarea id="candidateNotes" rows="3" placeholder="Key takeaways from initial screening or technical evaluation..."></textarea>
+                </label>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button class="btn btn-secondary" type="button" id="cancelAddCandidateBtn">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Add Candidate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Launch Pulse Survey -->
+    <div id="addSurveyModal" class="modal-backdrop hidden">
+        <div class="modal-card" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3>Launch Company Pulse Poll</h3>
+                <button id="closeAddSurveyBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <form id="addSurveyForm" class="form-stacked" style="padding: 24px;">
+                <label>
+                    Poll Title
+                    <input id="surveyTitle" type="text" placeholder="e.g. Q4 Learning & Development Preference" required />
+                </label>
+                <label>
+                    Poll Category
+                    <select id="surveyCategory">
+                        <option value="Workplace Culture">Workplace Culture</option>
+                        <option value="Workplace Flexibility">Workplace Flexibility</option>
+                        <option value="Engineering & Tools">Engineering & Tools</option>
+                        <option value="Benefits & Wellness">Benefits & Wellness</option>
+                    </select>
+                </label>
+                <label>
+                    Poll Question
+                    <textarea id="surveyQuestion" rows="3" placeholder="What would you like to ask the team?" required></textarea>
+                </label>
+                <label>
+                    Voting Options (Enter options separated by comma)
+                    <input id="surveyOptionsInput" type="text" placeholder="e.g. Option 1, Option 2, Option 3, Option 4" required />
+                    <small class="muted">Enter 2 to 6 choices separated by commas.</small>
+                </label>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button class="btn btn-secondary" type="button" id="cancelAddSurveyBtn">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Launch Poll</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Share Innovation Idea -->
+    <div id="addIdeaModal" class="modal-backdrop hidden">
+        <div class="modal-card" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3>Share Innovation or Improvement Idea</h3>
+                <button id="closeAddIdeaBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <form id="addIdeaForm" class="form-stacked" style="padding: 24px;">
+                <label>
+                    Idea Headline
+                    <input id="ideaTitle" type="text" placeholder="e.g. Ergonomic Home Workspace Equipment Stipend" required />
+                </label>
+                <label>
+                    Category
+                    <select id="ideaCategory">
+                        <option value="Culture & Wellness">Culture & Wellness</option>
+                        <option value="Developer Productivity">Developer Productivity</option>
+                        <option value="Learning & Growth">Learning & Growth</option>
+                        <option value="Operations & Process">Operations & Process</option>
+                    </select>
+                </label>
+                <label>
+                    Idea Details & Expected Impact
+                    <textarea id="ideaDescription" rows="4" placeholder="Explain the problem and how this idea will benefit the workforce..." required></textarea>
+                </label>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button class="btn btn-secondary" type="button" id="cancelAddIdeaBtn">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Submit Idea</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal: Universal Command Palette (Ctrl+K) -->
     <div id="cmdPaletteModal" class="modal-backdrop hidden">
         <div class="modal-card" style="max-width: 500px; margin-top: 80px; align-self: flex-start;">
@@ -1375,6 +2003,10 @@
                 <div class="cmd-item" onclick="execCmd('attendanceSection')"><span>◷</span> Go to Attendance & Shift Station</div>
                 <div class="cmd-item" onclick="execCmd('leaveSection')"><span>□</span> Submit Leave Request</div>
                 <div class="cmd-item" onclick="execCmd('payrollSection')"><span>💳</span> Submit Expense Claim</div>
+                <div class="cmd-item" onclick="execCmd('payslipsSection')"><span>💰</span> Manage Salary & Payslips</div>
+                <div class="cmd-item" onclick="execCmd('recruitmentSection')"><span>🏢</span> Open Recruitment & ATS Pipeline</div>
+                <div class="cmd-item" onclick="execCmd('chatSection')"><span>💬</span> Open Team Messenger & Channels</div>
+                <div class="cmd-item" onclick="execCmd('surveysSection')"><span>💡</span> Vote on Pulse Polls & Ideas</div>
                 <div class="cmd-item" onclick="execCmd('employeesSection')"><span>👥</span> Browse Staff Directory</div>
                 <div class="cmd-item" onclick="execCmd('reviewsSection')"><span>⭐</span> Conduct Performance Review</div>
                 <div class="cmd-item" onclick="execCmd('reviewsSection')"><span>🙌</span> Post Peer Recognition Kudos</div>
