@@ -159,6 +159,10 @@ python -m http.server 5173
 | **IT Assets** | `/api/assets` | `GET /`, `POST /`, `PATCH /{id}`, `DELETE /{id}` |
 | **Calendar Events**| `/api/calendar/events` | `GET /`, `POST /`, `DELETE /{id}` |
 | **Trainings** | `/api/trainings` | `GET /`, `POST /`, `PATCH /{id}/status`, `DELETE /{id}` |
+| **Salary & Payslips** | `/api/payslips` | `GET /`, `POST /`, `GET /{id}`, `PATCH /{id}/status`, `DELETE /{id}` |
+| **Recruitment & ATS** | `/api/recruitment` | `GET /jobs`, `POST /jobs`, `DELETE /jobs/{id}`, `GET /candidates`, `POST /candidates`, `PATCH /candidates/{id}/stage`, `POST /candidates/{id}/convert-to-employee`, `DELETE /candidates/{id}` |
+| **Team Messenger** | `/api/chat` | `GET /channels`, `GET /messages`, `POST /messages` |
+| **Surveys & Ideas** | `/api/surveys` | `GET /`, `POST /`, `POST /{id}/vote`, `GET /ideas`, `POST /ideas`, `POST /ideas/{id}/upvote`, `PATCH /ideas/{id}/status`, `DELETE /ideas/{id}` |
 | **Performance** | `/api/reviews` | `GET /performance`, `POST /performance`, `GET /kudos`, `POST /kudos` |
 | **Documents** | `/api/documents` | `GET /`, `POST /`, `POST /{id}/acknowledge` |
 | **Analytics** | `/api/analytics` | `GET /metrics`, `GET /export/attendance`, `GET /export/leave`, `GET /export/expenses` |
@@ -167,8 +171,14 @@ python -m http.server 5173
 
 ## 🎨 Design System & Technologies
 
-- **Backend**: Python 3.11+,  FastAPI, SQLAlchemy, SQLite, Pydantic, Passlib, PyJWT, Uvicorn
+- **Backend**: Python 3.11+, FastAPI, SQLAlchemy, SQLite, Pydantic, Passlib, PyJWT, Uvicorn
 - **Frontend**: HTML5, Vanilla JavaScript (ES6+), Vanilla CSS3 Design System with CSS Custom Properties
 - **Aesthetics**: Glassmorphic cards, mesh ambient glow animations, dark/light theme tokens, responsive layouts
+
+---
+
+## 📄 License
+
+This project is licensed under the **[MIT License](file:///c:/Users/Hp/Desktop/Employee-Workforce-System/LICENSE)**. Free to use, modify, and distribute for personal or commercial applications.
 
 <!-- Pair badge update for ke961 -->
