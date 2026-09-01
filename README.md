@@ -28,7 +28,13 @@ The platform provides an end-to-end workforce experience across 13 core enterpri
 - **Document Center (`/api/documents`)**: Policy repository cards (*Code of Conduct*, *Security & VPN Policy*, *PTO Policy*) with mandatory acknowledgment tracking.
 - **Training & Skills Hub (`/api/trainings`)**: Assign security & compliance courses, monitor completion progress bars, and mark courses as completed.
 
-### 4. 📊 Operations, Analytics & Financials
+### 4. 💰 Compensation, Talent & Engagement Hub (New)
+- **Salary & Payslips (`/api/payslips`)**: Issue monthly employee payroll with auto calculation of Gross Pay, Allowances, Bonuses, and Deductions (Tax, Insurance, 401k). Features a corporate **Printable Official Payslip Invoice Modal** with 1-click PDF/Print export.
+- **Recruitment & ATS Pipeline (`/api/recruitment`)**: Publish job openings, track candidate pipeline across stages (*Applied*, *Screening*, *Interview*, *Offered*, *Hired*, *Rejected*), star ratings, and a **1-Click "Hire & Onboard" action** that automatically provisions an employee profile and onboarding checklist.
+- **Workforce Team Messenger (`/api/chat`)**: Real-time collaborative channel spaces (`#general`, `#engineering`, `#hr-helpdesk`, `#watercooler`) with active participant counts, avatars, and fast message stream.
+- **Pulse Surveys & Ideas Box (`/api/surveys`)**: Launch interactive company pulse polls with real-time percentage progress bars and an upvotable employee innovation suggestion board with review statuses (*Under Review*, *Planned*, *In Progress*, *Implemented*).
+
+### 5. 📊 Operations, Analytics & Financials
 - **Executive Analytics (`/api/analytics`)**: KPI metric cards, expense category breakdown, department headcount allocation visual bar charts, and **1-click CSV Report Exports** (Attendance, Leave, Expenses).
 - **Attendance & Workstation Clock**: Real-time clock in / clock out, live shift timers, total work duration calculations, and status badges.
 - **Payroll & Expense Claims**: Submit reimbursement requests (AWS Cloud, Figma Org, Client Dinners) with receipt attachments and manager approval status.
@@ -44,22 +50,29 @@ Employee-Workforce-System/
 │   ├── app.py                # FastAPI main server & database seeding logic
 │   ├── auth.py               # JWT authentication & password hashing (Passlib/Bcrypt)
 │   ├── database.py           # SQLAlchemy SQLite engine setup
-│   ├── models.py             # SQLAlchemy ORM database models (14 models)
+│   ├── models.py             # SQLAlchemy ORM database models (21 models)
 │   ├── schemas.py            # Pydantic request & response validation schemas
 │   ├── requirements.txt      # Python dependencies
 │   └── routers/
 │       ├── analytics.py      # Executive analytics & CSV report export endpoints
 │       ├── announcements.py  # Company broadcasts router
 │       ├── assets.py         # IT hardware inventory router
+│       ├── attendance.py     # Workstation clock in/out & attendance history router
 │       ├── calendar.py       # Team calendar & events router
+│       ├── chat.py           # Team messenger & channels router
+│       ├── dashboard.py      # Aggregated dashboard metrics router
 │       ├── documents.py      # Policy document center & acknowledgment router
 │       ├── employees.py      # Staff directory CRUD router
 │       ├── expenses.py       # Expense reimbursement claims router
 │       ├── leave.py          # Leave request router
+│       ├── login.py          # Authentication & JWT tokens router
 │       ├── okrs.py           # Objectives & Key Results router
 │       ├── onboarding.py     # Onboarding task checklist router
+│       ├── payslips.py       # Salary & payslip compensation router
+│       ├── recruitment.py    # Job postings & ATS candidate pipeline router
 │       ├── reviews.py        # Performance reviews & peer kudos router
 │       ├── shifts.py         # Work shift roster router
+│       ├── surveys.py        # Pulse surveys & innovation ideas router
 │       ├── tasks.py          # Kanban project task router
 │       └── trainings.py      # Training & skills certification router
 ├── frontend/
