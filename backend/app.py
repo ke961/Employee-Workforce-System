@@ -766,12 +766,19 @@ from auth import hash_password
 from database import Base, SessionLocal, engine
 from models import (
     Admin,
+    ChatMessage,
     CompanyDocument,
     CompanyEvent,
+    EmployeeIdea,
     ITAsset,
+    JobCandidate,
+    JobPosting,
     Kudos,
+    Payslip,
     PerformanceReview,
+    PulseSurvey,
     ShiftSchedule,
+    SurveyVote,
     TrainingCourse,
 )
 from routers import (
@@ -780,6 +787,7 @@ from routers import (
     assets,
     attendance,
     calendar,
+    chat,
     dashboard,
     documents,
     employees,
@@ -788,8 +796,11 @@ from routers import (
     login,
     okrs,
     onboarding,
+    payslips,
+    recruitment,
     reviews,
     shifts,
+    surveys,
     tasks,
     trainings,
 )
@@ -1105,6 +1116,335 @@ def create_default_admin() -> None:
                 ]
                 database.add_all(trainings_seed)
 
+        # Seed initial Payslips if table empty
+        if database.query(Payslip).count() == 0:
+            from datetime import date
+            admin_acc = database.query(Admin).filter(Admin.email == "admin@gmail.com").first()
+            emp_acc = database.query(Admin).filter(Admin.email == "employee@gmail.com").first()
+            alex_acc = database.query(Admin).filter(Admin.email == "alex.rivera@ems.local").first()
+            mgr_acc = database.query(Admin).filter(Admin.email == "manager@gmail.com").first()
+
+            payslips_seed = []
+            if admin_acc:
+                payslips_seed.append(
+                    Payslip(
+                        admin_id=admin_acc.id,
+                        month="August",
+                        year=2026,
+                        basic_salary=9500.0,
+                        allowances=800.0,
+                        bonus=1200.0,
+                        tax_deduction=1850.0,
+                        insurance_deduction=350.0,
+                        provident_fund_deduction=400.0,
+                        net_salary=8900.0,
+                        payment_status="paid",
+                        payment_date=date(2026, 8, 31),
+                        payment_method="Direct Bank Deposit",
+                        notes="Standard monthly executive payroll + Q3 performance bonus.",
+                    )
+                )
+            if emp_acc:
+                payslips_seed.append(
+                    Payslip(
+                        admin_id=emp_acc.id,
+                        month="August",
+                        year=2026,
+                        basic_salary=7200.0,
+                        allowances=500.0,
+                        bonus=600.0,
+                        tax_deduction=1250.0,
+                        insurance_deduction=250.0,
+                        provident_fund_deduction=300.0,
+                        net_salary=6500.0,
+                        payment_status="paid",
+                        payment_date=date(2026, 8, 31),
+                        payment_method="Direct Bank Deposit",
+                        notes="Design team monthly remuneration.",
+                    )
+                )
+            if alex_acc:
+                payslips_seed.append(
+                    Payslip(
+                        admin_id=alex_acc.id,
+                        month="August",
+                        year=2026,
+                        basic_salary=8400.0,
+                        allowances=600.0,
+                        bonus=800.0,
+                        tax_deduction=1500.0,
+                        insurance_deduction=300.0,
+                        provident_fund_deduction=350.0,
+                        net_salary=7650.0,
+                        payment_status="paid",
+                        payment_date=date(2026, 8, 31),
+                        payment_method="Direct Bank Deposit",
+                        notes="Engineering lead monthly compensation.",
+                    )
+                )
+            if mgr_acc:
+                payslips_seed.append(
+                    Payslip(
+                        admin_id=mgr_acc.id,
+                        month="September",
+                        year=2026,
+                        basic_salary=8000.0,
+                        allowances=500.0,
+                        bonus=0.0,
+                        tax_deduction=1400.0,
+                        insurance_deduction=300.0,
+                        provident_fund_deduction=350.0,
+                        net_salary=6450.0,
+                        payment_status="pending",
+                        payment_date=None,
+                        payment_method="Direct Bank Deposit",
+                        notes="Upcoming payroll cycle for September 2026.",
+                    )
+                )
+
+            if payslips_seed:
+                database.add_all(payslips_seed)
+
+        # Seed initial Job Postings and Candidates if table empty
+        if database.query(JobPosting).count() == 0:
+            from datetime import date
+            job1 = JobPosting(
+                title="Staff Full-Stack Engineer (Python/FastAPI & Vue)",
+                department="Engineering",
+                job_type="Full-time",
+                experience_level="Senior / Lead",
+                salary_range="$130,000 - $160,000",
+                location="Remote (Global)",
+                status="active",
+                description="Lead the design and development of our core distributed workforce microservices and web platform.",
+                requirements="5+ years Python/FastAPI experience, strong frontend architectural skills, SQLite/PostgreSQL, Docker/K8s.",
+            )
+            job2 = JobPosting(
+                title="Senior UX & Product Designer",
+                department="Product",
+                job_type="Full-time",
+                experience_level="Senior",
+                salary_range="$110,000 - $135,000",
+                location="Remote Flexible",
+                status="active",
+                description="Create intuitive, delightful user experiences and design systems for enterprise workforce workflows.",
+                requirements="Figma mastery, design system governance, user research experience, prototyping interactive web applications.",
+            )
+            job3 = JobPosting(
+                title="Customer Success & Onboarding Specialist",
+                department="Support",
+                job_type="Full-time",
+                experience_level="Mid-Level",
+                salary_range="$75,000 - $95,000",
+                location="Remote (US / EU)",
+                status="active",
+                description="Drive customer onboarding excellence, conduct training webinars, and champion customer feedback into product.",
+                requirements="3+ years B2B SaaS onboarding, strong communication, CRM tooling experience.",
+            )
+            database.add_all([job1, job2, job3])
+            database.flush()
+
+            candidates_seed = [
+                JobCandidate(
+                    job_id=job1.id,
+                    full_name="Lucas Sterling",
+                    email="lucas.sterling@techmail.dev",
+                    phone="+1 (555) 391-0192",
+                    stage="interview",
+                    resume_link="https://linkedin.com/in/lucas-sterling-demo",
+                    rating=5,
+                    notes="Exceptional systems design interview. Strong concurrency and API caching knowledge.",
+                    applied_date=date(2026, 8, 14),
+                ),
+                JobCandidate(
+                    job_id=job1.id,
+                    full_name="Amina Al-Mansoor",
+                    email="amina.mansoor@codelab.io",
+                    phone="+1 (555) 441-2819",
+                    stage="offered",
+                    resume_link="https://github.com/amina-mansoor-demo",
+                    rating=5,
+                    notes="Offer package sent for Lead Architect position. Awaiting formal acceptance.",
+                    applied_date=date(2026, 8, 10),
+                ),
+                JobCandidate(
+                    job_id=job2.id,
+                    full_name="Chloe Bennett",
+                    email="chloe.bennett@designstudio.co",
+                    phone="+1 (555) 291-8841",
+                    stage="screening",
+                    resume_link="https://dribbble.com/chloebennett-demo",
+                    rating=4,
+                    notes="Impressive portfolio with design tokens and dark mode design system case studies.",
+                    applied_date=date(2026, 8, 20),
+                ),
+                JobCandidate(
+                    job_id=job3.id,
+                    full_name="Julian Vance",
+                    email="julian.vance@saascloud.org",
+                    phone="+1 (555) 672-9912",
+                    stage="applied",
+                    resume_link="https://linkedin.com/in/julian-vance-demo",
+                    rating=4,
+                    notes="Solid background managing enterprise accounts in fintech space.",
+                    applied_date=date(2026, 8, 26),
+                ),
+            ]
+            database.add_all(candidates_seed)
+
+        # Seed initial Chat Messages if table empty
+        if database.query(ChatMessage).count() == 0:
+            admin_acc = database.query(Admin).filter(Admin.email == "admin@gmail.com").first()
+            emp_acc = database.query(Admin).filter(Admin.email == "employee@gmail.com").first()
+            mgr_acc = database.query(Admin).filter(Admin.email == "manager@gmail.com").first()
+            alex_acc = database.query(Admin).filter(Admin.email == "alex.rivera@ems.local").first()
+
+            admin_id = admin_acc.id if admin_acc else 1
+            emp_id = emp_acc.id if emp_acc else 2
+            mgr_id = mgr_acc.id if mgr_acc else 3
+            alex_id = alex_acc.id if alex_acc else 4
+
+            chat_seed = [
+                ChatMessage(
+                    channel="general",
+                    sender_id=admin_id,
+                    sender_name="System Administrator",
+                    message="👋 Good morning team! Welcome to the new remote workforce collaboration hub. Please check the announcements tab for upcoming townhall details.",
+                    message_type="channel",
+                ),
+                ChatMessage(
+                    channel="general",
+                    sender_id=emp_id,
+                    sender_name="Sarah Connor",
+                    message="Morning everyone! The new UI refresh and attendance tracking station look fantastic ✨",
+                    message_type="channel",
+                ),
+                ChatMessage(
+                    channel="general",
+                    sender_id=mgr_id,
+                    sender_name="Michael Scott",
+                    message="Agreed! Don't forget that August monthly expense reports should be finalized by end of week 📊",
+                    message_type="channel",
+                ),
+                ChatMessage(
+                    channel="engineering",
+                    sender_id=alex_id,
+                    sender_name="Alex Rivera",
+                    message="🚀 We just deployed the automated payslip generator and candidate ATS pipeline updates to staging. All tests passing with 100% green builds!",
+                    message_type="channel",
+                ),
+                ChatMessage(
+                    channel="engineering",
+                    sender_id=admin_id,
+                    sender_name="System Administrator",
+                    message="Great work Alex! Let's schedule a quick 10-minute code walkthrough at 2:00 PM today.",
+                    message_type="channel",
+                ),
+                ChatMessage(
+                    channel="hr-helpdesk",
+                    sender_id=emp_id,
+                    sender_name="Sarah Connor",
+                    message="Hello HR team! Could you confirm if the annual wellness stipend rolls over into next quarter?",
+                    message_type="channel",
+                ),
+                ChatMessage(
+                    channel="hr-helpdesk",
+                    sender_id=admin_id,
+                    sender_name="Keya Rahman",
+                    message="Hi Sarah! Yes, up to $300 of unused wellness allowance rolls over automatically into Q4.",
+                    message_type="channel",
+                ),
+                ChatMessage(
+                    channel="watercooler",
+                    sender_id=alex_id,
+                    sender_name="Alex Rivera",
+                    message="Coffee recommendation of the week: Ethiopian Yirgacheffe light roast ☕ Highly recommended for morning focus sessions!",
+                    message_type="channel",
+                ),
+            ]
+            database.add_all(chat_seed)
+
+        # Seed initial Pulse Surveys & Votes if table empty
+        if database.query(PulseSurvey).count() == 0:
+            import json
+            admin_acc = database.query(Admin).filter(Admin.email == "admin@gmail.com").first()
+            admin_id = admin_acc.id if admin_acc else 1
+
+            survey1 = PulseSurvey(
+                title="Q3 2026 Remote & Hybrid Work Satisfaction",
+                question="How satisfied are you with our current flexible hybrid and remote work policies and tooling?",
+                category="Workplace Flexibility",
+                options_json=json.dumps([
+                    "🤩 Extremely Satisfied — Love the flexibility",
+                    "👍 Satisfied — Works well for my schedule",
+                    "🤔 Neutral — Could use some improvements",
+                    "👎 Unsatisfied — Prefer full office structure",
+                ]),
+                is_active=True,
+            )
+            survey2 = PulseSurvey(
+                title="Annual Engineering Hackathon Theme Selection",
+                question="Which core theme should we focus on for the upcoming 48-Hour Fall Hackathon 2026?",
+                category="Engineering & Innovation",
+                options_json=json.dumps([
+                    "🤖 Generative AI & Autonomous Agent Workflows",
+                    "⚡ High-Performance Developer Tooling & DX",
+                    "🔒 Privacy-First Security & Compliance Automation",
+                    "🌍 Green Tech & Cloud Cost Optimization",
+                ]),
+                is_active=True,
+            )
+            database.add_all([survey1, survey2])
+            database.flush()
+
+            # Seed simulated votes for survey1
+            survey_votes = [
+                SurveyVote(survey_id=survey1.id, admin_id=admin_id, selected_option="🤩 Extremely Satisfied — Love the flexibility"),
+            ]
+            other_staff = database.query(Admin).filter(Admin.id != admin_id).limit(4).all()
+            opts = ["🤩 Extremely Satisfied — Love the flexibility", "👍 Satisfied — Works well for my schedule"]
+            for idx, staff in enumerate(other_staff):
+                survey_votes.append(
+                    SurveyVote(survey_id=survey1.id, admin_id=staff.id, selected_option=opts[idx % len(opts)])
+                )
+            database.add_all(survey_votes)
+
+        # Seed initial Employee Ideas if table empty
+        if database.query(EmployeeIdea).count() == 0:
+            admin_acc = database.query(Admin).filter(Admin.email == "admin@gmail.com").first()
+            admin_id = admin_acc.id if admin_acc else 1
+
+            ideas_seed = [
+                EmployeeIdea(
+                    admin_id=admin_id,
+                    author_name="Sarah Connor",
+                    title="Implement 4-Day Summer Work Hours Pilot",
+                    description="Trial a 4x9 compressed work week schedule during July & August to boost team morale and focus without impacting client SLAs.",
+                    category="Culture & Wellness",
+                    upvotes_count=18,
+                    status="in_progress",
+                ),
+                EmployeeIdea(
+                    admin_id=admin_id,
+                    author_name="Alex Rivera",
+                    title="AI-Powered Semantic Codebase & Documentation Search",
+                    description="Integrate internal vector-search index across company repos and Notion docs so engineers can query architectural questions instantly.",
+                    category="Developer Productivity",
+                    upvotes_count=24,
+                    status="planned",
+                ),
+                EmployeeIdea(
+                    admin_id=admin_id,
+                    author_name="Michael Scott",
+                    title="Monthly Cross-Department 'Lunch & Learn' Tech Talks",
+                    description="Host 45-minute virtual interactive knowledge sharing sessions where different team members showcase what they're building or researching.",
+                    category="Learning & Growth",
+                    upvotes_count=12,
+                    status="implemented",
+                ),
+            ]
+            database.add_all(ideas_seed)
+
         database.commit()
 
         print("=" * 55)
@@ -1278,6 +1618,30 @@ app.include_router(
     trainings.router,
     prefix="/api/trainings",
     tags=["Training & Skills"],
+)
+
+app.include_router(
+    payslips.router,
+    prefix="/api/payslips",
+    tags=["Salary & Payslips"],
+)
+
+app.include_router(
+    recruitment.router,
+    prefix="/api/recruitment",
+    tags=["Recruitment & ATS"],
+)
+
+app.include_router(
+    chat.router,
+    prefix="/api/chat",
+    tags=["Team Messenger"],
+)
+
+app.include_router(
+    surveys.router,
+    prefix="/api/surveys",
+    tags=["Pulse Surveys & Ideas"],
 )
 
 
