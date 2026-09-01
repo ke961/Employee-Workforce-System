@@ -472,6 +472,26 @@ async function loadSectionData(sectionId) {
                 await populateDropdown("trainingEmployeeSelect");
                 break;
 
+            case "payslipsSection":
+                await loadPayslips();
+                await populateDropdown("payslipEmployeeSelect");
+                await populateDropdown("payslipEmployeeFilter", true);
+                break;
+
+            case "recruitmentSection":
+                await loadRecruitment();
+                await populateRecruitmentJobDropdown();
+                break;
+
+            case "chatSection":
+                await loadChatChannels();
+                await loadChatMessages();
+                break;
+
+            case "surveysSection":
+                await loadSurveysAndIdeas();
+                break;
+
             default:
                 break;
         }
@@ -2456,13 +2476,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Sub-tabs switcher (Performance vs Kudos)
+    // Sub-tabs switcher (scoped to current section)
     document.querySelectorAll(".sub-tab").forEach(tab => {
         tab.addEventListener("click", () => {
-            document.querySelectorAll(".sub-tab").forEach(t => t.classList.remove("active"));
+            const section = tab.closest(".content-section") || document;
+            section.querySelectorAll(".sub-tab").forEach(t => t.classList.remove("active"));
             tab.classList.add("active");
             const targetId = tab.dataset.tab;
-            document.querySelectorAll(".sub-tab-content").forEach(c => c.classList.add("hidden"));
+            section.querySelectorAll(".sub-tab-content").forEach(c => c.classList.add("hidden"));
             document.getElementById(targetId)?.classList.remove("hidden");
         });
     });
@@ -2695,6 +2716,197 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("addTrainingModal")?.classList.add("hidden");
             showNotification("Training course assigned!", "success");
             await loadTrainings();
+        } catch (err) {
+            showNotification(err.message, "error");
+        }
+    });
+
+    // Phase 3 Modal triggers
+    setupModalTrigger("openGeneratePayslipBtn", "closeGeneratePayslipBtn", "cancelGeneratePayslipBtn", "generatePayslipModal");
+    setupModalTrigger("openAddJobBtn", "closeAddJobBtn", "cancelAddJobBtn", "addJobModal");
+    setupModalTrigger("openAddCandidateBtn", "closeAddCandidateBtn", "cancelAddCandidateBtn", "addCandidateModal");
+    setupModalTrigger("openAddSurveyBtn", "closeAddSurveyBtn", "cancelAddSurveyBtn", "addSurveyModal");
+    setupModalTrigger("openAddIdeaBtn", "closeAddIdeaBtn", "cancelAddIdeaBtn", "addIdeaModal");
+
+    // Close Payslip Invoice Modal listener
+    document.getElementById("closePayslipInvoiceBtn")?.addEventListener("click", () => {
+        document.getElementById("payslipInvoiceModal")?.classList.add("hidden");
+    });
+
+    // Generate Payslip Form submit
+    document.getElementById("generatePayslipForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+            const admin_id = parseInt(document.getElementById("payslipEmployeeSelect").value);
+            const month = document.getElementById("payslipMonthSelect").value;
+            const year = parseInt(document.getElementById("payslipYearInput").value);
+            const basic_salary = parseFloat(document.getElementById("payslipBasicSalary").value);
+            const allowances = parseFloat(document.getElementById("payslipAllowances").value || "0");
+            const bonus = parseFloat(document.getElementById("payslipBonus").value || "0");
+            const tax_deduction = parseFloat(document.getElementById("payslipTax").value || "0");
+            const insurance_deduction = parseFloat(document.getElementById("payslipInsurance").value || "0");
+            const provident_fund_deduction = parseFloat(document.getElementById("payslipProvidentFund").value || "0");
+            const payment_method = document.getElementById("payslipPaymentMethod").value;
+            const payment_status = document.getElementById("payslipPaymentStatus").value;
+            const notes = document.getElementById("payslipNotes").value.trim() || null;
+
+            await apiRequest("/payslips", {
+                method: "POST",
+                body: {
+                    admin_id,
+                    month,
+                    year,
+                    basic_salary,
+                    allowances,
+                    bonus,
+                    tax_deduction,
+                    insurance_deduction,
+                    provident_fund_deduction,
+                    payment_method,
+                    payment_status,
+                    notes
+                }
+            });
+
+            document.getElementById("generatePayslipForm").reset();
+            document.getElementById("generatePayslipModal")?.classList.add("hidden");
+            showNotification("Employee payslip issued successfully!", "success");
+            await loadPayslips();
+        } catch (err) {
+            showNotification(err.message, "error");
+        }
+    });
+
+    // Payslip Filter listeners
+    document.getElementById("payslipMonthFilter")?.addEventListener("change", () => loadPayslips());
+    document.getElementById("payslipStatusFilter")?.addEventListener("change", () => loadPayslips());
+    document.getElementById("payslipEmployeeFilter")?.addEventListener("change", () => loadPayslips());
+
+    // Add Job Form submit
+    document.getElementById("addJobForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+            const title = document.getElementById("jobTitle").value.trim();
+            const department = document.getElementById("jobDepartment").value;
+            const job_type = document.getElementById("jobType").value;
+            const experience_level = document.getElementById("jobExpLevel").value;
+            const salary_range = document.getElementById("jobSalary").value.trim();
+            const location = document.getElementById("jobLocation").value.trim();
+            const description = document.getElementById("jobDescription").value.trim();
+            const requirements = document.getElementById("jobRequirements").value.trim() || null;
+
+            await apiRequest("/recruitment/jobs", {
+                method: "POST",
+                body: { title, department, job_type, experience_level, salary_range, location, status: "active", description, requirements }
+            });
+
+            document.getElementById("addJobForm").reset();
+            document.getElementById("addJobModal")?.classList.add("hidden");
+            showNotification("Job requisition published!", "success");
+            await loadJobs();
+            await populateRecruitmentJobDropdown();
+        } catch (err) {
+            showNotification(err.message, "error");
+        }
+    });
+
+    // Add Candidate Form submit
+    document.getElementById("addCandidateForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+            const job_id = parseInt(document.getElementById("candidateJobSelect").value);
+            const full_name = document.getElementById("candidateName").value.trim();
+            const email = document.getElementById("candidateEmail").value.trim();
+            const phone = document.getElementById("candidatePhone").value.trim() || null;
+            const stage = document.getElementById("candidateStage").value;
+            const rating = parseInt(document.getElementById("candidateRating").value);
+            const resume_link = document.getElementById("candidateResume").value.trim() || null;
+            const notes = document.getElementById("candidateNotes").value.trim() || null;
+
+            await apiRequest("/recruitment/candidates", {
+                method: "POST",
+                body: { job_id, full_name, email, phone, stage, rating, resume_link, notes }
+            });
+
+            document.getElementById("addCandidateForm").reset();
+            document.getElementById("addCandidateModal")?.classList.add("hidden");
+            showNotification("Candidate application registered!", "success");
+            await loadCandidates();
+            await loadJobs();
+        } catch (err) {
+            showNotification(err.message, "error");
+        }
+    });
+
+    // Candidate Stage Filter listener
+    document.getElementById("candidateStageFilter")?.addEventListener("change", () => loadCandidates());
+
+    // Chat Composer Form submit
+    document.getElementById("chatComposerForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const input = document.getElementById("chatInput");
+        if (!input) return;
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        try {
+            input.value = "";
+            await apiRequest("/chat/messages", {
+                method: "POST",
+                body: { channel: activeChatChannel, message: msg, message_type: "channel" }
+            });
+            await loadChatMessages();
+        } catch (err) {
+            showNotification(err.message, "error");
+        }
+    });
+
+    // Add Pulse Survey Form submit
+    document.getElementById("addSurveyForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+            const title = document.getElementById("surveyTitle").value.trim();
+            const category = document.getElementById("surveyCategory").value;
+            const question = document.getElementById("surveyQuestion").value.trim();
+            const optionsStr = document.getElementById("surveyOptionsInput").value.trim();
+            const options = optionsStr.split(",").map(o => o.trim()).filter(o => o.length > 0);
+
+            if (options.length < 2) {
+                showNotification("Please provide at least 2 comma-separated options.", "error");
+                return;
+            }
+
+            await apiRequest("/surveys", {
+                method: "POST",
+                body: { title, category, question, options }
+            });
+
+            document.getElementById("addSurveyForm").reset();
+            document.getElementById("addSurveyModal")?.classList.add("hidden");
+            showNotification("Company pulse poll launched!", "success");
+            await loadSurveys();
+        } catch (err) {
+            showNotification(err.message, "error");
+        }
+    });
+
+    // Add Innovation Idea Form submit
+    document.getElementById("addIdeaForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+            const title = document.getElementById("ideaTitle").value.trim();
+            const category = document.getElementById("ideaCategory").value;
+            const description = document.getElementById("ideaDescription").value.trim();
+
+            await apiRequest("/surveys/ideas", {
+                method: "POST",
+                body: { title, category, description }
+            });
+
+            document.getElementById("addIdeaForm").reset();
+            document.getElementById("addIdeaModal")?.classList.add("hidden");
+            showNotification("Innovation idea submitted to team board!", "success");
+            await loadIdeas();
         } catch (err) {
             showNotification(err.message, "error");
         }
@@ -3358,6 +3570,572 @@ async function loadAnalytics() {
         }
     } catch (err) {
         showNotification(`Failed to load analytics metrics: ${err.message}`, "error");
+    }
+}
+
+
+/* =========================================================
+   Module 18: Salary, Compensation & Payslips
+========================================================= */
+
+let currentPayslipsCache = [];
+
+async function loadPayslips() {
+    const tbody = document.getElementById("payslipsTableBody");
+    if (!tbody) return;
+    tbody.innerHTML = `<tr><td colspan="9" class="empty">Loading compensation records...</td></tr>`;
+
+    try {
+        const monthVal = document.getElementById("payslipMonthFilter")?.value || "All";
+        const statusVal = document.getElementById("payslipStatusFilter")?.value || "All";
+        const empVal = document.getElementById("payslipEmployeeFilter")?.value || "";
+
+        let url = "/payslips?";
+        if (monthVal !== "All") url += `month=${encodeURIComponent(monthVal)}&`;
+        if (statusVal !== "All") url += `status=${encodeURIComponent(statusVal)}&`;
+        if (empVal) url += `admin_id=${encodeURIComponent(empVal)}&`;
+
+        const list = await apiRequest(url);
+        currentPayslipsCache = list || [];
+
+        if (!list || list.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" class="empty">No payslips found for selected filters.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = list.map(p => {
+            const isPaid = p.payment_status === "paid";
+            const gross = (p.basic_salary || 0) + (p.allowances || 0) + (p.bonus || 0);
+            const totalDeductions = (p.tax_deduction || 0) + (p.insurance_deduction || 0) + (p.provident_fund_deduction || 0);
+            return `
+                <tr>
+                    <td><strong>${escapeHtml(p.employee_name || 'Staff Member')}</strong></td>
+                    <td><span class="badge" style="font-size: 11px;">${escapeHtml(p.employee_department || 'General')}</span></td>
+                    <td>${escapeHtml(p.month)} ${p.year}</td>
+                    <td>$${(p.basic_salary || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td class="muted">+$${((p.bonus || 0) + (p.allowances || 0)).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td style="color: var(--danger-color);">-$${totalDeductions.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td><span class="net-pay-pill">$${(p.net_salary || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></td>
+                    <td><span class="badge ${isPaid ? 'approved' : 'pending'}">${p.payment_status.toUpperCase()}</span></td>
+                    <td>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <button class="btn btn-primary" style="padding: 2px 8px; font-size: 11px;" onclick="viewPayslipInvoice(${p.id})">📄 View Invoice</button>
+                            <button class="btn btn-secondary" style="padding: 2px 6px; font-size: 11px;" onclick="togglePayslipStatus(${p.id}, '${p.payment_status}')">${isPaid ? 'Mark Pending' : 'Mark Paid'}</button>
+                            <button class="btn btn-secondary" style="padding: 2px 6px; font-size: 11px;" onclick="deletePayslip(${p.id})">✕</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="9" class="empty error">Failed to load payslips: ${err.message}</td></tr>`;
+    }
+}
+
+async function viewPayslipInvoice(id) {
+    const payslip = currentPayslipsCache.find(p => p.id === id);
+    if (!payslip) return;
+
+    const modal = document.getElementById("payslipInvoiceModal");
+    if (!modal) return;
+
+    const payPeriodEl = document.getElementById("invoicePayPeriod");
+    if (payPeriodEl) payPeriodEl.textContent = `${payslip.month} ${payslip.year}`;
+
+    const refEl = document.getElementById("invoiceReferenceNo");
+    if (refEl) refEl.textContent = `REF: EMS-PAY-${payslip.year}-${String(payslip.id).padStart(4, "0")}`;
+
+    const empNameEl = document.getElementById("invoiceEmpName");
+    if (empNameEl) empNameEl.textContent = payslip.employee_name || "Employee";
+
+    const empTitleEl = document.getElementById("invoiceEmpTitle");
+    if (empTitleEl) empTitleEl.textContent = payslip.employee_job_title || "Team Member";
+
+    const empDeptEl = document.getElementById("invoiceEmpDept");
+    if (empDeptEl) empDeptEl.textContent = payslip.employee_department || "General";
+
+    const payDateEl = document.getElementById("invoicePayDate");
+    if (payDateEl) payDateEl.textContent = payslip.payment_date ? formatDate(payslip.payment_date) : "Pending Disbursal";
+
+    const payMethodEl = document.getElementById("invoicePayMethod");
+    if (payMethodEl) payMethodEl.textContent = payslip.payment_method || "Direct Bank Deposit";
+    
+    const statusBadge = document.getElementById("invoicePayStatus");
+    if (statusBadge) {
+        statusBadge.textContent = payslip.payment_status.toUpperCase();
+        statusBadge.className = `badge ${payslip.payment_status === 'paid' ? 'approved' : 'pending'}`;
+    }
+
+    const basic = payslip.basic_salary || 0;
+    const allowances = payslip.allowances || 0;
+    const bonus = payslip.bonus || 0;
+    const gross = basic + allowances + bonus;
+
+    const tax = payslip.tax_deduction || 0;
+    const ins = payslip.insurance_deduction || 0;
+    const prov = payslip.provident_fund_deduction || 0;
+    const totalDeductions = tax + ins + prov;
+
+    const basicEl = document.getElementById("invoiceBasicSalary");
+    if (basicEl) basicEl.textContent = `$${basic.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+    const allowEl = document.getElementById("invoiceAllowances");
+    if (allowEl) allowEl.textContent = `$${allowances.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+    const bonusEl = document.getElementById("invoiceBonus");
+    if (bonusEl) bonusEl.textContent = `$${bonus.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+    const grossEl = document.getElementById("invoiceGrossSalary");
+    if (grossEl) grossEl.textContent = `$${gross.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+    const taxEl = document.getElementById("invoiceTax");
+    if (taxEl) taxEl.textContent = `$${tax.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+    const insEl = document.getElementById("invoiceInsurance");
+    if (insEl) insEl.textContent = `$${ins.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+    const provEl = document.getElementById("invoiceProvident");
+    if (provEl) provEl.textContent = `$${prov.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+    const totalDedEl = document.getElementById("invoiceTotalDeductions");
+    if (totalDedEl) totalDedEl.textContent = `$${totalDeductions.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+    const netEl = document.getElementById("invoiceNetSalary");
+    if (netEl) netEl.textContent = `$${(payslip.net_salary || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+    modal.classList.remove("hidden");
+}
+
+async function togglePayslipStatus(id, currentStatus) {
+    const newStatus = currentStatus === "paid" ? "pending" : "paid";
+    try {
+        await apiRequest(`/payslips/${id}/status`, {
+            method: "PATCH",
+            body: { payment_status: newStatus }
+        });
+        showNotification(`Payslip marked as ${newStatus}.`, "success");
+        await loadPayslips();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+async function deletePayslip(id) {
+    if (!confirm("Are you sure you want to delete this payslip record?")) return;
+    try {
+        await apiRequest(`/payslips/${id}`, { method: "DELETE" });
+        showNotification("Payslip deleted.", "success");
+        await loadPayslips();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+
+/* =========================================================
+   Module 19: Recruitment & ATS Pipeline
+========================================================= */
+
+let currentJobsCache = [];
+let currentCandidatesCache = [];
+
+async function populateRecruitmentJobDropdown() {
+    const select = document.getElementById("candidateJobSelect");
+    if (!select) return;
+    try {
+        const jobs = await apiRequest("/recruitment/jobs");
+        currentJobsCache = jobs || [];
+        select.innerHTML = `<option value="">Select Job Opening...</option>` +
+            jobs.map(j => `<option value="${j.id}">${escapeHtml(j.title)} (${escapeHtml(j.department)})</option>`).join("");
+    } catch (e) {
+        console.error("Failed to populate job dropdown", e);
+    }
+}
+
+async function loadRecruitment() {
+    await loadJobs();
+    await loadCandidates();
+}
+
+async function loadJobs() {
+    const grid = document.getElementById("jobsGrid");
+    if (!grid) return;
+    grid.innerHTML = `<div class="empty-state">Loading job openings...</div>`;
+
+    try {
+        const jobs = await apiRequest("/recruitment/jobs");
+        currentJobsCache = jobs || [];
+        if (!jobs || jobs.length === 0) {
+            grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">No active job requisitions. Click '+ Post Job Opening' to create one.</div>`;
+            return;
+        }
+
+        grid.innerHTML = jobs.map(j => `
+            <div class="job-card">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <span class="doc-badge policy">${escapeHtml(j.department)}</span>
+                        <span class="badge approved">${escapeHtml(j.status.toUpperCase())}</span>
+                    </div>
+                    <h3 style="font-size: 17px; margin: 0 0 6px;">${escapeHtml(j.title)}</h3>
+                    <p class="muted" style="font-size: 13px; margin: 0 0 12px;">${escapeHtml(j.description || '')}</p>
+                    <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); margin-bottom: 14px;">
+                        <div>💼 <strong>Type:</strong> ${escapeHtml(j.job_type)} · ${escapeHtml(j.experience_level)}</div>
+                        <div>📍 <strong>Location:</strong> ${escapeHtml(j.location)}</div>
+                        <div>💰 <strong>Compensation:</strong> ${escapeHtml(j.salary_range)}</div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px;">
+                    <span style="font-weight: 700; font-size: 13px; color: var(--primary);">👥 ${j.candidates_count || 0} Candidates</span>
+                    <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="deleteJobRequisition(${j.id})">Remove</button>
+                </div>
+            </div>
+        `).join("");
+    } catch (err) {
+        grid.innerHTML = `<div class="empty-state error" style="grid-column: 1 / -1;">Failed to load jobs: ${err.message}</div>`;
+    }
+}
+
+async function loadCandidates() {
+    const grid = document.getElementById("candidatesGrid");
+    if (!grid) return;
+    grid.innerHTML = `<div class="empty-state">Loading candidate applications...</div>`;
+
+    try {
+        const stageVal = document.getElementById("candidateStageFilter")?.value || "All";
+        let url = "/recruitment/candidates?";
+        if (stageVal !== "All") url += `stage=${encodeURIComponent(stageVal)}&`;
+
+        const candidates = await apiRequest(url);
+        currentCandidatesCache = candidates || [];
+
+        if (!candidates || candidates.length === 0) {
+            grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">No candidates found matching filters.</div>`;
+            return;
+        }
+
+        grid.innerHTML = candidates.map(c => {
+            const stars = "★".repeat(c.rating || 4) + "☆".repeat(5 - (c.rating || 4));
+            const stageClass = `stage-${c.stage || 'applied'}`;
+            return `
+                <div class="candidate-card">
+                    <div class="candidate-header">
+                        <div>
+                            <strong style="font-size: 16px; display: block;">${escapeHtml(c.full_name)}</strong>
+                            <small class="muted" style="font-weight: 600;">${escapeHtml(c.job_title)} · ${escapeHtml(c.job_department)}</small>
+                        </div>
+                        <span class="stage-badge ${stageClass}">${c.stage.toUpperCase()}</span>
+                    </div>
+                    <div style="font-size: 13px; display: flex; flex-direction: column; gap: 4px;">
+                        <div>✉️ ${escapeHtml(c.email)}</div>
+                        ${c.phone ? `<div>📞 ${escapeHtml(c.phone)}</div>` : ''}
+                        ${c.resume_link ? `<div>🔗 <a href="${escapeHtml(c.resume_link)}" target="_blank" style="color: var(--primary); text-decoration: underline;">View Portfolio / Profile</a></div>` : ''}
+                    </div>
+                    ${c.notes ? `<div style="font-size: 12.5px; background: var(--surface-soft); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); color: var(--ink);"><strong>Notes:</strong> ${escapeHtml(c.notes)}</div>` : ''}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--border); margin-top: 6px;">
+                        <span style="color: #f59e0b; font-size: 15px;">${stars}</span>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <select onchange="updateCandidateStageItem(${c.id}, this.value)" style="padding: 4px 8px; font-size: 11.5px; border-radius: 6px; border: 1px solid var(--border);">
+                                <option value="applied" ${c.stage === 'applied' ? 'selected' : ''}>Applied</option>
+                                <option value="screening" ${c.stage === 'screening' ? 'selected' : ''}>Screening</option>
+                                <option value="interview" ${c.stage === 'interview' ? 'selected' : ''}>Interview</option>
+                                <option value="offered" ${c.stage === 'offered' ? 'selected' : ''}>Offered</option>
+                                <option value="hired" ${c.stage === 'hired' ? 'selected' : ''}>Hired</option>
+                                <option value="rejected" ${c.stage === 'rejected' ? 'selected' : ''}>Rejected</option>
+                            </select>
+                            ${c.stage !== 'hired' ? `<button class="btn-hire-action" onclick="hireAndOnboardCandidateItem(${c.id}, '${escapeHtml(c.full_name)}')">🎉 Hire & Onboard</button>` : ''}
+                            <button class="btn btn-secondary" style="padding: 3px 8px; font-size: 11px;" onclick="deleteCandidateItem(${c.id})">✕</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    } catch (err) {
+        grid.innerHTML = `<div class="empty-state error" style="grid-column: 1 / -1;">Failed to load candidates: ${err.message}</div>`;
+    }
+}
+
+async function updateCandidateStageItem(id, newStage) {
+    try {
+        await apiRequest(`/recruitment/candidates/${id}/stage`, {
+            method: "PATCH",
+            body: { stage: newStage }
+        });
+        showNotification(`Candidate stage updated to ${newStage.toUpperCase()}.`, "success");
+        await loadCandidates();
+        await loadJobs();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+async function hireAndOnboardCandidateItem(id, name) {
+    if (!confirm(`Are you ready to hire ${name} and create their employee account with onboarding tasks?`)) return;
+    try {
+        const res = await apiRequest(`/recruitment/candidates/${id}/convert-to-employee`, { method: "POST" });
+        showNotification(res.message || "Candidate hired successfully!", "success");
+        await loadCandidates();
+        await loadJobs();
+        await loadEmployees();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+async function deleteCandidateItem(id) {
+    if (!confirm("Are you sure you want to delete this candidate application?")) return;
+    try {
+        await apiRequest(`/recruitment/candidates/${id}`, { method: "DELETE" });
+        showNotification("Candidate removed.", "success");
+        await loadCandidates();
+        await loadJobs();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+async function deleteJobRequisition(id) {
+    if (!confirm("Are you sure you want to delete this job requisition?")) return;
+    try {
+        await apiRequest(`/recruitment/jobs/${id}`, { method: "DELETE" });
+        showNotification("Job requisition removed.", "success");
+        await loadJobs();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+
+/* =========================================================
+   Module 20: Workforce Team Messenger
+========================================================= */
+
+let activeChatChannel = "general";
+
+async function loadChatChannels() {
+    const list = document.getElementById("chatChannelsList");
+    if (!list) return;
+
+    try {
+        const channels = await apiRequest("/chat/channels");
+        if (!channels || channels.length === 0) return;
+
+        list.innerHTML = channels.map(ch => `
+            <button class="channel-btn ${ch.name === activeChatChannel ? 'active' : ''}" onclick="switchChatChannel('${ch.name}', '${escapeHtml(ch.label)}', '${escapeHtml(ch.description)}')">
+                <span>${ch.icon} ${escapeHtml(ch.name)}</span>
+                <span class="badge" style="font-size: 11px;">👥 ${ch.participant_count}</span>
+            </button>
+        `).join("");
+    } catch (e) {
+        console.error("Failed to load chat channels", e);
+    }
+}
+
+async function switchChatChannel(channelName, channelLabel, channelDesc) {
+    activeChatChannel = channelName;
+    document.querySelectorAll(".channel-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.textContent.includes(channelName));
+    });
+    const titleEl = document.getElementById("activeChannelTitle");
+    const descEl = document.getElementById("activeChannelDesc");
+    if (titleEl) titleEl.textContent = channelLabel || `# ${channelName}`;
+    if (descEl) descEl.textContent = channelDesc || "Team space discussion";
+
+    await loadChatMessages();
+}
+
+async function loadChatMessages() {
+    const stream = document.getElementById("chatMessagesStream");
+    if (!stream) return;
+
+    try {
+        const messages = await apiRequest(`/chat/messages?channel=${encodeURIComponent(activeChatChannel)}`);
+        if (!messages || messages.length === 0) {
+            stream.innerHTML = `<div class="empty-state">No messages in #${activeChatChannel} yet. Start the conversation!</div>`;
+            return;
+        }
+
+        stream.innerHTML = messages.map(m => {
+            const initials = m.sender_name ? m.sender_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "EM";
+            const timeStr = formatDateTime(m.created_at);
+            return `
+                <div class="chat-msg-row">
+                    <div class="chat-avatar">${initials}</div>
+                    <div class="chat-content">
+                        <div class="chat-meta">
+                            <strong>${escapeHtml(m.sender_name)}</strong>
+                            <small>${timeStr}</small>
+                        </div>
+                        <div class="chat-bubble">${escapeHtml(m.message)}</div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+
+        // Scroll to bottom
+        stream.scrollTop = stream.scrollHeight;
+    } catch (err) {
+        stream.innerHTML = `<div class="empty-state error">Failed to load messages: ${err.message}</div>`;
+    }
+}
+
+
+/* =========================================================
+   Module 21: Pulse Surveys & Employee Ideas
+========================================================= */
+
+async function loadSurveysAndIdeas() {
+    await loadSurveys();
+    await loadIdeas();
+}
+
+async function loadSurveys() {
+    const grid = document.getElementById("surveysGrid");
+    if (!grid) return;
+    grid.innerHTML = `<div class="empty-state">Loading pulse surveys...</div>`;
+
+    try {
+        const surveys = await apiRequest("/surveys");
+        if (!surveys || surveys.length === 0) {
+            grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">No active pulse polls currently open.</div>`;
+            return;
+        }
+
+        grid.innerHTML = surveys.map(s => {
+            const total = s.total_votes || 0;
+            const optionsHtml = (s.options || []).map(opt => {
+                const votes = (s.vote_breakdown && s.vote_breakdown[opt]) || 0;
+                const pct = total > 0 ? Math.round((votes / total) * 100) : 0;
+                const isVoted = s.user_voted_option === opt;
+                return `
+                    <div class="poll-option-btn ${isVoted ? 'voted' : ''}" onclick="voteSurveyOption(${s.id}, '${escapeHtml(opt)}')">
+                        <div class="poll-fill-bar" style="width: ${pct}%;"></div>
+                        <div class="poll-content-row">
+                            <span>${isVoted ? '✓ ' : ''}${escapeHtml(opt)}</span>
+                            <span><strong>${pct}%</strong> (${votes} votes)</span>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            return `
+                <div class="survey-card">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <span class="doc-badge policy">${escapeHtml(s.category)}</span>
+                            <span class="muted" style="font-size: 12px; font-weight: 700;">🗳️ ${total} Total Votes</span>
+                        </div>
+                        <h3 style="font-size: 17px; margin: 0 0 6px;">${escapeHtml(s.title)}</h3>
+                        <p class="muted" style="font-size: 13.5px; line-height: 1.45; margin: 0 0 16px;">${escapeHtml(s.question)}</p>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                    ${s.user_voted_option ? `<div style="font-size: 12px; color: var(--success-color); font-weight: 700; margin-top: 4px;">✓ You voted for: "${escapeHtml(s.user_voted_option)}"</div>` : ''}
+                </div>
+            `;
+        }).join("");
+    } catch (err) {
+        grid.innerHTML = `<div class="empty-state error" style="grid-column: 1 / -1;">Failed to load surveys: ${err.message}</div>`;
+    }
+}
+
+async function voteSurveyOption(surveyId, option) {
+    try {
+        await apiRequest(`/surveys/${surveyId}/vote`, {
+            method: "POST",
+            body: { selected_option: option }
+        });
+        showNotification("Vote recorded successfully!", "success");
+        await loadSurveys();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+async function loadIdeas() {
+    const feed = document.getElementById("ideasFeed");
+    if (!feed) return;
+    feed.innerHTML = `<div class="empty-state">Loading innovation suggestions...</div>`;
+
+    try {
+        const ideas = await apiRequest("/surveys/ideas");
+        if (!ideas || ideas.length === 0) {
+            feed.innerHTML = `<div class="empty-state">No suggestions posted yet. Share your ideas with the team!</div>`;
+            return;
+        }
+
+        feed.innerHTML = ideas.map(idea => {
+            const statusClass = `idea-status-${idea.status || 'under_review'}`;
+            const statusLabel = (idea.status || 'under_review').replace('_', ' ').toUpperCase();
+            return `
+                <div class="idea-card">
+                    <div class="upvote-box" onclick="upvoteIdeaItem(${idea.id})">
+                        <span>▲</span>
+                        <strong>${idea.upvotes_count || 1}</strong>
+                        <small style="font-size: 10px;">VOTES</small>
+                    </div>
+                    <div class="idea-body">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                            <div>
+                                <h3 style="margin: 0 0 4px; font-size: 16px;">${escapeHtml(idea.title)}</h3>
+                                <small class="muted">Proposed by <strong>${escapeHtml(idea.author_name)}</strong> · ${escapeHtml(idea.category)}</small>
+                            </div>
+                            <span class="idea-status-tag ${statusClass}">${statusLabel}</span>
+                        </div>
+                        <p style="margin: 6px 0 12px; font-size: 13.5px; line-height: 1.5; color: var(--ink);">${escapeHtml(idea.description)}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 8px;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <label style="font-size: 11.5px; color: var(--muted); font-weight: 700;">ADMIN STATUS:</label>
+                                <select onchange="updateIdeaStatusItem(${idea.id}, this.value)" style="padding: 2px 6px; font-size: 11px; border-radius: 6px; border: 1px solid var(--border);">
+                                    <option value="under_review" ${idea.status === 'under_review' ? 'selected' : ''}>Under Review</option>
+                                    <option value="planned" ${idea.status === 'planned' ? 'selected' : ''}>Planned</option>
+                                    <option value="in_progress" ${idea.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                                    <option value="implemented" ${idea.status === 'implemented' ? 'selected' : ''}>Implemented</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="deleteIdeaItem(${idea.id})">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    } catch (err) {
+        feed.innerHTML = `<div class="empty-state error">Failed to load ideas: ${err.message}</div>`;
+    }
+}
+
+async function upvoteIdeaItem(id) {
+    try {
+        await apiRequest(`/surveys/ideas/${id}/upvote`, { method: "POST" });
+        showNotification("Upvoted idea! 👍", "success");
+        await loadIdeas();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+async function updateIdeaStatusItem(id, status) {
+    try {
+        await apiRequest(`/surveys/ideas/${id}/status`, {
+            method: "PATCH",
+            body: { status }
+        });
+        showNotification(`Idea status updated to ${status.replace('_', ' ').toUpperCase()}.`, "success");
+        await loadIdeas();
+    } catch (err) {
+        showNotification(err.message, "error");
+    }
+}
+
+async function deleteIdeaItem(id) {
+    if (!confirm("Are you sure you want to delete this idea?")) return;
+    try {
+        await apiRequest(`/surveys/ideas/${id}`, { method: "DELETE" });
+        showNotification("Idea deleted.", "success");
+        await loadIdeas();
+    } catch (err) {
+        showNotification(err.message, "error");
     }
 }
 
