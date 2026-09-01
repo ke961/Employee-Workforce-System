@@ -588,6 +588,7 @@ from sqlalchemy import (
     Column,
     Date,
     DateTime,
+    Float,
     ForeignKey,
     Integer,
     String,
@@ -1767,5 +1768,498 @@ class TrainingCourse(Base):
         "Admin",
         foreign_keys=[admin_id],
     )
+
+
+# =========================================================
+# Salary & Payslip Model
+# =========================================================
+
+class Payslip(Base):
+    __tablename__ = "payslips"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    admin_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
+
+    month = Column(
+        String(20),
+        nullable=False,
+    )
+
+    year = Column(
+        Integer,
+        nullable=False,
+    )
+
+    basic_salary = Column(
+        Float,
+        nullable=False,
+    )
+
+    allowances = Column(
+        Float,
+        nullable=False,
+        default=0.0,
+    )
+
+    bonus = Column(
+        Float,
+        nullable=False,
+        default=0.0,
+    )
+
+    tax_deduction = Column(
+        Float,
+        nullable=False,
+        default=0.0,
+    )
+
+    insurance_deduction = Column(
+        Float,
+        nullable=False,
+        default=0.0,
+    )
+
+    provident_fund_deduction = Column(
+        Float,
+        nullable=False,
+        default=0.0,
+    )
+
+    net_salary = Column(
+        Float,
+        nullable=False,
+    )
+
+    payment_status = Column(
+        String(20),
+        nullable=False,
+        default="pending",
+    )
+
+    payment_date = Column(
+        Date,
+        nullable=True,
+    )
+
+    payment_method = Column(
+        String(50),
+        nullable=False,
+        default="Direct Bank Deposit",
+    )
+
+    notes = Column(
+        Text,
+        nullable=True,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    admin = relationship(
+        "Admin",
+        foreign_keys=[admin_id],
+    )
+
+
+# =========================================================
+# Recruitment: Job Posting Model
+# =========================================================
+
+class JobPosting(Base):
+    __tablename__ = "job_postings"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    title = Column(
+        String(200),
+        nullable=False,
+    )
+
+    department = Column(
+        String(100),
+        nullable=False,
+    )
+
+    job_type = Column(
+        String(50),
+        nullable=False,
+        default="Full-time",
+    )
+
+    experience_level = Column(
+        String(50),
+        nullable=False,
+        default="Mid-Level",
+    )
+
+    salary_range = Column(
+        String(100),
+        nullable=False,
+        default="$80,000 - $110,000",
+    )
+
+    location = Column(
+        String(100),
+        nullable=False,
+        default="Remote Flexible",
+    )
+
+    status = Column(
+        String(20),
+        nullable=False,
+        default="active",
+    )
+
+    description = Column(
+        Text,
+        nullable=True,
+    )
+
+    requirements = Column(
+        Text,
+        nullable=True,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    candidates = relationship(
+        "JobCandidate",
+        back_populates="job",
+        cascade="all, delete-orphan",
+    )
+
+
+# =========================================================
+# Recruitment: Candidate Model
+# =========================================================
+
+class JobCandidate(Base):
+    __tablename__ = "job_candidates"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    job_id = Column(
+        Integer,
+        ForeignKey(
+            "job_postings.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
+
+    full_name = Column(
+        String(150),
+        nullable=False,
+    )
+
+    email = Column(
+        String(150),
+        nullable=False,
+    )
+
+    phone = Column(
+        String(50),
+        nullable=True,
+    )
+
+    stage = Column(
+        String(50),
+        nullable=False,
+        default="applied",
+    )
+
+    resume_link = Column(
+        String(255),
+        nullable=True,
+    )
+
+    rating = Column(
+        Integer,
+        nullable=False,
+        default=4,
+    )
+
+    notes = Column(
+        Text,
+        nullable=True,
+    )
+
+    applied_date = Column(
+        Date,
+        nullable=True,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    job = relationship(
+        "JobPosting",
+        back_populates="candidates",
+    )
+
+
+# =========================================================
+# Workforce Team Messenger: Chat Message Model
+# =========================================================
+
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    channel = Column(
+        String(50),
+        nullable=False,
+        default="general",
+    )
+
+    sender_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
+
+    sender_name = Column(
+        String(100),
+        nullable=False,
+    )
+
+    receiver_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="SET NULL",
+        ),
+        nullable=True,
+    )
+
+    message = Column(
+        Text,
+        nullable=False,
+    )
+
+    message_type = Column(
+        String(20),
+        nullable=False,
+        default="channel",
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    sender = relationship(
+        "Admin",
+        foreign_keys=[sender_id],
+    )
+
+
+# =========================================================
+# Employee Voice: Pulse Survey Model
+# =========================================================
+
+class PulseSurvey(Base):
+    __tablename__ = "pulse_surveys"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    title = Column(
+        String(200),
+        nullable=False,
+    )
+
+    question = Column(
+        Text,
+        nullable=False,
+    )
+
+    category = Column(
+        String(50),
+        nullable=False,
+        default="Workplace Culture",
+    )
+
+    options_json = Column(
+        Text,
+        nullable=False,
+        default="[]",
+    )
+
+    is_active = Column(
+        Boolean,
+        nullable=False,
+        default=True,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    votes = relationship(
+        "SurveyVote",
+        back_populates="survey",
+        cascade="all, delete-orphan",
+    )
+
+
+# =========================================================
+# Pulse Survey Vote Model
+# =========================================================
+
+class SurveyVote(Base):
+    __tablename__ = "survey_votes"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    survey_id = Column(
+        Integer,
+        ForeignKey(
+            "pulse_surveys.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
+
+    admin_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
+
+    selected_option = Column(
+        String(100),
+        nullable=False,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    survey = relationship(
+        "PulseSurvey",
+        back_populates="votes",
+    )
+
+
+# =========================================================
+# Innovation & Ideas Suggestion Model
+# =========================================================
+
+class EmployeeIdea(Base):
+    __tablename__ = "employee_ideas"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    admin_id = Column(
+        Integer,
+        ForeignKey(
+            "admins.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
+
+    author_name = Column(
+        String(100),
+        nullable=False,
+    )
+
+    title = Column(
+        String(200),
+        nullable=False,
+    )
+
+    description = Column(
+        Text,
+        nullable=False,
+    )
+
+    category = Column(
+        String(50),
+        nullable=False,
+        default="Culture & Wellness",
+    )
+
+    upvotes_count = Column(
+        Integer,
+        nullable=False,
+        default=1,
+    )
+
+    status = Column(
+        String(30),
+        nullable=False,
+        default="under_review",
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+
+    admin = relationship(
+        "Admin",
+        foreign_keys=[admin_id],
+    )
+
 
 
