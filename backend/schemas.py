@@ -614,7 +614,7 @@
 
 
 from datetime import date, datetime
-from typing import Literal, Optional
+from typing import Dict, List, Literal, Optional
 
 from pydantic import (
     BaseModel,
@@ -1570,5 +1570,210 @@ class TrainingCourseResponse(ORMBaseModel):
     status: Literal["assigned", "in_progress", "completed"]
     completed_at: Optional[datetime] = None
     created_at: datetime
+
+
+# =========================================================
+# Salary & Payslip Schemas
+# =========================================================
+
+class PayslipCreate(BaseModel):
+    admin_id: int
+    month: str = Field(..., max_length=20)
+    year: int = Field(..., ge=2000, le=2100)
+    basic_salary: float = Field(..., ge=0)
+    allowances: float = Field(0.0, ge=0)
+    bonus: float = Field(0.0, ge=0)
+    tax_deduction: float = Field(0.0, ge=0)
+    insurance_deduction: float = Field(0.0, ge=0)
+    provident_fund_deduction: float = Field(0.0, ge=0)
+    payment_status: Literal["pending", "paid"] = "pending"
+    payment_date: Optional[date] = None
+    payment_method: str = Field("Direct Bank Deposit", max_length=50)
+    notes: Optional[str] = None
+
+
+class PayslipStatusUpdate(BaseModel):
+    payment_status: Literal["pending", "paid"]
+    payment_date: Optional[date] = None
+
+
+class PayslipResponse(ORMBaseModel):
+    id: int
+    admin_id: int
+    month: str
+    year: int
+    basic_salary: float
+    allowances: float
+    bonus: float
+    tax_deduction: float
+    insurance_deduction: float
+    provident_fund_deduction: float
+    net_salary: float
+    payment_status: str
+    payment_date: Optional[date] = None
+    payment_method: str
+    notes: Optional[str] = None
+    created_at: datetime
+    employee_name: Optional[str] = None
+    employee_email: Optional[str] = None
+    employee_job_title: Optional[str] = None
+    employee_department: Optional[str] = None
+
+
+# =========================================================
+# Recruitment & ATS Schemas
+# =========================================================
+
+class JobPostingCreate(BaseModel):
+    title: str = Field(..., min_length=2, max_length=200)
+    department: str = Field(..., max_length=100)
+    job_type: str = Field("Full-time", max_length=50)
+    experience_level: str = Field("Mid-Level", max_length=50)
+    salary_range: str = Field("$80,000 - $110,000", max_length=100)
+    location: str = Field("Remote Flexible", max_length=100)
+    status: Literal["active", "draft", "closed"] = "active"
+    description: Optional[str] = None
+    requirements: Optional[str] = None
+
+
+class JobPostingUpdate(BaseModel):
+    title: Optional[str] = None
+    department: Optional[str] = None
+    job_type: Optional[str] = None
+    experience_level: Optional[str] = None
+    salary_range: Optional[str] = None
+    location: Optional[str] = None
+    status: Optional[Literal["active", "draft", "closed"]] = None
+    description: Optional[str] = None
+    requirements: Optional[str] = None
+
+
+class JobPostingResponse(ORMBaseModel):
+    id: int
+    title: str
+    department: str
+    job_type: str
+    experience_level: str
+    salary_range: str
+    location: str
+    status: str
+    description: Optional[str] = None
+    requirements: Optional[str] = None
+    created_at: datetime
+    candidates_count: Optional[int] = 0
+
+
+class JobCandidateCreate(BaseModel):
+    job_id: int
+    full_name: str = Field(..., min_length=2, max_length=150)
+    email: EmailStr
+    phone: Optional[str] = Field(None, max_length=50)
+    stage: Literal["applied", "screening", "interview", "offered", "hired", "rejected"] = "applied"
+    resume_link: Optional[str] = Field(None, max_length=255)
+    rating: int = Field(4, ge=1, le=5)
+    notes: Optional[str] = None
+    applied_date: Optional[date] = None
+
+
+class CandidateStageUpdate(BaseModel):
+    stage: Literal["applied", "screening", "interview", "offered", "hired", "rejected"]
+    notes: Optional[str] = None
+
+
+class JobCandidateResponse(ORMBaseModel):
+    id: int
+    job_id: int
+    full_name: str
+    email: str
+    phone: Optional[str] = None
+    stage: str
+    resume_link: Optional[str] = None
+    rating: int
+    notes: Optional[str] = None
+    applied_date: Optional[date] = None
+    created_at: datetime
+    job_title: Optional[str] = None
+    job_department: Optional[str] = None
+
+
+# =========================================================
+# Team Messenger Schemas
+# =========================================================
+
+class ChatMessageCreate(BaseModel):
+    channel: str = Field("general", max_length=50)
+    message: str = Field(..., min_length=1, max_length=4000)
+    receiver_id: Optional[int] = None
+    message_type: Literal["channel", "direct"] = "channel"
+
+
+class ChatMessageResponse(ORMBaseModel):
+    id: int
+    channel: str
+    sender_id: int
+    sender_name: str
+    receiver_id: Optional[int] = None
+    message: str
+    message_type: str
+    created_at: datetime
+
+
+class ChatChannelResponse(BaseModel):
+    name: str
+    label: str
+    description: str
+    participant_count: int
+    icon: str
+
+
+# =========================================================
+# Pulse Surveys & Ideas Schemas
+# =========================================================
+
+class PulseSurveyCreate(BaseModel):
+    title: str = Field(..., min_length=2, max_length=200)
+    question: str = Field(..., min_length=5)
+    category: str = Field("Workplace Culture", max_length=50)
+    options: List[str] = Field(..., min_items=2, max_items=8)
+
+
+class PulseSurveyResponse(ORMBaseModel):
+    id: int
+    title: str
+    question: str
+    category: str
+    options: List[str]
+    is_active: bool
+    created_at: datetime
+    total_votes: int
+    vote_breakdown: dict
+    user_voted_option: Optional[str] = None
+
+
+class SurveyVotePayload(BaseModel):
+    selected_option: str
+
+
+class EmployeeIdeaCreate(BaseModel):
+    title: str = Field(..., min_length=2, max_length=200)
+    description: str = Field(..., min_length=5)
+    category: str = Field("Culture & Wellness", max_length=50)
+
+
+class IdeaStatusUpdate(BaseModel):
+    status: Literal["under_review", "planned", "in_progress", "implemented"]
+
+
+class EmployeeIdeaResponse(ORMBaseModel):
+    id: int
+    admin_id: int
+    author_name: str
+    title: str
+    description: str
+    category: str
+    upvotes_count: int
+    status: str
+    created_at: datetime
+
 
 
