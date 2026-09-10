@@ -807,13 +807,35 @@ from routers import (
 
 
 # =========================================================
-# Create default single Admin account
+# =========================================================
+# Database schema auto-migration
+# =========================================================
+
+def ensure_database_schema() -> None:
+    """
+    Ensure newly added columns (such as 'role' on admins) exist in SQLite.
+    """
+    with engine.connect() as conn:
+        result = conn.exec_driver_sql("PRAGMA table_info(admins);")
+        columns = [row[1] for row in result.fetchall()]
+        if "role" not in columns:
+            conn.exec_driver_sql(
+                "ALTER TABLE admins ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'employee';"
+            )
+            conn.commit()
+
+
+# =========================================================
+# Create default single Admin / Staff accounts
 # =========================================================
 
 def create_default_admin() -> None:
     """
-    Create the default Admin account if it does not exist.
+    Create the default Admin & staff accounts if they do not exist,
+    and ensure proper role assignments.
     """
+
+    ensure_database_schema()
 
     database = SessionLocal()
 
@@ -823,6 +845,7 @@ def create_default_admin() -> None:
                 "full_name": "System Administrator",
                 "email": "admin@gmail.com",
                 "password": "Admin123",
+                "role": "admin",
                 "job_title": "IT Director & System Admin",
                 "department": "Administration",
                 "phone": "+1 (555) 019-2831",
@@ -831,14 +854,25 @@ def create_default_admin() -> None:
                 "full_name": "System Administrator",
                 "email": "admin@ems.local",
                 "password": "Admin123!",
+                "role": "admin",
                 "job_title": "IT Administrator",
                 "department": "Administration",
                 "phone": "+1 (555) 019-2832",
             },
             {
+                "full_name": "Engineering Manager",
+                "email": "manager@ems.local",
+                "password": "Manager123!",
+                "role": "manager",
+                "job_title": "Engineering Manager",
+                "department": "Engineering",
+                "phone": "+1 (555) 019-2833",
+            },
+            {
                 "full_name": "Sarah Connor",
                 "email": "employee@gmail.com",
                 "password": "Employee123",
+                "role": "employee",
                 "job_title": "Senior UX/UI Product Designer",
                 "department": "Product",
                 "phone": "+1 (555) 012-9841",
@@ -847,6 +881,7 @@ def create_default_admin() -> None:
                 "full_name": "Michael Scott",
                 "email": "manager@gmail.com",
                 "password": "Manager123",
+                "role": "manager",
                 "job_title": "Regional Operations Manager",
                 "department": "Operations",
                 "phone": "+1 (555) 014-7721",
@@ -855,6 +890,7 @@ def create_default_admin() -> None:
                 "full_name": "Keya Rahman",
                 "email": "hr@gmail.com",
                 "password": "HR123!",
+                "role": "hr",
                 "job_title": "Head of People Operations",
                 "department": "People Operations",
                 "phone": "+1 (555) 018-3390",
@@ -863,6 +899,7 @@ def create_default_admin() -> None:
                 "full_name": "Alex Rivera",
                 "email": "alex.rivera@ems.local",
                 "password": "Employee123!",
+                "role": "employee",
                 "job_title": "Lead Full-Stack Engineer",
                 "department": "Engineering",
                 "phone": "+1 (555) 016-4482",
@@ -871,6 +908,7 @@ def create_default_admin() -> None:
                 "full_name": "David Chen",
                 "email": "david.chen@ems.local",
                 "password": "Employee123!",
+                "role": "employee",
                 "job_title": "Senior DevOps & Infrastructure Lead",
                 "department": "Engineering",
                 "phone": "+1 (555) 017-5593",
@@ -879,6 +917,7 @@ def create_default_admin() -> None:
                 "full_name": "Emma Watson",
                 "email": "emma.watson@ems.local",
                 "password": "Employee123!",
+                "role": "manager",
                 "job_title": "Senior Product Manager",
                 "department": "Product",
                 "phone": "+1 (555) 013-8820",
@@ -887,6 +926,7 @@ def create_default_admin() -> None:
                 "full_name": "James Wilson",
                 "email": "james.wilson@ems.local",
                 "password": "Employee123!",
+                "role": "manager",
                 "job_title": "Customer Success Team Lead",
                 "department": "Support",
                 "phone": "+1 (555) 015-9931",
@@ -895,6 +935,7 @@ def create_default_admin() -> None:
                 "full_name": "Sophia Martinez",
                 "email": "sophia.martinez@ems.local",
                 "password": "Employee123!",
+                "role": "employee",
                 "job_title": "Financial Analyst & Controller",
                 "department": "Finance",
                 "phone": "+1 (555) 011-2244",
@@ -903,6 +944,7 @@ def create_default_admin() -> None:
                 "full_name": "Daniel Kim",
                 "email": "daniel.kim@ems.local",
                 "password": "Employee123!",
+                "role": "employee",
                 "job_title": "Backend Systems Engineer",
                 "department": "Engineering",
                 "phone": "+1 (555) 019-3355",
@@ -911,6 +953,7 @@ def create_default_admin() -> None:
                 "full_name": "Olivia Taylor",
                 "email": "olivia.taylor@ems.local",
                 "password": "Employee123!",
+                "role": "employee",
                 "job_title": "Content Strategy & Growth Marketing",
                 "department": "Marketing",
                 "phone": "+1 (555) 012-4466",
@@ -919,11 +962,13 @@ def create_default_admin() -> None:
 
         for acc in default_accounts:
             existing = database.query(Admin).filter(Admin.email == acc["email"]).first()
+            account_role = acc.get("role", "employee")
             if not existing:
                 user = Admin(
                     full_name=acc["full_name"],
                     email=acc["email"],
                     password_hash=hash_password(acc["password"]),
+                    role=account_role,
                     job_title=acc["job_title"],
                     department=acc["department"],
                     phone=acc.get("phone"),
@@ -931,6 +976,10 @@ def create_default_admin() -> None:
                     is_active=True,
                 )
                 database.add(user)
+            else:
+                # Synchronize role for established accounts if unassigned or defaulted
+                if getattr(existing, "role", None) != account_role:
+                    existing.role = account_role
 
         database.commit()
 
