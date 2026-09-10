@@ -2,7 +2,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from auth import get_current_admin
+from auth import get_current_admin, require_manager_or_admin
 from database import get_db
 from models import Admin, ExpenseClaim
 from schemas import (
@@ -17,13 +17,26 @@ router = APIRouter()
 @router.get("", response_model=List[ExpenseClaimResponse])
 def get_expense_claims(
     status_filter: Optional[str] = Query(None, alias="status"),
+    employee_id: Optional[int] = Query(None, alias="employee_id"),
     db: Session = Depends(get_db),
     current_admin: Admin = Depends(get_current_admin),
 ):
-    """Retrieve expense claims for current user with optional status filter."""
-    query = db.query(ExpenseClaim).filter(ExpenseClaim.admin_id == current_admin.id)
+    """
+    Retrieve expense claims. Managers/Admins can view all team claims;
+    employees view their own submissions.
+    """
+    user_role = (getattr(current_admin, "role", "employee") or "employee").lower()
+    query = db.query(ExpenseClaim)
+
+    if user_role in ["admin", "manager", "hr"]:
+        if employee_id is not None:
+            query = query.filter(ExpenseClaim.admin_id == employee_id)
+    else:
+        query = query.filter(ExpenseClaim.admin_id == current_admin.id)
+
     if status_filter:
         query = query.filter(ExpenseClaim.status == status_filter)
+
     return query.order_by(ExpenseClaim.created_at.desc()).all()
 
 
@@ -54,14 +67,13 @@ def update_expense_status(
     claim_id: int,
     payload: ExpenseClaimUpdate,
     db: Session = Depends(get_db),
-    current_admin: Admin = Depends(get_current_admin),
+    current_admin: Admin = Depends(require_manager_or_admin),
 ):
-    """Update status of an expense claim (pending, approved, rejected)."""
-    claim = (
-        db.query(ExpenseClaim)
-        .filter(ExpenseClaim.id == claim_id, ExpenseClaim.admin_id == current_admin.id)
-        .first()
-    )
+    """
+    Update status of an expense claim (approved, rejected).
+    Requires Manager, HR, or Admin role.
+    """
+    claim = db.query(ExpenseClaim).filter(ExpenseClaim.id == claim_id).first()
     if not claim:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -80,12 +92,13 @@ def delete_expense_claim(
     db: Session = Depends(get_db),
     current_admin: Admin = Depends(get_current_admin),
 ):
-    """Delete an expense claim."""
-    claim = (
-        db.query(ExpenseClaim)
-        .filter(ExpenseClaim.id == claim_id, ExpenseClaim.admin_id == current_admin.id)
-        .first()
-    )
+    """Delete an expense claim. Employees can cancel own claims; admins can delete any."""
+    user_role = (getattr(current_admin, "role", "employee") or "employee").lower()
+    query = db.query(ExpenseClaim).filter(ExpenseClaim.id == claim_id)
+    if user_role not in ["admin", "manager"]:
+        query = query.filter(ExpenseClaim.admin_id == current_admin.id)
+
+    claim = query.first()
     if not claim:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
