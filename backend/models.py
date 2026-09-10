@@ -606,7 +606,18 @@ def utc_now() -> datetime:
 
 
 # =========================================================
-# Single Admin user
+# User Roles
+# =========================================================
+
+ROLE_ADMIN = "admin"
+ROLE_MANAGER = "manager"
+ROLE_HR = "hr"
+ROLE_EMPLOYEE = "employee"
+VALID_ROLES = {ROLE_ADMIN, ROLE_MANAGER, ROLE_HR, ROLE_EMPLOYEE}
+
+
+# =========================================================
+# Single Admin / Staff user
 # =========================================================
 
 class Admin(Base):
@@ -634,6 +645,12 @@ class Admin(Base):
     password_hash = Column(
         String(255),
         nullable=False,
+    )
+
+    role = Column(
+        String(20),
+        nullable=False,
+        default=ROLE_EMPLOYEE,
     )
 
     job_title = Column(
