@@ -59,6 +59,7 @@ def login_admin(
 
     access_token = create_access_token(
         admin_id=admin.id,
+        role=getattr(admin, "role", "employee") or "employee",
     )
 
     return AdminLoginResponse(
