@@ -2,7 +2,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from auth import get_current_admin
+from auth import get_current_admin, require_hr_or_admin
 from database import get_db
 from models import Admin, CompanyDocument, DocumentAcknowledgment
 from schemas import CompanyDocumentCreate, CompanyDocumentResponse
@@ -37,9 +37,9 @@ def get_company_documents(
 def create_company_document(
     payload: CompanyDocumentCreate,
     db: Session = Depends(get_db),
-    current_admin: Admin = Depends(get_current_admin),
+    current_admin: Admin = Depends(require_hr_or_admin),
 ):
-    """Add a new company policy document."""
+    """Add a new company policy document (Requires HR or Admin role)."""
     doc = CompanyDocument(
         title=payload.title,
         category=payload.category,
