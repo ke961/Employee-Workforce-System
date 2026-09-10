@@ -520,6 +520,7 @@ tr:last-child td { border-bottom: 0; }
 .badge.admin { color: #3e4eb6; background: #e8ebff; }
 .badge.manager { color: #087554; background: #dff7ed; }
 .badge.employee { color: #5a667a; background: #edf1f7; }
+.badge.hr { color: #8e24aa; background: #f3e5f5; }
 
 .form-grid {
   display: grid;
