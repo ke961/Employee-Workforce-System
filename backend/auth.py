@@ -77,10 +77,11 @@ def verify_password(
 
 def create_access_token(
     admin_id: int,
+    role: str = "employee",
     expires_delta: Optional[timedelta] = None,
 ) -> str:
     """
-    Create a JWT access token for the Admin.
+    Create a JWT access token for the Admin/User with role claims.
     """
 
     current_time = datetime.now(timezone.utc)
@@ -94,6 +95,7 @@ def create_access_token(
 
     token_data = {
         "sub": str(admin_id),
+        "role": str(role),
         "type": "admin_access",
         "iat": current_time,
         "exp": expiration_time,
@@ -228,3 +230,43 @@ def get_current_admin(
         )
 
     return admin
+
+
+# Alias for general user dependency
+get_current_user = get_current_admin
+
+
+# =========================================================
+# Role-Based Access Control (RBAC) dependencies
+# =========================================================
+
+def require_roles(*allowed_roles: str):
+    """
+    Dependency factory to enforce role-based access control.
+    Accepts roles such as 'admin', 'manager', 'hr', 'employee'.
+    """
+    normalized_allowed = {r.strip().lower() for r in allowed_roles}
+
+    def role_checker(
+        current_admin: Admin = Depends(get_current_admin),
+    ) -> Admin:
+        user_role = getattr(current_admin, "role", "employee") or "employee"
+        user_role = user_role.strip().lower()
+
+        if user_role not in normalized_allowed:
+            allowed_str = ", ".join(sorted(normalized_allowed))
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Access denied. Requires one of: [{allowed_str}]. Current role is '{user_role}'.",
+            )
+
+        return current_admin
+
+    return role_checker
+
+
+# Pre-configured RBAC dependencies
+require_admin = require_roles("admin")
+require_manager_or_admin = require_roles("admin", "manager", "hr")
+require_hr_or_admin = require_roles("admin", "hr")
+require_employee_or_above = require_roles("admin", "manager", "hr", "employee")
