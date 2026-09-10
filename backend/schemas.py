@@ -675,6 +675,11 @@ class AdminCreate(BaseModel):
         max_length=100,
     )
 
+    role: Optional[str] = Field(
+        default="employee",
+        max_length=20,
+    )
+
     phone: Optional[str] = Field(
         default=None,
         max_length=30,
@@ -689,6 +694,11 @@ class AdminUpdate(BaseModel):
     )
 
     email: Optional[EmailStr] = None
+
+    role: Optional[str] = Field(
+        default=None,
+        max_length=20,
+    )
 
     phone: Optional[str] = Field(
         default=None,
@@ -717,6 +727,7 @@ class AdminResponse(ORMBaseModel):
     id: int
     full_name: str
     email: EmailStr
+    role: str = "employee"
     job_title: Optional[str] = "Administrator"
     department: Optional[str] = "Administration"
     leave_balance: int = 20
@@ -1283,6 +1294,7 @@ class AdminDashboardResponse(BaseModel):
 # =========================================================
 
 class TaskCreate(BaseModel):
+    admin_id: Optional[int] = None
     title: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = None
     priority: Literal["low", "medium", "high", "urgent"] = "medium"
@@ -1369,6 +1381,7 @@ class AdminCreate(BaseModel):
     full_name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr
     password: str = Field(..., min_length=6)
+    role: Optional[str] = Field("employee", max_length=20)
     job_title: Optional[str] = Field("Team Member", max_length=100)
     department: Optional[str] = Field("Engineering", max_length=100)
     phone: Optional[str] = Field(None, max_length=30)
@@ -1378,6 +1391,7 @@ class AdminCreate(BaseModel):
 class AdminUpdate(BaseModel):
     full_name: Optional[str] = Field(None, min_length=2, max_length=100)
     email: Optional[EmailStr] = None
+    role: Optional[str] = Field(None, max_length=20)
     job_title: Optional[str] = Field(None, max_length=100)
     department: Optional[str] = Field(None, max_length=100)
     phone: Optional[str] = Field(None, max_length=30)
