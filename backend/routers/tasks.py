@@ -13,13 +13,23 @@ router = APIRouter()
 @router.get("", response_model=List[TaskResponse])
 def get_tasks(
     status_filter: Optional[str] = Query(None, alias="status"),
+    employee_id: Optional[int] = Query(None, alias="employee_id"),
     db: Session = Depends(get_db),
     current_admin: Admin = Depends(get_current_admin),
 ):
-    """Retrieve all tasks for the logged in admin, with optional status filter."""
-    query = db.query(Task).filter(Task.admin_id == current_admin.id)
+    """Retrieve tasks. Managers/Admins can inspect team tasks; employees view their assigned tasks."""
+    user_role = (getattr(current_admin, "role", "employee") or "employee").lower()
+    query = db.query(Task)
+
+    if user_role in ["admin", "manager"]:
+        if employee_id is not None:
+            query = query.filter(Task.admin_id == employee_id)
+    else:
+        query = query.filter(Task.admin_id == current_admin.id)
+
     if status_filter:
         query = query.filter(Task.status == status_filter)
+
     return query.order_by(Task.created_at.desc()).all()
 
 
@@ -29,9 +39,14 @@ def create_task(
     db: Session = Depends(get_db),
     current_admin: Admin = Depends(get_current_admin),
 ):
-    """Create a new task."""
+    """Create a new task. Managers/Admins can assign to any employee."""
+    user_role = (getattr(current_admin, "role", "employee") or "employee").lower()
+    target_admin_id = current_admin.id
+    if payload.admin_id is not None and user_role in ["admin", "manager"]:
+        target_admin_id = payload.admin_id
+
     task = Task(
-        admin_id=current_admin.id,
+        admin_id=target_admin_id,
         title=payload.title,
         description=payload.description,
         priority=payload.priority,
@@ -52,11 +67,12 @@ def update_task(
     current_admin: Admin = Depends(get_current_admin),
 ):
     """Update task status, priority, title, description, or due date."""
-    task = (
-        db.query(Task)
-        .filter(Task.id == task_id, Task.admin_id == current_admin.id)
-        .first()
-    )
+    user_role = (getattr(current_admin, "role", "employee") or "employee").lower()
+    query = db.query(Task).filter(Task.id == task_id)
+    if user_role not in ["admin", "manager"]:
+        query = query.filter(Task.admin_id == current_admin.id)
+
+    task = query.first()
     if not task:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -86,11 +102,12 @@ def delete_task(
     current_admin: Admin = Depends(get_current_admin),
 ):
     """Delete a task by ID."""
-    task = (
-        db.query(Task)
-        .filter(Task.id == task_id, Task.admin_id == current_admin.id)
-        .first()
-    )
+    user_role = (getattr(current_admin, "role", "employee") or "employee").lower()
+    query = db.query(Task).filter(Task.id == task_id)
+    if user_role not in ["admin", "manager"]:
+        query = query.filter(Task.admin_id == current_admin.id)
+
+    task = query.first()
     if not task:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
