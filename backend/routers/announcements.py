@@ -2,7 +2,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from auth import get_current_admin
+from auth import get_current_admin, require_admin, require_manager_or_admin
 from database import get_db
 from models import Admin, Announcement
 from schemas import AnnouncementCreate, AnnouncementResponse
@@ -33,9 +33,9 @@ def get_announcements(
 def create_announcement(
     payload: AnnouncementCreate,
     db: Session = Depends(get_db),
-    current_admin: Admin = Depends(get_current_admin),
+    current_admin: Admin = Depends(require_manager_or_admin),
 ):
-    """Create a new company announcement."""
+    """Create a new company announcement (Requires Manager, HR, or Admin role)."""
     announcement = Announcement(
         title=payload.title,
         content=payload.content,
@@ -53,9 +53,9 @@ def create_announcement(
 def delete_announcement(
     announcement_id: int,
     db: Session = Depends(get_db),
-    current_admin: Admin = Depends(get_current_admin),
+    current_admin: Admin = Depends(require_admin),
 ):
-    """Delete an announcement by ID."""
+    """Delete an announcement by ID (Requires Admin role)."""
     announcement = (
         db.query(Announcement)
         .filter(Announcement.id == announcement_id)
