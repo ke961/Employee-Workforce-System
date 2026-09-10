@@ -42,6 +42,10 @@ const headerAdminName = document.getElementById(
     "headerAdminName"
 );
 
+const headerAdminRole = document.getElementById(
+    "headerAdminRole"
+);
+
 const headerAdminEmail = document.getElementById(
     "headerAdminEmail"
 );
@@ -635,8 +639,19 @@ function updateAdminInformation(admin) {
     if (sidebarAvatar) sidebarAvatar.textContent = initial;
     if (topAvatar) topAvatar.textContent = initial;
 
+    const role = (admin.role || "employee").toLowerCase();
+
+    if (headerAdminRole) {
+        headerAdminRole.textContent = role.toUpperCase();
+        headerAdminRole.className = `badge ${role}`;
+    }
+
     if (pageEyebrow) {
-        pageEyebrow.textContent = `${(admin.job_title || "User").toUpperCase()} WORKSPACE`;
+        let rolePrefix = "EMPLOYEE";
+        if (role === "admin") rolePrefix = "ADMIN";
+        else if (role === "manager") rolePrefix = "MANAGER";
+        else if (role === "hr") rolePrefix = "HR OPERATIONS";
+        pageEyebrow.textContent = `${rolePrefix} WORKSPACE`;
     }
 
     if (headerAdminName) {
