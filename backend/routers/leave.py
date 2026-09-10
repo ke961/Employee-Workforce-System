@@ -16,7 +16,7 @@ from pydantic import (
 )
 from sqlalchemy.orm import Session
 
-from auth import get_current_admin
+from auth import get_current_admin, require_manager_or_admin
 from database import get_db
 from models import Admin, LeaveRequest
 
@@ -335,6 +335,10 @@ def get_leave_requests(
         default=None,
         alias="status",
     ),
+    employee_id: Optional[int] = Query(
+        default=None,
+        alias="employee_id",
+    ),
     limit: int = Query(
         default=50,
         ge=1,
@@ -346,16 +350,18 @@ def get_leave_requests(
     database: Session = Depends(get_db),
 ):
     """
-    Return personal leave request history.
+    Return leave request history. Managers/Admins can view team submissions;
+    employees view their own submissions.
     """
 
-    query = (
-        database.query(LeaveRequest)
-        .filter(
-            LeaveRequest.admin_id
-            == current_admin.id
-        )
-    )
+    user_role = (getattr(current_admin, "role", "employee") or "employee").lower()
+    query = database.query(LeaveRequest)
+
+    if user_role in ["admin", "manager", "hr"]:
+        if employee_id is not None:
+            query = query.filter(LeaveRequest.admin_id == employee_id)
+    else:
+        query = query.filter(LeaveRequest.admin_id == current_admin.id)
 
     if leave_status is not None:
         allowed_statuses = {
@@ -530,22 +536,31 @@ def update_leave_status(
     leave_id: int,
     status_data: LeaveStatusRequest,
     current_admin: Admin = Depends(
-        get_current_admin
+        require_manager_or_admin
     ),
     database: Session = Depends(get_db),
 ):
     """
     Approve, return to pending, or cancel a request.
-
-    This is allowed temporarily because this prototype
-    contains only one Admin user.
+    Requires Manager, HR, or Admin role.
     """
 
-    leave_request = get_leave_or_404(
-        database=database,
-        admin_id=current_admin.id,
-        leave_id=leave_id,
+    leave_request = (
+        database.query(LeaveRequest)
+        .filter(LeaveRequest.id == leave_id)
+        .first()
     )
+    if not leave_request:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Leave request was not found.",
+        )
+
+    target_admin = (
+        database.query(Admin)
+        .filter(Admin.id == leave_request.admin_id)
+        .first()
+    ) or current_admin
 
     previous_status = leave_request.status
     new_status = status_data.status
@@ -554,7 +569,7 @@ def update_leave_status(
         return leave_request
 
     update_leave_balance(
-        admin=current_admin,
+        admin=target_admin,
         previous_status=previous_status,
         new_status=new_status,
         total_days=leave_request.total_days,
