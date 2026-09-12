@@ -19,14 +19,7 @@ services:
     region: oregon
 
     # ── Build ──────────────────────────────────────────────
-    buildCommand: |
-      pip install -r backend/requirements.txt &&
-      cd frontend &&
-      npm install &&
-      npx vite build &&
-      cp -r js dist/js &&
-      cp -r css dist/css &&
-      cp dashboard.html dist/dashboard.html
+    buildCommand: pip install -r backend/requirements.txt
 
     # ── Start ─────────────────────────────────────────────
     startCommand: >
