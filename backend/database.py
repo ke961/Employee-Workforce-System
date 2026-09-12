@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Generator
 
@@ -12,18 +13,28 @@ from sqlalchemy.orm import Session, declarative_base, sessionmaker
 BACKEND_DIR = Path(__file__).resolve().parent
 DATABASE_FILE = BACKEND_DIR / "employee_management.db"
 
-DATABASE_URL = f"sqlite:///{DATABASE_FILE.as_posix()}"
+# Use DATABASE_URL env var if set (e.g. PostgreSQL on Render),
+# otherwise default to the local SQLite file.
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    f"sqlite:///{DATABASE_FILE.as_posix()}",
+)
 
 
 # ---------------------------------------------------------
 # SQLAlchemy database engine
 # ---------------------------------------------------------
 
+# Only SQLite needs check_same_thread=False
+_connect_args = (
+    {"check_same_thread": False}
+    if DATABASE_URL.startswith("sqlite")
+    else {}
+)
+
 engine = create_engine(
     DATABASE_URL,
-    connect_args={
-        "check_same_thread": False,
-    },
+    connect_args=_connect_args,
 )
 
 

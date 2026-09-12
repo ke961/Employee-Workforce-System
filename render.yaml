@@ -1,0 +1,43 @@
+# =========================================================
+# Render Blueprint — Infrastructure as Code
+# https://render.com/docs/blueprint-spec
+# =========================================================
+#
+# Deploy as a SINGLE web service:
+#   - Backend: FastAPI (Python)
+#   - Frontend: built by Vite, served as static files by FastAPI
+#
+# Usage:
+#   1. Push this file to your GitHub repo
+#   2. Go to https://dashboard.render.com → New → Blueprint
+#   3. Connect your repo → Render reads this file automatically
+
+services:
+  - type: web
+    name: employee-workforce-system
+    runtime: python
+    region: oregon
+
+    # ── Build ──────────────────────────────────────────────
+    buildCommand: |
+      pip install -r backend/requirements.txt &&
+      cd frontend &&
+      npm install &&
+      npm run build &&
+      cp -r js dist/js &&
+      cp -r css dist/css &&
+      cp dashboard.html dist/dashboard.html
+
+    # ── Start ─────────────────────────────────────────────
+    startCommand: >
+      cd backend &&
+      gunicorn app:app
+      --worker-class uvicorn.workers.UvicornWorker
+      --bind 0.0.0.0:$PORT
+
+    # ── Environment ───────────────────────────────────────
+    envVars:
+      - key: EMS_SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: "3.11"

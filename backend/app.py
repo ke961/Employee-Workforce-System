@@ -758,9 +758,11 @@
 
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from auth import hash_password
 from database import Base, SessionLocal, engine
@@ -1547,6 +1549,8 @@ app = FastAPI(
 # CORS configuration
 # =========================================================
 
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -1556,6 +1560,7 @@ app.add_middleware(
         "http://localhost:8000",
         "http://127.0.0.1:5173",
         "http://localhost:5173",
+        *[o.strip() for o in ALLOWED_ORIGINS if o.strip()],
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -1698,23 +1703,37 @@ app.include_router(
 # Basic system routes
 # =========================================================
 
-@app.get("/")
-def root():
-    return {
-        "application": "Remote Team and Employee Management Hub",
-        "backend": "FastAPI",
-        "prototype": "Single-user Admin",
-        "status": "running",
-        "documentation": "/docs",
-    }
-
-
 @app.get("/api/health")
 def health_check():
     return {
         "status": "healthy",
         "message": "EMS backend is running successfully.",
     }
+
+
+# =========================================================
+# Serve frontend (Vite build output)
+# =========================================================
+
+_BACKEND_DIR = Path(__file__).resolve().parent
+_FRONTEND_DIST = _BACKEND_DIR.parent / "frontend" / "dist"
+_FRONTEND_SRC = _BACKEND_DIR.parent / "frontend"
+
+
+def _get_frontend_dir() -> Path:
+    """Return frontend/dist/ if it exists (production), else frontend/ (dev)."""
+    if _FRONTEND_DIST.is_dir():
+        return _FRONTEND_DIST
+    return _FRONTEND_SRC
+
+
+_fe_dir = _get_frontend_dir()
+if _fe_dir.is_dir():
+    app.mount(
+        "/",
+        StaticFiles(directory=str(_fe_dir), html=True),
+        name="frontend",
+    )
 
 
 # =========================================================
@@ -1725,14 +1744,16 @@ if __name__ == "__main__":
     import uvicorn
     import sys
 
+    port = int(os.getenv("PORT", "8000"))
+    host = os.getenv("HOST", "127.0.0.1")
+
     try:
         uvicorn.run(
             "app:app",
-            host="127.0.0.1",
-            port=8000,
+            host=host,
+            port=port,
             reload=True,
         )
     except Exception as err:
-        print(f"\n[NOTE] Server port 8000 is already active in the background or occupied: {err}")
-        print("[NOTE] The backend server is already serving requests at http://127.0.0.1:8000")
+        print(f"\n[NOTE] Server port {port} is already active: {err}")
         sys.exit(0)
