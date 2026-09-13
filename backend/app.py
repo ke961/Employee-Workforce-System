@@ -817,6 +817,9 @@ def ensure_database_schema() -> None:
     """
     Ensure newly added columns (such as 'role' on admins) exist in SQLite.
     """
+    if engine.dialect.name != "sqlite":
+        return
+
     with engine.connect() as conn:
         result = conn.exec_driver_sql("PRAGMA table_info(admins);")
         columns = [row[1] for row in result.fetchall()]

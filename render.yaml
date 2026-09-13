@@ -5,7 +5,7 @@
 #
 # Deploy as a SINGLE web service:
 #   - Backend: FastAPI (Python)
-#   - Frontend: built by Vite, served as static files by FastAPI
+#   - Frontend: Vanilla HTML/CSS/JS served as static files by FastAPI
 #
 # Usage:
 #   1. Push this file to your GitHub repo
@@ -22,11 +22,7 @@ services:
     buildCommand: pip install -r backend/requirements.txt
 
     # ── Start ─────────────────────────────────────────────
-    startCommand: >
-      cd backend &&
-      gunicorn app:app
-      --worker-class uvicorn.workers.UvicornWorker
-      --bind 0.0.0.0:$PORT
+    startCommand: cd backend && gunicorn app:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
 
     # ── Environment ───────────────────────────────────────
     envVars:

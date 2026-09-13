@@ -20,6 +20,10 @@ DATABASE_URL = os.getenv(
     f"sqlite:///{DATABASE_FILE.as_posix()}",
 )
 
+# SQLAlchemy requires postgresql:// instead of postgres://
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 
 # ---------------------------------------------------------
 # SQLAlchemy database engine
