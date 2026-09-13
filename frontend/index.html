@@ -17,6 +17,43 @@
         <div class="glow-orb orb-1"></div>
         <div class="glow-orb orb-2"></div>
         <section class="login-visual">
+            <!-- Animated SVG Mesh Grid Background -->
+            <svg class="login-mesh-grid" viewBox="0 0 800 600" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="meshGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="rgba(67,219,199,0.3)"/>
+                        <stop offset="100%" stop-color="rgba(59,130,246,0.3)"/>
+                    </linearGradient>
+                </defs>
+                <line x1="0" y1="100" x2="800" y2="100" />
+                <line x1="0" y1="200" x2="800" y2="200" />
+                <line x1="0" y1="300" x2="800" y2="300" />
+                <line x1="0" y1="400" x2="800" y2="400" />
+                <line x1="0" y1="500" x2="800" y2="500" />
+                <line x1="160" y1="0" x2="160" y2="600" />
+                <line x1="320" y1="0" x2="320" y2="600" />
+                <line x1="480" y1="0" x2="480" y2="600" />
+                <line x1="640" y1="0" x2="640" y2="600" />
+                <circle cx="160" cy="100" r="2">
+                    <animate attributeName="r" values="2;4;2" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="480" cy="200" r="2">
+                    <animate attributeName="r" values="2;4;2" dur="4s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="320" cy="400" r="2">
+                    <animate attributeName="r" values="2;5;2" dur="3.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="640" cy="300" r="2">
+                    <animate attributeName="r" values="2;3;2" dur="2.8s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="2.8s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="160" cy="500" r="2">
+                    <animate attributeName="r" values="2;4;2" dur="3.2s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
             <div class="brand-lockup">
                 <span class="brand-mark">E</span>
                 <span>EMS</span>
@@ -262,9 +299,21 @@
                             <div class="clock-display-wrap">
                                 <div id="digitalClockTime" class="digital-time">10:00:00 AM</div>
                                 <div id="digitalClockDate" class="digital-date">August 10, 2026</div>
-                                <div class="shift-timer-wrap" style="margin-top: 10px;">
-                                    <span style="font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Active Shift Duration</span>
-                                    <div id="shiftTimerValue" style="font-weight: 800; font-size: 24px; color: var(--brand); font-family: monospace;">00:00:00</div>
+                                <div class="shift-timer-wrap shift-progress-ring" style="margin-top: 10px;">
+                                    <svg class="progress-ring-svg" viewBox="0 0 52 52">
+                                        <defs>
+                                            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stop-color="#3b82f6"/>
+                                                <stop offset="100%" stop-color="#10b981"/>
+                                            </linearGradient>
+                                        </defs>
+                                        <circle class="progress-ring-bg" cx="26" cy="26" r="22"/>
+                                        <circle id="shiftProgressRing" class="progress-ring-fill" cx="26" cy="26" r="22"/>
+                                    </svg>
+                                    <div>
+                                        <span style="font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Active Shift Duration</span>
+                                        <div id="shiftTimerValue" style="font-weight: 800; font-size: 24px; color: var(--brand); font-family: monospace;">00:00:00</div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -316,37 +365,37 @@
                     </div>
 
                     <div class="grid stats-grid" style="margin-top: 24px;">
-                        <article class="card stat-card">
+                        <article class="card stat-card stagger-reveal">
                             <span class="stat-label">ATTENDANCE</span>
                             <span id="dashboardAttendanceStatus" class="stat-value" style="font-size: 20px;">Not clocked in</span>
                             <span id="dashboardWorkTime" class="stat-note">0 minutes worked</span>
                         </article>
 
-                        <article class="card stat-card">
+                        <article class="card stat-card stagger-reveal">
                             <span class="stat-label">LEAVE BALANCE</span>
                             <span id="dashboardLeaveBalance" class="stat-value">20 days</span>
                             <span id="dashboardPendingLeave" class="stat-note">0 pending requests</span>
                         </article>
 
-                        <article class="card stat-card">
+                        <article class="card stat-card stagger-reveal">
                             <span class="stat-label">ONBOARDING</span>
                             <span id="dashboardOnboardingProgress" class="stat-value">0%</span>
                             <span id="dashboardOnboardingTasks" class="stat-note">0 of 0 tasks completed</span>
                         </article>
 
-                        <article class="card stat-card">
+                        <article class="card stat-card stagger-reveal">
                             <span class="stat-label">OKR PROGRESS</span>
                             <span id="dashboardOkrProgress" class="stat-value">0%</span>
                             <span id="dashboardOkrCount" class="stat-note">0 active OKRs</span>
                         </article>
 
-                        <article class="card stat-card">
+                        <article class="card stat-card stagger-reveal">
                             <span class="stat-label">ACTIVE TASKS</span>
                             <span id="dashboardTaskCount" class="stat-value">0</span>
                             <span id="dashboardTaskNote" class="stat-note">0 tasks pending</span>
                         </article>
 
-                        <article class="card stat-card">
+                        <article class="card stat-card stagger-reveal">
                             <span class="stat-label">EXPENSE CLAIMS</span>
                             <span id="dashboardExpenseCount" class="stat-value">$0</span>
                             <span id="dashboardExpenseNote" class="stat-note">0 pending claims</span>
@@ -2023,6 +2072,7 @@
         </div>
     </div>
 
+    <canvas id="confettiCanvas"></canvas>
     <script src="js/script.js"></script>
 </body>
 </html>
