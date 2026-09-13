@@ -1172,6 +1172,7 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 await apiRequest("/attendance/clock-in", { method: "POST", body: {} });
                 showNotification("Clocked in successfully!", "success");
+                if (typeof triggerConfetti === 'function') triggerConfetti();
                 await loadLandingAttendanceWorkstation();
                 await loadDashboard();
             } catch (err) {
@@ -4212,6 +4213,242 @@ function startLiveDigitalClock() {
     setInterval(tick, 1000);
 }
 
+/* =========================================================
+   🔥 PREMIUM MICRO-INTERACTIONS MODULE
+   Confetti · Ripple · Counter · IntersectionObserver · Ring
+========================================================= */
+
+/* --- Confetti Burst System --- */
+function triggerConfetti() {
+    const canvas = document.getElementById('confettiCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f43f5e'];
+    const particles = [];
+
+    for (let i = 0; i < 120; i++) {
+        particles.push({
+            x: canvas.width / 2 + (Math.random() - 0.5) * 200,
+            y: canvas.height / 2,
+            vx: (Math.random() - 0.5) * 16,
+            vy: -Math.random() * 18 - 4,
+            w: Math.random() * 8 + 4,
+            h: Math.random() * 6 + 3,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            rotSpeed: (Math.random() - 0.5) * 12,
+            gravity: 0.35 + Math.random() * 0.15,
+            opacity: 1,
+            decay: 0.008 + Math.random() * 0.006
+        });
+    }
+
+    let animId;
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+
+        for (const p of particles) {
+            if (p.opacity <= 0) continue;
+            alive = true;
+
+            p.vy += p.gravity;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.rotation += p.rotSpeed;
+            p.opacity -= p.decay;
+            p.vx *= 0.99;
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+        }
+
+        if (alive) {
+            animId = requestAnimationFrame(draw);
+        } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            cancelAnimationFrame(animId);
+        }
+    }
+
+    draw();
+}
+
+/* --- Button Ripple Effect --- */
+function initRippleEffects() {
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn');
+        if (!btn) return;
+
+        const existing = btn.querySelector('.ripple-effect');
+        if (existing) existing.remove();
+
+        const rect = btn.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple-effect');
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 650);
+    });
+}
+
+/* --- IntersectionObserver for Staggered Card Entrance --- */
+function initStaggeredReveal() {
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const siblings = Array.from(el.parentElement?.querySelectorAll('.stagger-reveal') || []);
+                    const i = siblings.indexOf(el);
+                    setTimeout(() => {
+                        el.classList.add('revealed');
+                    }, i * 80);
+                    observer.unobserve(el);
+                }
+            });
+        },
+        { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }
+    );
+
+    document.querySelectorAll('.stagger-reveal').forEach(el => observer.observe(el));
+}
+
+/* --- Animated Number Counter --- */
+function animateCounter(element, targetValue, duration = 800) {
+    if (!element) return;
+
+    const prefix = targetValue.match(/^[^\d]*/)?.[0] || '';
+    const suffix = targetValue.match(/[^\d]*$/)?.[0] || '';
+    const numStr = targetValue.replace(/^[^\d]*/, '').replace(/[^\d]*$/, '').replace(/,/g, '');
+    const target = parseFloat(numStr);
+
+    if (isNaN(target) || target === 0) {
+        element.textContent = targetValue;
+        return;
+    }
+
+    const startTime = performance.now();
+    const isInt = Number.isInteger(target);
+
+    function step(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = eased * target;
+
+        element.textContent = prefix + (isInt ? Math.round(current).toLocaleString() : current.toFixed(1)) + suffix;
+
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        } else {
+            element.textContent = targetValue;
+        }
+    }
+
+    requestAnimationFrame(step);
+}
+
+/* --- SVG Shift Progress Ring Update --- */
+function updateShiftProgressRing(hoursWorked, maxHours) {
+    maxHours = maxHours || 8;
+    const ring = document.getElementById('shiftProgressRing');
+    if (!ring) return;
+
+    const circumference = 2 * Math.PI * 22;
+    const progress = Math.min(hoursWorked / maxHours, 1);
+    const offset = circumference * (1 - progress);
+    ring.style.strokeDashoffset = offset;
+}
+
+/* --- Enhanced Section Transition --- */
+const _originalShowSection = typeof showSection === 'function' ? showSection : null;
+
+if (_originalShowSection) {
+    window.showSection = function(sectionId) {
+        const currentVisible = document.querySelector('.content-section:not(.hidden)');
+        if (currentVisible && currentVisible.id !== sectionId) {
+            currentVisible.style.opacity = '0';
+            currentVisible.style.transform = 'translateY(6px)';
+            setTimeout(() => {
+                _originalShowSection(sectionId);
+                const newSection = document.getElementById(sectionId);
+                if (newSection) {
+                    newSection.style.opacity = '0';
+                    newSection.style.transform = 'translateY(10px)';
+                    requestAnimationFrame(() => {
+                        newSection.style.transition = 'opacity 0.35s ease-out, transform 0.35s ease-out';
+                        newSection.style.opacity = '1';
+                        newSection.style.transform = 'translateY(0)';
+                    });
+                    setTimeout(() => initStaggeredReveal(), 100);
+                }
+            }, 150);
+        } else {
+            _originalShowSection(sectionId);
+            setTimeout(() => initStaggeredReveal(), 100);
+        }
+    };
+}
+
+/* --- Patch loadDashboard for Animated Counters --- */
+const _origLoadDashboard = typeof loadDashboard === 'function' ? loadDashboard : null;
+
+if (_origLoadDashboard) {
+    window.loadDashboard = async function() {
+        await _origLoadDashboard();
+
+        const counters = [
+            'dashboardLeaveBalance',
+            'dashboardOnboardingProgress',
+            'dashboardOkrProgress',
+            'dashboardTaskCount',
+            'dashboardExpenseCount'
+        ];
+
+        counters.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                animateCounter(el, el.textContent, 900);
+            }
+        });
+
+        setTimeout(() => initStaggeredReveal(), 50);
+    };
+}
+
+/* --- Patch Shift Duration Counter for Progress Ring --- */
+const _origUpdateShiftDuration = typeof updateShiftDurationCounter === 'function' ? updateShiftDurationCounter : null;
+
+if (_origUpdateShiftDuration) {
+    window.updateShiftDurationCounter = function(clockInIso) {
+        _origUpdateShiftDuration(clockInIso);
+
+        if (!clockInIso) {
+            updateShiftProgressRing(0);
+            return;
+        }
+
+        const clockInDate = new Date(clockInIso);
+        const diffMs = Math.max(0, Date.now() - clockInDate);
+        const hours = diffMs / (1000 * 60 * 60);
+        updateShiftProgressRing(hours);
+    };
+}
+
+
 document.addEventListener(
     "DOMContentLoaded",
     () => {
@@ -4227,6 +4464,11 @@ document.addEventListener(
                 themeBtn.textContent = newTheme === "dark" ? "☀️" : "🌙";
             });
         }
+
+        /* Initialize premium micro-interactions */
+        initRippleEffects();
+        initStaggeredReveal();
+
         initializeApplication();
     }
 );
