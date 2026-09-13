@@ -4,7 +4,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://employee-workforce-system.onrender.com/api/$1"
+      "destination": "https://employee-workforce-system-1.onrender.com/api/$1"
     }
   ]
 }
