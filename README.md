@@ -1,7 +1,6 @@
 # Employee Workforce Management System (EMS)
 
 [![Live App on Render](https://img.shields.io/badge/Render-Live%20App-46e3b7?logo=render&logoColor=white)](https://employee-workforce-system-1.onrender.com/)
-[![Frontend on Vercel](https://img.shields.io/badge/Vercel-Frontend-000000?logo=vercel&logoColor=white)](https://employee-workforce-system-mkmnghyga-restaurant-management.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python: 3.11+](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -15,7 +14,6 @@ A state-of-the-art, enterprise-grade, role-based **Employee Workforce Management
 | Platform | Role | URL | Status |
 | :--- | :--- | :--- | :--- |
 | **Render** | **Full-Stack (Frontend + Backend)** | [https://employee-workforce-system-1.onrender.com/](https://employee-workforce-system-1.onrender.com/) | ✅ Active |
-| **Vercel** | **Frontend (SPA)** | [https://employee-workforce-system-mkmnghyga-restaurant-management.vercel.app/](https://employee-workforce-system-mkmnghyga-restaurant-management.vercel.app/) | ✅ Active |
 | **API Docs** | **Interactive Swagger UI** | [https://employee-workforce-system-1.onrender.com/docs](https://employee-workforce-system-1.onrender.com/docs) | ✅ Active |
 
 ---
@@ -79,7 +77,7 @@ Test the platform instantly with any of the pre-seeded accounts:
 
 ## 🚀 Deployment Guide
 
-### Option 1: Render Deployment (Full-Stack Unified)
+### Render Deployment (Full-Stack Unified)
 
 The project includes an Infrastructure-as-Code [render.yaml](render.yaml) specification:
 
@@ -93,16 +91,6 @@ The project includes an Infrastructure-as-Code [render.yaml](render.yaml) specif
 buildCommand: pip install -r backend/requirements.txt
 startCommand: cd backend && gunicorn app:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
 ```
-
-### Option 2: Vercel Deployment (Frontend SPA)
-
-1. Go to **[vercel.com](https://vercel.com)** → **Add New…** → **Project**.
-2. Select your repository.
-3. Set **Root Directory** to `frontend`.
-4. Leave Framework as **Vite** or **Other**.
-5. Click **Deploy**.
-
-> **Note:** The included [frontend/vercel.json](frontend/vercel.json) automatically proxies `/api/*` requests to your live backend on Render.
 
 ---
 
@@ -186,10 +174,8 @@ Employee-Workforce-System/
 │   │   └── styles.css        # Design tokens, themes & animations
 │   ├── js/
 │   │   └── script.js         # Single-page application logic & API client
-│   ├── vercel.json           # Frontend Vercel rewrite configuration
 │   └── vite.config.mjs       # Vite build setup with asset copy plugin
 ├── render.yaml               # Render Infrastructure-as-Code blueprint
-├── vercel.json               # Root Vercel proxy configuration
 ├── LICENSE                   # MIT License
 └── README.md                 # Project documentation
 ```
@@ -201,7 +187,7 @@ Employee-Workforce-System/
 - **Backend**: Python 3.11+, FastAPI, SQLAlchemy, SQLite / PostgreSQL, Pydantic, Passlib, PyJWT, Gunicorn, Uvicorn
 - **Frontend**: Vanilla HTML5, Vanilla JavaScript (ES6+), Modern CSS3 with Custom Properties & Glassmorphism
 - **Design System**: Dark/Light mode theme system, responsive CSS Grid / Flexbox layouts, accessible keyboard shortcuts
-- **Deployment**: Render (Python Web Service), Vercel (Edge Static Hosting)
+- **Deployment**: Render (Python Web Service with direct static frontend serving)
 
 ---
 
