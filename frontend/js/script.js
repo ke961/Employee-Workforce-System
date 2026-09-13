@@ -5,7 +5,27 @@
    API Configuration
 ========================================================= */
 
-const API_BASE_URL = "/api";
+const getApiBaseUrl = () => {
+    if (window.EMS_API_URL) return window.EMS_API_URL;
+    const custom = localStorage.getItem("ems_api_url");
+    if (custom) return custom.replace(/\/+$/, "");
+    return "/api";
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+// Utility for changing backend URL on standalone frontend deployments
+window.setBackendUrl = function (url) {
+    if (!url) {
+        localStorage.removeItem("ems_api_url");
+        console.log("EMS API URL reset to default (/api).");
+    } else {
+        const cleaned = url.replace(/\/+$/, "");
+        localStorage.setItem("ems_api_url", cleaned);
+        console.log("EMS API URL set to:", cleaned);
+    }
+    window.location.reload();
+};
 
 const STORAGE_TOKEN_KEY = "ems_access_token";
 const STORAGE_ADMIN_KEY = "ems_admin";
