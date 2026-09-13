@@ -1,15 +1,17 @@
 import { defineConfig } from "vite";
 import fs from "node:fs";
-import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const rootDir = fileURLToPath(new URL(".", import.meta.url));
 
 function copyVanillaAssets() {
     return {
         name: "copy-vanilla-assets",
         closeBundle() {
-            const distDir = path.resolve(__dirname, "dist");
+            const distDir = path.resolve(rootDir, "dist");
             if (fs.existsSync(distDir)) {
-                const jsDir = path.resolve(__dirname, "js");
-                const cssDir = path.resolve(__dirname, "css");
+                const jsDir = path.resolve(rootDir, "js");
+                const cssDir = path.resolve(rootDir, "css");
                 if (fs.existsSync(jsDir)) {
                     fs.cpSync(jsDir, path.join(distDir, "js"), { recursive: true });
                 }
