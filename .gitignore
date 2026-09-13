@@ -14,7 +14,9 @@ ENV/
 
 # Node modules & build files
 node_modules/
+**/node_modules/
 dist/
+**/dist/
 
 # Logs and temp files
 *.log
