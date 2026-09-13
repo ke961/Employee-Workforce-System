@@ -1,184 +1,210 @@
 # Employee Workforce Management System (EMS)
 
-A state-of-the-art, enterprise-grade, role-based **Employee Workforce Management System (EMS)** designed for remote, hybrid, and on-site teams. Built with a **FastAPI** Python backend and a modern vanilla **JavaScript/CSS3** single-page frontend.
+[![Live App on Render](https://img.shields.io/badge/Render-Live%20App-46e3b7?logo=render&logoColor=white)](https://employee-workforce-system-1.onrender.com/)
+[![Frontend on Vercel](https://img.shields.io/badge/Vercel-Frontend-000000?logo=vercel&logoColor=white)](https://employee-workforce-system-mkmnghyga-restaurant-management.vercel.app/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python: 3.11+](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+
+A state-of-the-art, enterprise-grade, role-based **Employee Workforce Management System (EMS)** designed for remote, hybrid, and on-site teams. Built with a high-performance **Python FastAPI** backend and a modern, responsive **Vanilla JavaScript & CSS3** Single-Page Application (SPA) frontend.
 
 ---
 
-## 🌟 Overview & Key Capabilities
+## 🌐 Live Deployments
 
-The platform provides an end-to-end workforce experience across 13 core enterprise modules, featuring live micro-interactions, dark/light theme switching, universal keyboard shortcuts, and smooth CSS animations.
-
----
-
-## 🚀 Key Modules & Features
-
-### 1. ⚡ Quick Access & User Experience (UX)
-- **One-Click Demo Sign-In Cards**: Sign in instantly as *System Admin*, *Sarah Connor (Designer)*, *Michael Scott (Manager)*, or *Keya Rahman (HR)* without typing credentials.
-- **Universal Command Palette (`Ctrl + K` / `Cmd + K`)**: Press `Ctrl + K` anywhere to launch a floating command dialog and jump directly to any section.
-- **Interactive Topbar Notification Center**: Bell icon with unread count badge (`3`), live activity feed dropdown (*Expense Approvals*, *New Policies*, *Peer Kudos*), and "Clear All" action.
-- **Home Page Motion & Animations**: Animated fluid gradient mesh background, levitating status badges, live ticking digital workstation clock, staggered card entry transitions, and drifting ambient background orbs.
-
-### 2. 👥 Workforce & Directory Management
-- **Staff Directory (`/api/employees`)**: Search team members by name/title, filter by department, view phone & email contacts, and click **🔍 Inspect Profile** to open the rich Employee Detail Modal Drawer.
-- **Work Shift Roster (`/api/shifts`)**: Manage shift designations (Morning, DevOps On-Call), start/end times, work days, and locations (*Remote Flexible*, *HQ Office*, *Hybrid*).
-- **IT Asset Inventory (`/api/assets`)**: Track laptops, 4K monitors, YubiKeys, and mobile test devices with serial numbers, asset tags (`AST-2026-001`), and status (*Assigned*, *Available*, *Maintenance*).
-
-### 3. ⭐ Performance, Culture & Policy
-- **Performance & Peer Kudos (`/api/reviews`)**: Interactive 1–5 star rating reviews, manager feedback logs, and a peer recognition shoutout wall.
-- **Document Center (`/api/documents`)**: Policy repository cards (*Code of Conduct*, *Security & VPN Policy*, *PTO Policy*) with mandatory acknowledgment tracking.
-- **Training & Skills Hub (`/api/trainings`)**: Assign security & compliance courses, monitor completion progress bars, and mark courses as completed.
-
-### 4. 💰 Compensation, Talent & Engagement Hub (New)
-- **Salary & Payslips (`/api/payslips`)**: Issue monthly employee payroll with auto calculation of Gross Pay, Allowances, Bonuses, and Deductions (Tax, Insurance, 401k). Features a corporate **Printable Official Payslip Invoice Modal** with 1-click PDF/Print export.
-- **Recruitment & ATS Pipeline (`/api/recruitment`)**: Publish job openings, track candidate pipeline across stages (*Applied*, *Screening*, *Interview*, *Offered*, *Hired*, *Rejected*), star ratings, and a **1-Click "Hire & Onboard" action** that automatically provisions an employee profile and onboarding checklist.
-- **Workforce Team Messenger (`/api/chat`)**: Real-time collaborative channel spaces (`#general`, `#engineering`, `#hr-helpdesk`, `#watercooler`) with active participant counts, avatars, and fast message stream.
-- **Pulse Surveys & Ideas Box (`/api/surveys`)**: Launch interactive company pulse polls with real-time percentage progress bars and an upvotable employee innovation suggestion board with review statuses (*Under Review*, *Planned*, *In Progress*, *Implemented*).
-
-### 5. 📊 Operations, Analytics & Financials
-- **Executive Analytics (`/api/analytics`)**: KPI metric cards, expense category breakdown, department headcount allocation visual bar charts, and **1-click CSV Report Exports** (Attendance, Leave, Expenses).
-- **Attendance & Workstation Clock**: Real-time clock in / clock out, live shift timers, total work duration calculations, and status badges.
-- **Payroll & Expense Claims**: Submit reimbursement requests (AWS Cloud, Figma Org, Client Dinners) with receipt attachments and manager approval status.
-- **Team Calendar & Events (`/api/calendar`)**: Event timeline displaying company holidays, all-hands townhalls, hackathons, and workshops with date badges.
+| Platform | Role | URL | Status |
+| :--- | :--- | :--- | :--- |
+| **Render** | **Full-Stack (Frontend + Backend)** | [https://employee-workforce-system-1.onrender.com/](https://employee-workforce-system-1.onrender.com/) | ✅ Active |
+| **Vercel** | **Frontend (SPA)** | [https://employee-workforce-system-mkmnghyga-restaurant-management.vercel.app/](https://employee-workforce-system-mkmnghyga-restaurant-management.vercel.app/) | ✅ Active |
+| **API Docs** | **Interactive Swagger UI** | [https://employee-workforce-system-1.onrender.com/docs](https://employee-workforce-system-1.onrender.com/docs) | ✅ Active |
 
 ---
 
-## 📂 Project Structure
+## 🌟 Key Capabilities & Enterprise Modules
 
-```text
-Employee-Workforce-System/
-├── backend/
-│   ├── app.py                # FastAPI main server & database seeding logic
-│   ├── auth.py               # JWT authentication & password hashing (Passlib/Bcrypt)
-│   ├── database.py           # SQLAlchemy SQLite engine setup
-│   ├── models.py             # SQLAlchemy ORM database models (21 models)
-│   ├── schemas.py            # Pydantic request & response validation schemas
-│   ├── requirements.txt      # Python dependencies
-│   └── routers/
-│       ├── analytics.py      # Executive analytics & CSV report export endpoints
-│       ├── announcements.py  # Company broadcasts router
-│       ├── assets.py         # IT hardware inventory router
-│       ├── attendance.py     # Workstation clock in/out & attendance history router
-│       ├── calendar.py       # Team calendar & events router
-│       ├── chat.py           # Team messenger & channels router
-│       ├── dashboard.py      # Aggregated dashboard metrics router
-│       ├── documents.py      # Policy document center & acknowledgment router
-│       ├── employees.py      # Staff directory CRUD router
-│       ├── expenses.py       # Expense reimbursement claims router
-│       ├── leave.py          # Leave request router
-│       ├── login.py          # Authentication & JWT tokens router
-│       ├── okrs.py           # Objectives & Key Results router
-│       ├── onboarding.py     # Onboarding task checklist router
-│       ├── payslips.py       # Salary & payslip compensation router
-│       ├── recruitment.py    # Job postings & ATS candidate pipeline router
-│       ├── reviews.py        # Performance reviews & peer kudos router
-│       ├── shifts.py         # Work shift roster router
-│       ├── surveys.py        # Pulse surveys & innovation ideas router
-│       ├── tasks.py          # Kanban project task router
-│       └── trainings.py      # Training & skills certification router
-├── frontend/
-│   ├── index.html            # Main single-page application view & modals
-│   ├── login.html            # Standalone login template
-│   ├── dashboard.html        # Standalone dashboard view
-│   ├── css/
-│   │   ├── styles.css        # Comprehensive design system, dark mode & animations
-│   │   └── login.css         # Sign-in page layout styling
-│   └── js/
-│       └── script.js         # Single-page application logic, API client & event listeners
-├── walkthrough.md            # Detailed feature & test walkthrough
-├── implementation_plan.md    # Architecture implementation plan
-└── README.md                 # Project documentation
-```
+The platform provides a complete workforce experience across 16 core modules:
+
+### 1. ⚡ Quick Access & Modern UX
+- **One-Click Demo Sign-In Cards**: Instant access as *System Admin*, *Sarah Connor (Designer)*, *Michael Scott (Manager)*, or *Keya Rahman (HR)* with zero typing.
+- **Universal Command Palette (`Ctrl + K` / `Cmd + K`)**: Quick-jump search dialog to instantly navigate to any module or execute actions.
+- **Notification Center**: Real-time activity bell with badge counters for approvals, kudos, and policy updates.
+- **Glassmorphic Motion Design**: Ambient animated SVG mesh grid, smooth gradient shifts, ripple button interactions, and card entrance reveals.
+
+### 2. 🕒 Attendance & Workstation
+- **Live Digital Clock & Shift Station**: Real-time ticking clock with animated status chips.
+- **Circular Progress Ring**: SVG shift progress ring tracking workday duration.
+- **One-Click Clock In / Clock Out**: Live work session logging with milestone confetti celebrations.
+- **Attendance History Log**: Detailed shift records with automatic duration calculations.
+
+### 3. 👥 Workforce & Directory Management
+- **Staff Directory (`/api/employees`)**: Searchable employee cards, department filters, and an interactive **Inspect Profile** modal drawer.
+- **Work Shift Roster (`/api/shifts`)**: Manage shifts (Morning, DevOps On-Call), start/end times, and work locations (*Remote*, *HQ Office*, *Hybrid*).
+- **IT Asset Inventory (`/api/assets`)**: Hardware tracking (MacBooks, 4K Displays, YubiKeys) with serial numbers, asset tags, and assignment statuses.
+
+### 4. ⭐ Performance, Culture & Policy
+- **Performance Reviews & Kudos (`/api/reviews`)**: 1–5 star interactive reviews, manager feedback logs, and a peer recognition shoutout wall.
+- **Document Center (`/api/documents`)**: Corporate policy repository (*Code of Conduct*, *Security Guidelines*) with digital acknowledgment tracking.
+- **Training & Certifications (`/api/trainings`)**: Security and compliance training tracking with visual progress indicators.
+
+### 5. 💰 Compensation, Talent & Engagement
+- **Salary & Payslips (`/api/payslips`)**: Monthly payroll generation with auto calculations (Gross, Allowances, Deductions) and a printable official payslip invoice.
+- **Recruitment & ATS Pipeline (`/api/recruitment`)**: Job openings, applicant stages (*Applied*, *Screening*, *Interview*, *Offered*, *Hired*), and a **1-Click "Hire & Onboard"** action.
+- **Workforce Messenger (`/api/chat`)**: Multi-channel team chat (`#general`, `#engineering`, `#hr-helpdesk`, `#watercooler`).
+- **Pulse Polls & Ideas Box (`/api/surveys`)**: Real-time company polls and upvotable employee innovation suggestions.
+
+### 6. 📊 Operations, Leave & Expenses
+- **Leave Management (`/api/leave`)**: Submit, track, and approve annual, sick, and emergency leaves with real-time balance calculations.
+- **Payroll & Expense Claims (`/api/expenses`)**: Submit reimbursement requests with merchant details, category tags, and approval tracking.
+- **OKRs & Goals (`/api/okrs`)**: Objectives and Key Results with nested progress tracking.
+- **Tasks & Kanban (`/api/tasks`)**: Priority-ranked task boards (*To Do*, *In Progress*, *In Review*, *Done*).
+- **Executive Analytics (`/api/analytics`)**: Visual KPI metric cards, department headcount charts, and **1-Click CSV Exports** (Attendance, Leave, Expenses).
 
 ---
 
-## 🔑 Authentication & Pre-configured Accounts
+## 🔑 Demo Login Accounts
 
-You can sign in using **One-Click Demo Sign-In** on the login page or enter any of the credentials below:
+Test the platform instantly with any of the pre-seeded accounts:
 
 | Role | Name | Email | Password | Department |
 | :--- | :--- | :--- | :--- | :--- |
 | **System Admin** | System Administrator | `admin@gmail.com` | `Admin123` | Administration |
 | **UX Designer** | Sarah Connor | `employee@gmail.com` | `Employee123` | Product |
-| **Manager** | Michael Scott | `manager@gmail.com` | `Manager123` | Operations |
-| **HR Head** | Keya Rahman | `hr@gmail.com` | `HR123!` | People Operations |
+| **Operations Manager** | Michael Scott | `manager@gmail.com` | `Manager123` | Operations |
+| **Head of HR** | Keya Rahman | `hr@gmail.com` | `HR123!` | People Operations |
 | **Lead Engineer** | Alex Rivera | `alex.rivera@ems.local` | `Employee123!` | Engineering |
-| **DevOps Lead** | David Chen | `david.chen@ems.local` | `Employee123!` | Engineering |
+| **DevOps Lead** | David Chen | `david.chen@ems.local` | `Employee123!` | Infrastructure |
 | **Product Manager**| Emma Watson | `emma.watson@ems.local` | `Employee123!` | Product |
-| **Support Lead** | James Wilson | `james.wilson@ems.local` | `Employee123!` | Support |
-| **Finance Controller**| Sophia Martinez | `sophia.martinez@ems.local` | `Employee123!` | Finance |
-| **Backend Engineer**| Daniel Kim | `daniel.kim@ems.local` | `Employee123!` | Engineering |
-| **Growth Marketer**| Olivia Taylor | `olivia.taylor@ems.local` | `Employee123!` | Marketing |
 
 ---
 
-## 🛠️ Installation & Local Setup
+## 🚀 Deployment Guide
 
-### 1. Start the Backend API Server (FastAPI)
+### Option 1: Render Deployment (Full-Stack Unified)
 
-```powershell
-# Navigate to the backend directory
+The project includes an Infrastructure-as-Code [render.yaml](render.yaml) specification:
+
+1. Push code to your GitHub repository.
+2. Go to **[dashboard.render.com](https://dashboard.render.com)** → **New +** → **Blueprint**.
+3. Select your repository. Render will automatically read `render.yaml`.
+4. Click **Apply**. Render will install dependencies, seed the database, and launch both backend and frontend on a single URL.
+
+```yaml
+# Build & Start commands executed by Render:
+buildCommand: pip install -r backend/requirements.txt
+startCommand: cd backend && gunicorn app:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+```
+
+### Option 2: Vercel Deployment (Frontend SPA)
+
+1. Go to **[vercel.com](https://vercel.com)** → **Add New…** → **Project**.
+2. Select your repository.
+3. Set **Root Directory** to `frontend`.
+4. Leave Framework as **Vite** or **Other**.
+5. Click **Deploy**.
+
+> **Note:** The included [frontend/vercel.json](frontend/vercel.json) automatically proxies `/api/*` requests to your live backend on Render.
+
+---
+
+## 🛠️ Local Development Setup
+
+### 1. Backend Server (FastAPI)
+
+```bash
+# Navigate to backend
 cd backend
 
-# Create & activate a virtual environment (optional)
+# Create & activate a virtual environment
 python -m venv venv
+# On Windows:
 .\venv\Scripts\Activate.ps1
+# On Linux/macOS:
+source venv/bin/activate
 
-# Install backend dependencies
+# Install dependencies
 pip install -r requirements.txt
 
-# Start the FastAPI uvicorn server
+# Start FastAPI server with live reload
 python -m uvicorn app:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-- **Backend API URL**: `http://127.0.0.1:8000`
-- **Interactive Swagger API Docs**: `http://127.0.0.1:8000/docs`
+- **Backend API**: `http://127.0.0.1:8000`
+- **Swagger Documentation**: `http://127.0.0.1:8000/docs`
+- **Health Check**: `http://127.0.0.1:8000/api/health`
 
----
+### 2. Frontend Development
 
-### 2. Start the Frontend Single-Page App
-
-Open `frontend/index.html` directly in any modern web browser or serve via a local static server:
-
-```powershell
-# Open index.html directly or serve using Python http.server
+```bash
+# Navigate to frontend
 cd frontend
-python -m http.server 5173
+
+# Run local dev server (Vite)
+npm install
+npm run dev
 ```
 
-- **Frontend App URL**: `http://127.0.0.1:5173` or open `frontend/index.html` directly in browser.
+- **Frontend Dev URL**: `http://127.0.0.1:5173`
 
 ---
 
-## 🔬 API Endpoint Summary
+## 📂 Project Architecture
 
-| Module | Base Path | Methods |
-| :--- | :--- | :--- |
-| **Auth** | `/api/auth` | `POST /login`, `GET /me`, `PATCH /me` |
-| **Staff Directory** | `/api/employees` | `GET /`, `POST /`, `DELETE /{id}` |
-| **Work Shifts** | `/api/shifts` | `GET /`, `POST /`, `DELETE /{id}` |
-| **IT Assets** | `/api/assets` | `GET /`, `POST /`, `PATCH /{id}`, `DELETE /{id}` |
-| **Calendar Events**| `/api/calendar/events` | `GET /`, `POST /`, `DELETE /{id}` |
-| **Trainings** | `/api/trainings` | `GET /`, `POST /`, `PATCH /{id}/status`, `DELETE /{id}` |
-| **Salary & Payslips** | `/api/payslips` | `GET /`, `POST /`, `GET /{id}`, `PATCH /{id}/status`, `DELETE /{id}` |
-| **Recruitment & ATS** | `/api/recruitment` | `GET /jobs`, `POST /jobs`, `DELETE /jobs/{id}`, `GET /candidates`, `POST /candidates`, `PATCH /candidates/{id}/stage`, `POST /candidates/{id}/convert-to-employee`, `DELETE /candidates/{id}` |
-| **Team Messenger** | `/api/chat` | `GET /channels`, `GET /messages`, `POST /messages` |
-| **Surveys & Ideas** | `/api/surveys` | `GET /`, `POST /`, `POST /{id}/vote`, `GET /ideas`, `POST /ideas`, `POST /ideas/{id}/upvote`, `PATCH /ideas/{id}/status`, `DELETE /ideas/{id}` |
-| **Performance** | `/api/reviews` | `GET /performance`, `POST /performance`, `GET /kudos`, `POST /kudos` |
-| **Documents** | `/api/documents` | `GET /`, `POST /`, `POST /{id}/acknowledge` |
-| **Analytics** | `/api/analytics` | `GET /metrics`, `GET /export/attendance`, `GET /export/leave`, `GET /export/expenses` |
+```text
+Employee-Workforce-System/
+├── backend/
+│   ├── app.py                # Main FastAPI entry point & static frontend mount
+│   ├── auth.py               # JWT authentication & password hashing
+│   ├── database.py           # SQLAlchemy database engine (SQLite / PostgreSQL)
+│   ├── models.py             # 21 SQLAlchemy ORM models
+│   ├── schemas.py            # Pydantic validation schemas
+│   ├── requirements.txt      # Python dependencies
+│   └── routers/              # 16 modular API routers
+│       ├── analytics.py      # Executive reporting & CSV exports
+│       ├── announcements.py  # Company announcement broadcasts
+│       ├── assets.py         # IT hardware inventory
+│       ├── attendance.py     # Clock in/out & shift history
+│       ├── calendar.py       # Team calendar events
+│       ├── chat.py           # Team channels & messaging
+│       ├── dashboard.py      # Summary metrics aggregation
+│       ├── documents.py      # Company policies & acknowledgments
+│       ├── employees.py      # Staff directory management
+│       ├── expenses.py       # Expense reimbursements
+│       ├── leave.py          # Leave requests & balances
+│       ├── login.py          # Auth & token management
+│       ├── okrs.py           # Objectives & Key Results
+│       ├── onboarding.py     # Onboarding task checklist
+│       ├── payslips.py       # Salary & payslip compensation
+│       ├── recruitment.py    # Job postings & ATS pipeline
+│       ├── reviews.py        # Performance & peer kudos
+│       ├── shifts.py         # Shift schedule rosters
+│       ├── surveys.py        # Pulse polls & suggestion box
+│       ├── tasks.py          # Task & Kanban boards
+│       └── trainings.py      # Training courses & skills
+├── frontend/
+│   ├── index.html            # Main unified SPA markup
+│   ├── css/
+│   │   └── styles.css        # Design tokens, themes & animations
+│   ├── js/
+│   │   └── script.js         # Single-page application logic & API client
+│   ├── vercel.json           # Frontend Vercel rewrite configuration
+│   └── vite.config.mjs       # Vite build setup with asset copy plugin
+├── render.yaml               # Render Infrastructure-as-Code blueprint
+├── vercel.json               # Root Vercel proxy configuration
+├── LICENSE                   # MIT License
+└── README.md                 # Project documentation
+```
 
 ---
 
-## 🎨 Design System & Technologies
+## 🎨 Tech Stack
 
-- **Backend**: Python 3.11+, FastAPI, SQLAlchemy, SQLite, Pydantic, Passlib, PyJWT, Uvicorn
-- **Frontend**: HTML5, Vanilla JavaScript (ES6+), Vanilla CSS3 Design System with CSS Custom Properties
-- **Aesthetics**: Glassmorphic cards, mesh ambient glow animations, dark/light theme tokens, responsive layouts
+- **Backend**: Python 3.11+, FastAPI, SQLAlchemy, SQLite / PostgreSQL, Pydantic, Passlib, PyJWT, Gunicorn, Uvicorn
+- **Frontend**: Vanilla HTML5, Vanilla JavaScript (ES6+), Modern CSS3 with Custom Properties & Glassmorphism
+- **Design System**: Dark/Light mode theme system, responsive CSS Grid / Flexbox layouts, accessible keyboard shortcuts
+- **Deployment**: Render (Python Web Service), Vercel (Edge Static Hosting)
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **[MIT License](file:///c:/Users/Hp/Desktop/Employee-Workforce-System/LICENSE)**. Free to use, modify, and distribute for personal or commercial applications.
-
-<!-- Pair badge update for ke961 -->
+This project is open-sourced under the **[MIT License](LICENSE)**.
